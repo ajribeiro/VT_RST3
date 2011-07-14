@@ -1,0 +1,10 @@
+# SD_BEGIN> 
+# This file defines all the hardware parameters for all the radars
+# the format of the file is:
+# station_id, year, yr_sec, lat, long, altitude, boresite, bm_sep,
+#   vdir, atten, tdiff, phidiff, interfer_pos[3], rec_rise
+#
+# this set of data is for the Syowa East radar
+#
+13 2999 31556736 -69.01 +39.61      42.5 +106.5 -3.33 1.0 10.0 0.0 1.0 -5.0 +91.96 +0.82 50. 3 75 16
+

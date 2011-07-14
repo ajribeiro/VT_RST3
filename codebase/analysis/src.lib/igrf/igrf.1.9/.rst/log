@@ -1,0 +1,11 @@
+commit f510b5d79b62caa46caeaf256ce2985ffc3536c5
+Author: Rob Barnes <robin.barnes@jhuapl.edu>
+Date:   Thu Jun 10 11:06:44 2010 -0400
+
+    Added 2010 coefficients and removed hardcoding of coefficient tables.
+
+commit e654d32ce9addc6f8f26b19a4c7eda1289cff410
+Author: Code Development Account <code@debian.localdomain>
+Date:   Mon Jan 4 00:37:01 2010 +0000
+
+    Initial commit

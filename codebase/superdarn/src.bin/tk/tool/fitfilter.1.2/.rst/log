@@ -1,0 +1,11 @@
+commit 1c7ea275bf3901e78c43ba0391e3257071f1d4d0
+Author: Rob Barnes <robin.barnes@jhuapl.edu>
+Date:   Thu Jun 10 08:32:38 2010 -0400
+
+    Updated documentation
+
+commit 0f16b4c7c085fdf27727eaf00584430e17f2515d
+Author: Code Development Account <code@morpheus.jhuapl.edu>
+Date:   Wed May 19 10:50:26 2010 -0400
+
+    Filter fit files using median filter.

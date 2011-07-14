@@ -1,0 +1,17 @@
+commit 58c368c3e07e164eda0f3a213737291e040e118a
+Author: Code Development Account <code@linux-pc.jhuapl.edu>
+Date:   Thu Nov 11 14:56:56 2010 -0500
+
+    Fixed IDL types for 64 bit
+
+commit 72101b93253d71c0ccba5c4fc1afaba7c97e6c62
+Author: Code Development Account <code@linux-pc.jhuapl.edu>
+Date:   Wed Nov 3 17:41:01 2010 -0400
+
+    Fixed issue with null strings in old files.
+
+commit 1b666d21a49f49765c224c44b6dadefb166eed22
+Author: Code Development Account <code@linux-pc.jhuapl.edu>
+Date:   Wed Nov 3 16:18:35 2010 -0400
+
+    rprmidl support library for DLMs.

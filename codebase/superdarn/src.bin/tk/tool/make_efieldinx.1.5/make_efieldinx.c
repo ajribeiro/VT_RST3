@@ -1,0 +1,141 @@
+/* make_efieldinx.c
+   ================
+   Author: R.J.Barnes
+*/
+
+/*
+ (c) 2010 JHU/APL & Others - Please Consult LICENSE.superdarn-rst.3.2-beta-4-g32f7302.txt for more information.
+ 
+ 
+ 
+*/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <time.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <string.h>
+#include <zlib.h>
+#include "rtypes.h"
+#include "rconvert.h"
+#include "option.h"
+#include "rtime.h"
+#include "dmap.h"
+
+#include "errstr.h"
+#include "hlpstr.h"
+
+
+
+
+struct OptionData opt;
+
+int main (int argc,char *argv[]) {
+
+  struct DataMap *ptr;
+  struct DataMapScalar *s;
+  int arg;
+  unsigned char help=0;
+  unsigned char option=0;
+
+  unsigned char vb=0;
+ 
+  FILE *fp;
+  
+  int sze=0,c,x;
+  int yr,mo,dy,hr,mt;
+  double sc,tval; 
+
+  char *sname[]={"start.year","start.month","start.day","start.hour",
+                 "start.minute","start.second",NULL};
+  int stype[]={DATASHORT,DATASHORT,DATASHORT,DATASHORT,DATASHORT,DATADOUBLE};
+  struct DataMapScalar *sdata[6];
+
+
+  OptionAdd(&opt,"-help",'x',&help);
+  OptionAdd(&opt,"-option",'x',&option);
+
+  OptionAdd(&opt,"vb",'x',&vb);
+
+  arg=OptionProcess(1,argc,argv,&opt,NULL);
+
+  if (help==1) {
+    OptionPrintInfo(stdout,hlpstr);
+    exit(0);
+  }
+
+  if (option==1) {
+    OptionDump(stdout,&opt);
+    exit(0);
+  }
+
+
+  if (arg==argc) fp=stdin;
+  else fp=fopen(argv[arg],"r");
+  if (fp==NULL) {
+    fprintf(stderr,"File not found.\n");
+    exit(-1);
+  }
+
+    
+  while ((ptr=DataMapFread(fp)) !=NULL) {
+    
+    for (c=0;sname[c] !=0;c++) sdata[c]=NULL;
+    for (c=0;c<ptr->snum;c++) {
+    s=ptr->scl[c];
+    for (x=0;sname[x] !=0;x++) 
+      if ((strcmp(s->name,sname[x])==0) && (s->type==stype[x])) {
+        sdata[x]=s;
+        break;
+      }
+    }
+    for (x=0;sname[x] !=0;x++) if (sdata[x]==NULL) break;
+    if (sdata[x]==NULL) break;
+   
+    yr=*(sdata[0]->data.sptr);
+    mo=*(sdata[1]->data.sptr);
+    dy=*(sdata[2]->data.sptr);
+    hr=*(sdata[3]->data.sptr);
+    mt=*(sdata[4]->data.sptr);
+    sc=*(sdata[5]->data.dptr);
+    tval=TimeYMDHMSToEpoch(yr,mo,dy,hr,mt,sc);
+
+
+    if (vb) {
+      fprintf(stderr,"%.4d-%.2d-%.2d %.2d:%.2d:%.2d\n",
+              yr,mo,dy,hr,mt,(int) sc);
+    }
+    ConvertFwriteDouble(stdout,tval);
+    ConvertFwriteInt(stdout,sze);
+    
+    sze+=DataMapSize(ptr);
+    DataMapFree(ptr);
+  }
+  if (fp !=stdin) fclose(fp);
+  return 0;
+} 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

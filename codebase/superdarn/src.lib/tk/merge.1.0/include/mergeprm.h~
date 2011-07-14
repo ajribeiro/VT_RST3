@@ -1,0 +1,79 @@
+/* rprm.h
+   ======
+   Author: R.J.Barnes
+*/
+
+
+/*
+ (c) 2010 JHU/APL & Others - Please Consult LICENSE.superdarn-rst.3.2-beta-4-g32f7302.txt for more information.
+
+
+
+*/
+
+#ifndef _MERGEDATA_H
+#define _MERGEDATA_H
+
+struct MergeData {
+  struct {
+    char major;
+    char minor;
+  } revision;
+
+  struct {
+    int16 stid;
+    int16 cpid;
+    int16 beam;
+    int16 rng;
+    int16 gsflg;
+		float vel;
+		float azm;
+  } radar1;
+
+	struct {
+    int16 stid;
+    int16 cpid;
+    int16 beam;
+
+
+		int16 rng;    int16 gsflg;sadsads
+  } radar2;
+
+	float vel;
+	float glat;
+	float glon;
+	float gazm;
+	float mlat;
+	float mlon;
+	float mazm;
+
+	long time
+
+
+};
+
+
+struct RadarParm *RadarParmMake();
+void RadarParmFree(struct RadarParm *ptr);
+
+int RadarParmSetOriginTime(struct RadarParm *ptr,char *str);
+
+int RadarParmSetOriginCommand(struct RadarParm *ptr,char *str);
+
+int RadarParmSetCombf(struct RadarParm *ptr,char *str);
+
+int RadarParmSetPulse(struct RadarParm *ptr,int mppul,int16 *pulse);
+
+int RadarParmSetLag(struct RadarParm *ptr,int mplgs,int16 *);
+
+int RadarParmEncode(struct DataMap *ptr,struct RadarParm *prm);
+
+int RadarParmDecode(struct DataMap *ptr,struct RadarParm *prm);
+
+void *RadarParmFlatten(struct RadarParm *ptr,size_t *size);
+
+int RadarParmExpand(struct RadarParm *ptr,void *buffer);
+
+
+
+#endif

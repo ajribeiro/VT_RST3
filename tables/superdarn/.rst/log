@@ -1,0 +1,23 @@
+commit b2df245d3cce5ee91bf5f9fccc4c0ac85b31e22b
+Author: Code Development Account <code@linux-pc.jhuapl.edu>
+Date:   Sat Mar 20 16:24:45 2010 -0400
+
+    Added site location for Falkland Islands
+
+commit 4d4269e20c011189db96cb2670eb75fd0d7307f5
+Author: Code Development Account <code@linux-pc.jhuapl.edu>
+Date:   Sat Mar 20 15:36:18 2010 -0400
+
+    Added McMurdo and Falkand Islands Radars.
+
+commit bb98c89ef009b4e6be7322c6c6e2170abd3fddb1
+Author: Code Development Account <code@linux-pc.jhuapl.edu>
+Date:   Fri Mar 19 08:02:55 2010 -0400
+
+    Added new McMurdo site and removed placeholders for MSI.
+
+commit e188cd21acbc3d9eebd0519a49975b737688a118
+Author: Code Development Account <code@debian.localdomain>
+Date:   Mon Jan 4 00:37:38 2010 +0000
+
+    Initial commit

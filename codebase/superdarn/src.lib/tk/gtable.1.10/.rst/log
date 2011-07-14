@@ -1,0 +1,29 @@
+commit 2e835f1a2e06d0765c30931631bb38974c2e966a
+Author: Code Development Account <code@linux-pc.jhuapl.edu>
+Date:   Tue Oct 12 08:36:11 2010 -0400
+
+    Bug  fix azimuths close to the pole.
+
+commit 47b039f80138b8b2591d4aa5ee2159a4271ad04a
+Author: Rob Barnes <robin.barnes@jhuapl.edu>
+Date:   Wed Jun 23 14:02:28 2010 -0400
+
+    Fixed problem with resetting noise arrays.
+
+commit 4ae55b5257b1ef46317697a30d1004bba673ac24
+Author: Code Development Account <code@morpheus.jhuapl.edu>
+Date:   Wed May 19 09:56:41 2010 -0400
+
+    RST 3 Update
+
+commit 97ef038cb85286f0ef116b5058c0fa0b458e9032
+Author: Code Development Account <code@linux-pc.jhuapl.edu>
+Date:   Tue Mar 30 15:14:17 2010 -0400
+
+    Fixed documentation.
+
+commit f9ca17bbd3c547b39f5ba6f9d5b35cbd0e30c1e7
+Author: Code Development Account <code@debian.localdomain>
+Date:   Mon Jan 4 00:37:23 2010 +0000
+
+    Initial commit

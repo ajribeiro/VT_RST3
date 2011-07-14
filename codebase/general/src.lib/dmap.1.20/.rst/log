@@ -1,0 +1,23 @@
+commit c27053b0bbb153013d8426bc1720d3fce001e435
+Author: Code Development Account <code@linux-pc.jhuapl.edu>
+Date:   Tue Aug 24 11:18:31 2010 -0400
+
+    Fixed bug in processing string arrays.
+
+commit a6a8a72671ec27fa32929fe5f3600f2a982a7be9
+Author: Code Development Account <code@morpheus.jhuapl.edu>
+Date:   Wed May 19 09:25:18 2010 -0400
+
+    Added dynamically allocated storage of data within structures
+
+commit e41050cd91f67507cb0ecac92fb57d3971864f1e
+Author: Code Development Account <code@linux-pc.jhuapl.edu>
+Date:   Tue Mar 30 15:02:41 2010 -0400
+
+    Fixed documentation.
+
+commit 37b6beb45f757b42635b77a5b9adcdffb5c73eb1
+Author: Code Development Account <code@debian.localdomain>
+Date:   Mon Jan 4 00:36:46 2010 +0000
+
+    Initial commit

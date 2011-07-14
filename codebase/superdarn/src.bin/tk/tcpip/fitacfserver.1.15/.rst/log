@@ -1,0 +1,23 @@
+commit d9bb7cdb5ee0e7024d0c57ee9e5248231d1b06a4
+Author: Code Development Account <code@linux-pc.jhuapl.edu>
+Date:   Wed Aug 4 12:58:17 2010 -0400
+
+    Fixed makefile for dynamic linking
+
+commit fedc1bb0205134fe33d6e1567dcf302103f73c3e
+Author: Rob Barnes <robin.barnes@jhuapl.edu>
+Date:   Tue Jun 15 13:37:50 2010 -0400
+
+    Changed socket options.
+
+commit edf1de13c3fd3de7905bc637032bf7ced3035279
+Author: Code Development Account <code@morpheus.jhuapl.edu>
+Date:   Wed May 19 10:45:56 2010 -0400
+
+    Fixed makefile
+
+commit 389a4e6320f8f5d484688e8ef3173f3eabdf245c
+Author: Code Development Account <code@debian.localdomain>
+Date:   Mon Jan 4 00:37:04 2010 +0000
+
+    Initial commit

@@ -1,0 +1,16 @@
+# This file defines all the hardware parameters for a radar
+# the format of the file is:
+# station_id, year, yr_sec, lat, long, altitude, boresite, bm_sep,
+#   vdir, atten, tdiff, phidiff, interfer_pos[3], rec_rise, max_atten
+#
+#
+# this set of data is for McMurdo
+#
+20 2999 31556736 -77.88 166.73 300. 263.4  +3.24 +1.0 10.0  0.0    +1.0   0.0 70.104 -4.130 100.0 2 75 16
+
+
+
+
+
+
+

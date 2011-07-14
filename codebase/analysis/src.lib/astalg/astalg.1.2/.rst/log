@@ -1,0 +1,11 @@
+commit 469aa0776ae7a1332575aa0381724d1a2207a0c7
+Author: Rob Barnes <robin.barnes@jhuapl.edu>
+Date:   Wed Jun 9 20:25:59 2010 -0400
+
+    Moved license file.
+
+commit 091be603a4758c4ead1beef3f081f9739ade0478
+Author: Rob Barnes <robin.barnes@jhuapl.edu>
+Date:   Wed Jun 9 08:47:30 2010 -0400
+
+    Astronomical Algorithms library.

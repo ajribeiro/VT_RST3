@@ -1,0 +1,221 @@
+commit f4b1bc7b33c183384ac22d40caaf72670d3585de
+Author: Code Development Account <code@linux-pc.jhuapl.edu>
+Date:   Wed Nov 17 13:22:15 2010 -0500
+
+    Fixed issued with getting the correct profile.
+
+commit 7c3e232f867b68bd2eb14f25ed7a173e50a3e391
+Author: Code Development Account <code@morpheus.jhuapl.edu>
+Date:   Wed Nov 17 12:39:46 2010 -0500
+
+    Fixed issue with make.dst finding more than the top level profile.
+
+commit 884aadddf3ebb4a661044927d0abb7b524d7436c
+Author: Code Development Account <code@morpheus.jhuapl.edu>
+Date:   Wed Nov 17 11:46:51 2010 -0500
+
+    Changed package management system to split the assembly and compile stages.
+
+commit 963edfba8d8431b789164cd57b0d959e8f46c185
+Author: Code Development Account <code@linux-pc.jhuapl.edu>
+Date:   Thu Nov 11 11:03:18 2010 -0500
+
+    Added compilation to the package building script.
+
+commit e5cc1af0fbe1f668e77b166fa89f2739fecc5400
+Author: Code Development Account <code@linux-pc.jhuapl.edu>
+Date:   Thu Nov 11 10:47:29 2010 -0500
+
+    Added DLM support.
+
+commit 5eb65948dd59c2c9ade22f6641145489b7388589
+Author: Code Development Account <code@virtual-debian.localdomain>
+Date:   Fri Aug 6 08:52:50 2010 -0400
+
+    Cleaned up handling of command line options in make.pkg
+
+commit 3322c889585e93cc242ddf0a82693ecfd8d1e518
+Author: Code Development Account <code@linux-pc.jhuapl.edu>
+Date:   Wed Aug 4 12:35:28 2010 -0400
+
+    Added LD_LIBRARY_PATH to make.build.
+
+commit d6e5a139ce20d6da2af3869b4a1852b6b05279f0
+Author: Rob Barnes <robin.barnes@jhuapl.edu>
+Date:   Tue Jun 15 21:43:47 2010 -0400
+
+    Changed command line option on make.pkg
+
+commit da3ad82978d1f4aefb59b9748522f95603fbf9a2
+Author: Rob Barnes <robin.barnes@jhuapl.edu>
+Date:   Tue Jun 15 20:20:59 2010 -0400
+
+    Fixed licensing tag.
+
+commit 5a182ea485fe69c9ef2e1e1999515158d18c3c05
+Author: Rob Barnes <robin.barnes@jhuapl.edu>
+Date:   Thu Jun 10 07:47:08 2010 -0400
+
+    Fixed packaging scripts.
+
+commit 5913d0b487e36cedab0474450bfbeece10985a58
+Author: Rob Barnes <robin.barnes@jhuapl.edu>
+Date:   Thu Jun 10 06:12:45 2010 -0400
+
+    Fixed handling of documentation.
+
+commit 16bcf815caebeb5aa012183d0c7beb4a54a62817
+Author: Rob Barnes <robin.barnes@jhuapl.edu>
+Date:   Wed Jun 9 20:30:17 2010 -0400
+
+    Removed debugging code.
+
+commit 2420f99f1f50ed1c4964491453d5b889e9be27a0
+Author: Rob Barnes <robin.barnes@jhuapl.edu>
+Date:   Wed Jun 9 20:29:41 2010 -0400
+
+    Added licensing of individual components.
+
+commit 58b058cb23c4452b1a2d6bf85d76375d1f7c2762
+Author: Rob Barnes <robin.barnes@jhuapl.edu>
+Date:   Wed Jun 9 16:47:07 2010 -0400
+
+    Update for binary distribution and new library compilation.
+
+commit 1fc8a306e300a2ad8d543071cceb085097446d7c
+Author: Rob Barnes <robin.barnes@jhuapl.edu>
+Date:   Sun Jun 6 10:13:04 2010 +0200
+
+    Removed redundant line in setup.pkg
+
+commit 4db2a1ed860c653bc7bbe6e9a61063c1dd60453b
+Author: Rob Barnes <robin.barnes@jhuapl.edu>
+Date:   Sun Jun 6 10:12:11 2010 +0200
+
+    Changed ordering of repository creation in setup package.
+
+commit 48c54fd875abe3c75f03536618ddf08d413160f4
+Author: Rob Barnes <robin.barnes@jhuapl.edu>
+Date:   Wed Jun 2 09:15:02 2010 +0200
+
+    Added commit log to the information directory when building packages.
+
+commit d5caa104fb04460abd66b2cb3652e215c083b293
+Author: Rob Barnes <robin.barnes@jhuapl.edu>
+Date:   Sat May 22 14:56:19 2010 -0400
+
+    Cleaned up version determination
+
+commit dd09845db7b38d98280245fbd9572f9bbb63b384
+Author: Code Development Account <code@morpheus.jhuapl.edu>
+Date:   Wed May 19 14:50:00 2010 -0400
+
+    Removed default tag from package setup script.
+
+commit 30f21a3f5ce629e72f44ebfb3b51b31af0f360ee
+Author: Code Development Account <code@morpheus.jhuapl.edu>
+Date:   Wed May 19 14:42:26 2010 -0400
+
+    Changed location of profile.
+
+commit a2bf7236b70049a84d1702bcb8d47a01d2021981
+Author: Code Development Account <code@morpheus.jhuapl.edu>
+Date:   Wed May 19 12:56:23 2010 -0400
+
+    Changed version checking.
+
+commit f96ad69c19ccd453a2d29edd3a40707553a58acd
+Author: Code Development Account <code@morpheus.jhuapl.edu>
+Date:   Wed May 19 12:22:22 2010 -0400
+
+    Added ability to explicitly set a version number.
+
+commit 59121ab20021c55438e3af8009d4e78ea0ab4901
+Author: Code Development Account <code@morpheus.jhuapl.edu>
+Date:   Wed May 19 11:30:13 2010 -0400
+
+    Improved version tagging.
+
+commit 523d46dea26a7533f8f513c91ca1600554a6e04f
+Author: Code Development Account <code@morpheus.jhuapl.edu>
+Date:   Wed May 19 10:00:27 2010 -0400
+
+    Modification of the make scripts.
+
+commit 3bc65afd517e18b5091d481a011dc3406352fdc7
+Author: Code Development Account <code@robin-barness-macbook-pro.local>
+Date:   Sat May 8 22:00:46 2010 -0400
+
+    Changed version numbers to strings.
+
+commit 044bccd46e6053d7a70262e45085ec0132258fa3
+Author: Code Development Account <code@linux-pc.jhuapl.edu>
+Date:   Wed Mar 31 11:19:25 2010 -0400
+
+    Fixed problems with the document scripts.
+
+commit 898e035551d99da2a31cec2f20428215dc0ecb30
+Author: Code Development Account <code@linux-pc.jhuapl.edu>
+Date:   Tue Mar 30 22:30:09 2010 -0400
+
+    Minor fixes to build scripts.
+
+commit 9e52e02cca9c7fbef6eca2864b795e0835c4ec39
+Author: Code Development Account <code@linux-pc.jhuapl.edu>
+Date:   Tue Mar 30 17:21:39 2010 -0400
+
+    Fixe of document system.
+
+commit 3ecf0a72a52d155821d405fdd06aa0e2ea942255
+Author: Code Development Account <code@linux-pc.jhuapl.edu>
+Date:   Tue Mar 30 15:34:25 2010 -0400
+
+    Modifications to document generation scripts.
+
+commit c2e44e12d9b4540993f1ef10341121f04fb6a0cb
+Author: Code Development Account <code@morpheus.jhuapl.edu>
+Date:   Thu Mar 25 09:58:17 2010 -0400
+
+    Changed name of skeleton files.
+
+commit 7edbe18348e05a8daeb19edb7e98cb61f96bfce5
+Author: Code Development Account <code@linux-pc.jhuapl.edu>
+Date:   Thu Mar 25 09:28:43 2010 -0400
+
+    Added logging of source names when creating images.
+
+commit 76e8597e092f9fbe1f4b4ccc758587e503f3a11d
+Author: Code Development Account <code@linux-pc.jhuapl.edu>
+Date:   Tue Mar 16 10:41:14 2010 -0400
+
+    Use git-clone to duplicate repositories.
+
+commit a643b48d7b903b865e2d9418f65b1c74cba448bd
+Author: Code Development Account <code@morpheus.jhuapl.edu>
+Date:   Mon Feb 22 21:33:57 2010 -0500
+
+    Fixed path problem in update.pkg
+
+commit d62b7d9339b20a33d410b4b40ee6d5741032bf99
+Author: Code Development Account <code@linux-pc.jhuapl.edu>
+Date:   Sat Feb 20 23:52:18 2010 -0500
+
+    Replaced decoding of input files.
+
+commit eebf96c8e27de3ebb21a64e731feb04a09b00ade
+Author: Code Development Account <code@linux-pc.jhuapl.edu>
+Date:   Sat Feb 20 20:20:22 2010 -0500
+
+    Changed name of "web" directory to "httpd"
+
+commit 80686d38893a9a3f487f9babfc301e082b03483a
+Author: Code Development Account <code@debian.localdomain>
+Date:   Mon Jan 4 22:18:16 2010 +0000
+
+    Added a setup.pkg script.
+
+commit c8b8d4ee57745f6e5dfe7ff1d712177a15ce8511
+Author: Code Development Account <code@debian.localdomain>
+Date:   Mon Jan 4 07:30:19 2010 +0000
+
+    Initial commit.
