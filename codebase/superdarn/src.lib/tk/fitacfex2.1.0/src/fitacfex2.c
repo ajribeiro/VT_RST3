@@ -1,4 +1,4 @@
-
+"THIS IS A BRANCH TEST"
 /* fitacfex2.c
    ==========
    Algorithm: R.A.Greenwald, K.Oskavik
@@ -264,9 +264,14 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
     else FitACFBadlagsStereo(&fblk->prm,&badsmp);
   }
 
-/* Loop every range gate and calculate parameters */
+  if(print)
+	{
+		fprintf(stdout,"%d  %d  %lf  %d  %lf\n",prm->nrang,prm->mplgs,skynoise,prm->tfreq,prm->mpinc*1.e-6);
+		fprintf(stdout,"%d  %d  %d  %d  %d  %d  %d  %d\n",prm->stid,prm->time.yr,prm->time.mo,
+									prm->time.dy,prm->time.hr,prm->time.mt,(int)prm->time.sc,prm->bmnum);
+	}
 
-
+	/* Loop every range gate and calculate parameters */
   for (R=0;R<prm->nrang;R++)
   {
 
@@ -291,8 +296,11 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
     fit->rng[R].nump     = 0;
     availcnt = 0;
 
-    lag0pwr  = 10.0*log10((raw->acfd[0][R*prm->mplgs] +
-                            skynoise)/skynoise);
+		/*calculate lag0pwr in dB*/
+    lag0pwr  = 10.0*log10((raw->acfd[0][R*prm->mplgs]+skynoise)/skynoise);
+
+		if(print)
+			fprintf(stdout,"%d\n",R);
 
     for(j=0;j<=2*nslopes;j++)
       model_errors[j] = 1.0e30;
@@ -314,6 +322,9 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
             availcnt++;
         }
         else lagpwr[lag] = 0.0;
+        if(print)
+					fprintf(stdout,"%d  %lf  %lf  %d\n",lag,raw->acfd[0][R*prm->mplgs+L],raw->acfd[1][R*prm->mplgs+L],
+																						(lagpwr[lag]>raw->acfd[0][R*prm->mplgs]/sqrt(1.0*prm->nave)));
       }
       pwr_flg = (lag0pwr>=minpwr);
     }
@@ -332,6 +343,9 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
             availcnt++;
         }
         else lagpwr[lag] = 0.0;
+        if(print)
+					fprintf(stdout,"%d  %lf  %lf  %d\n",lag,raw->acfd[0][R*prm->mplgs+L],raw->acfd[1][R*prm->mplgs+L],
+																						(lagpwr[lag]>raw->acfd[0][R*prm->mplgs]/sqrt(1.0*prm->nave)));
       }
       pwr_flg = (lag0pwr>=minpwr);
     }
@@ -355,10 +369,16 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
           availcnt++;
         }
         else lagpwr[lag] = 0.0;
+        if(print)
+					fprintf(stdout,"%d  %lf  %lf  %d\n",lag,raw->acfd[0][R*prm->mplgs+L],raw->acfd[1][R*prm->mplgs+L],
+																						(availflg && lagpwr[lag]>raw->acfd[0][R*prm->mplgs]/sqrt(1.0*prm->nave)));
       }
       pwr_flg = (sqrt(raw->acfd[0][R*prm->mplgs]*raw->acfd[0][R*prm->mplgs])>=skynoise);
       minlag = 4;
     }
+
+    if(print)
+			fprintf(stdout,"%d  %d\n",(pwr_flg),(availcnt>=minlag));
 
     /*if SNR is high enough and we have ge 6 good lags*/
     if((pwr_flg) && (availcnt>=minlag))
@@ -376,8 +396,11 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
       fitted_width = -2.9979e8*b/(prm->mpinc*1.e-6)/
                             (2*PI*1000.0*prm->tfreq);
       if(fitted_width<0.00) fitted_width = 0.0;
-      fitted_power = log(exp(a) + skynoise);
+      fitted_power = 10.*log10((exp(a) + skynoise)/skynoise)
 
+			if(print)
+				fprintf(stdout,"%lf  %lf  %lf  %lf\n",a,b,fitted_width,fitted_power);
+			
       /* Determine Doppler velocity by comparing the phase with models */
       pwr = 0.0;
       for(i=0;i<goodcnt;i++)
@@ -425,6 +448,10 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
         model_errors[nslopes-i] = error_neg;
         model_errors[nslopes+i] = error_pos;
       }
+
+      if(print)
+				for(i=0;i<2*nslopes+1;i++)
+					fprintf(stderr,"%lf  %lf\n",i*diff,model_errors[i]);
 
       /*check for aliasing limit*/
       int concnt = 0;
