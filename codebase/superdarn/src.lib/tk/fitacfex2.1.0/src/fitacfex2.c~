@@ -253,11 +253,8 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
   setup_fblk(prm, raw, fblk);
 
   FitSetRng(fit,fblk->prm.nrang);
-  if (fblk->prm.xcf)
-  {
-   FitSetXrng(fit,fblk->prm.nrang);
-   FitSetElv(fit,fblk->prm.nrang);
-  }
+  FitSetXrng(fit,fblk->prm.nrang);
+  FitSetElv(fit,fblk->prm.nrang);
 
   /*calculate noise levels*/
   lm_noise_stat(prm,raw,&skynoise);
