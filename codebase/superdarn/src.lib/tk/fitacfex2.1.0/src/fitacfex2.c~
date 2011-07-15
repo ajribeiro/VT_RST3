@@ -109,18 +109,14 @@ double elevation_ex(struct FitPrm *prm,double phi0) {
 
 
 double bisect(float w_guess, float diff, struct RawData *raw, float *good_lags, int goodcnt,
-              int R, float *lagpwr, double pwr, struct RadarParm *prm)
+              int R, float *lagpwr, double pwr, struct RadarParm *prm, int print)
 {
   float c_fac = (3. - sqrt(5))/2.;
   float r_fac = 1. - c_fac;
   float xr, xl, x0, x1, x2, x3, f1, f2;
-  int count, maxiter;
+  int maxiter;
   maxiter = 100;
 
-  /*f1=calc_err(w_guess-180./120.,raw,good_lags,goodcnt,R,lagpwr,pwr,prm);
-  f2=calc_err(w_guess,raw,good_lags,goodcnt,R,lagpwr,pwr,prm);
-  f3=calc_err(w_guess+180./120.,raw,good_lags,goodcnt,R,lagpwr,pwr,prm);
-  fprintf(stderr, "bisect %f %f %f %f %f\n", w_guess, diff, f1, f2, f3);*/
 
   count = 0;
   xl = w_guess-diff;
@@ -140,6 +136,8 @@ double bisect(float w_guess, float diff, struct RawData *raw, float *good_lags, 
       x1 = x2;
       x2 = r_fac*x1 + c_fac*x3;
       f1 = f2;
+			if(print)
+				fprintf(stdout,"%d  %lf  %lf",count,x2,f2);
       f2=calc_err(x2,raw,good_lags,goodcnt,R,lagpwr,pwr,prm);
     }
     else
@@ -148,6 +146,8 @@ double bisect(float w_guess, float diff, struct RawData *raw, float *good_lags, 
       x2 = x1;
       x1 = r_fac*x2 + c_fac*x0;
       f2 = f1;
+			if(print)
+				fprintf(stdout,"%d  %lf  %lf",count,x1,f1);
       f1=calc_err(x1,raw,good_lags,goodcnt,R,lagpwr,pwr,prm);
     }
     if (fabs(w_guess-xr) < 0.01)
@@ -168,9 +168,17 @@ double bisect(float w_guess, float diff, struct RawData *raw, float *good_lags, 
     }
   }
   if (f1 < f2)
+	{
+		if(print)
+			fprintf(stdout,"%d  %lf  %lf",count,x1,f1);
     return x1;
+	}
   else
+	{
+		if(print)
+			fprintf(stdout,"%d  %lf  %lf",count,x2,f2);
     return x2;
+	}
 }
 
 void fitacfex2(struct RadarParm *prm,struct RawData *raw,
@@ -497,7 +505,7 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
 
 
 				/*proper bisection method*/
-        w_guess = bisect(w_guess,diff,raw,good_lags,goodcnt,R,lagpwr,pwr,prm);
+        w_guess = bisect(w_guess,diff,raw,good_lags,goodcnt,R,lagpwr,pwr,prm,print);
 
         fit->rng[R].v     = fblk->prm.vdir*2.9979E8/2.0*(1-1000.0*prm->tfreq/
                             (1000.0*prm->tfreq+w_guess/360.0/(prm->mpinc*1.0e-6)));
