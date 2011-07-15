@@ -132,22 +132,22 @@ double bisect(float w_guess, float diff, struct RawData *raw, float *good_lags, 
   {
     if (f2 < f1)
     {
+			if(print)
+				fprintf(stdout,"%lf\n%lf\n",x2,f2);
       x0 = x1;
       x1 = x2;
       x2 = r_fac*x1 + c_fac*x3;
       f1 = f2;
-			if(print)
-				fprintf(stdout,"%lf\n%lf\n",x2,f2);
       f2=calc_err(x2,raw,good_lags,goodcnt,R,lagpwr,pwr,prm);
     }
     else
     {
+			if(print)
+				fprintf(stdout,"%lf\n%lf\n",x1,f1);
       x3 = x2;
       x2 = x1;
       x1 = r_fac*x2 + c_fac*x0;
       f2 = f1;
-			if(print)
-				fprintf(stdout,"%lf\n%lf\n",x1,f1);
       f1=calc_err(x1,raw,good_lags,goodcnt,R,lagpwr,pwr,prm);
     }
     if (fabs(w_guess-xr) < 0.01)
@@ -250,7 +250,7 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
       p = phi/360;
       model_phi[i*(lastlag+1)+j] = phi - p*360;
     }
-    model_vel_pos = 2.9979E8/2.0*(1-1000.0*prm->tfreq/
+    model_vel_pos = fblk->prm.vdir*2.9979E8/2.0*(1-1000.0*prm->tfreq/
         (1000.0*prm->tfreq+model_slope/360.0/(prm->mpinc*1.0e-6)));
     model_vels[nslopes-i] = -model_vel_pos;
     model_vels[nslopes+i] =  model_vel_pos;
@@ -274,8 +274,8 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
 	if(print)
 	{
 		fprintf(stdout,"%d  %d  %lf  %d  %lf  %d  %lf\n",prm->nrang,prm->mplgs,skynoise,prm->tfreq,prm->mpinc*1.e-6,nslopes,diff);
-		fprintf(stdout,"%d  %d  %d  %d  %d  %d  %d  %d\n",prm->stid,prm->time.yr,prm->time.mo,
-										prm->time.dy,prm->time.hr,prm->time.mt,(int)prm->time.sc,prm->bmnum);
+		fprintf(stdout,"%d  %d  %d  %d  %d  %d  %d  %d  %d\n",prm->stid,prm->time.yr,prm->time.mo,
+										prm->time.dy,prm->time.hr,prm->time.mt,(int)prm->time.sc,prm->bmnum,prm->cp);
 	}
 	/* Loop every range gate and calculate parameters */
   for (R=0;R<prm->nrang;R++)
@@ -405,7 +405,7 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
       fitted_power = 10.0*log10((exp(a) + skynoise)/skynoise);
 
 			if(print)
-				fprintf(stdout,"%lf  %lf\n",fitted_power,fitted_width);
+				fprintf(stdout,"%lf  %lf  %lf  %lf\n",fitted_power,fitted_width,a,b);
 
       /* Determine Doppler velocity by comparing the phase with models */
       pwr = 0.0;
@@ -509,22 +509,13 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
 			if(prm->stid == 204 || prm->stid == 205)
 				minpwr = 5.;
 
-      /*tauscan operation, check for exceptional minimum error, more SNR checking*/
-      if(prm->cp == 3310 || prm->cp == 503 || prm->cp == -503)
-        sct_flg = ((model_min<(model_mean - sderr*model_sd)) &&
-                  (10*log10((exp(a) + prm->noise.search)/prm->noise.search) > minpwr));
-      /*non-tauscan operation, check for exceptional minimum error, no badlag checking*/
-      else if(prm->stid == 204 || prm->stid == 205)
-        sct_flg = (model_min<(model_mean - sderr*model_sd) &&
-                  (10*log10((exp(a) + skynoise)/skynoise) > minpwr));
-      else
-        sct_flg = (model_min<(model_mean - sderr*model_sd) &&
-                  (10*log10((exp(a) + skynoise)/skynoise) > minpwr));
+      sct_flg = ((model_min<(model_mean - sderr*model_sd)) &&
+                 (10*log10((exp(a) + skynoise)/skynoise) > minpwr));
       fit->rng[R].p_0   = lag0pwr;
 			
 			if(print)
-				fprintf(stdout,"%lf  %d  %d  %d\n",(model_mean - sderr*model_sd),mininx,
-																		(10*log10((exp(a) + skynoise)/skynoise) > minpwr),(model_min<(model_mean - sderr*model_sd)));
+				fprintf(stdout,"%lf  %d  %lf  %d  %d  %d\n",(model_mean - sderr*model_sd),mininx,model_vels[mininx],
+																		(10*log10((exp(a) + skynoise)/skynoise) > minpwr),(model_min<(model_mean - sderr*model_sd)),sct_flg);
 
       if(sct_flg)
       {
