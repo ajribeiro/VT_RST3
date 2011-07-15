@@ -2,7 +2,7 @@
    ==========
    Author: R.J.Barnes
 */
-
+"THIS IS A TEST THIS IS A TEST"
 /*
  (c) 2010 JHU/APL & Others - Please Consult LICENSE.superdarn-rst.3.2-beta-4-g32f7302.txt for more information.
 
@@ -211,6 +211,7 @@ int main(int argc,char *argv[])
   if (vb)
       fprintf(stderr,"%d-%d-%d %d:%d:%d beam=%d\n",prm->time.yr,prm->time.mo,
 	     prm->time.dy,prm->time.hr,prm->time.mt,prm->time.sc,prm->bmnum);
+
 
   fblk=FitACFMake(site,prm->time.yr);
 
