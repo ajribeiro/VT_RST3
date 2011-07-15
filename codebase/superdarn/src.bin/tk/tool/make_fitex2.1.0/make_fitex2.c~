@@ -214,7 +214,7 @@ int main(int argc,char *argv[])
 
   fblk=FitACFMake(site,prm->time.yr);
 
-  lmfit(prm,raw,fit,fblk);
+  fitacfex2(prm,raw,fit,fblk,0);
 
   if (old)
   {
@@ -257,7 +257,7 @@ int main(int argc,char *argv[])
 
 
     if (status==0)
-			lmfit(prm,raw,fit,fblk);
+			fitacfex2(prm,raw,fit,fblk,0);
 
   } while (status==0);
 
