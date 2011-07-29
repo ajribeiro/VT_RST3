@@ -173,7 +173,7 @@ int main(int argc,char *argv[])
     if (fp==NULL)
 		{
       fprintf(stderr,"File not found.\n");
-      exit(-1);
+      exit(-1); 
     }
     status=RawFread(fp,prm,raw);
   }

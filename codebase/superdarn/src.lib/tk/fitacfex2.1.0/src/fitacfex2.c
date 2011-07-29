@@ -195,7 +195,7 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
   float a,b,siga,sigb,chi2,q;
   float *model_phi,*model_vels,*model_errors,*xcf_phases;
   float model_slope,model_vel_pos;
-  float model_mean,model_sd,model_min;
+  float model_mean,model_sd,model_min; 
   float *data_phi_pos,*data_phi_neg,data_phi;
   float *lagpwr=NULL,*logpwr=NULL,*good_lags=NULL;
   float lag0pwr,re,im,pwr,phi;

@@ -234,33 +234,32 @@ void lm_noise_stat(struct RadarParm *prm, struct RawData * raw,
 {
   int j=0, R, i=0;
   double * pwrd = malloc(prm->nrang*sizeof(double));
-  /*********************************/
-  /*****FIND LAG 0 NOISE LEVEL******/
-  /*********************************/
-  for(R=0;R<prm->nrang;R++)
+  if(prm->cp != 3310 && prm->cp != 503 && prm->cp != -503)
   {
-    pwrd[j] = sqrt(raw->acfd[0][R*prm->mplgs]*raw->acfd[0][R*prm->mplgs]);
-    if(pwrd[j] > 0.)
-      j++;
-  }
-  qsort(pwrd, j, sizeof(double), lm_dbl_cmp);
-  if(j >= 10)
-  {
-    for(i=0;i<10;i++)
-      *skynoise += pwrd[i];
-    *skynoise /= 10.;
+    j=0;
+    for(R=0;R<prm->nrang;R++)
+    {
+      pwrd[j] = sqrt(raw->acfd[0][R*prm->mplgs]*raw->acfd[0][R*prm->mplgs]);
+      if(pwrd[j] > 0.)
+        j++;
+    }
+    qsort(pwrd, j, sizeof(double), lm_dbl_cmp);
+    if(j >= 10)
+    {
+      for(i=0;i<10;i++)
+        *skynoise += pwrd[i];
+      *skynoise /= 10.;
+    }
+    else
+    {
+      for(i=0;i<j;i++)
+        *skynoise += pwrd[i];
+      *skynoise /= (double)j;
+    }
+    if(*skynoise <= 1.) *skynoise = prm->noise.search;
   }
   else
-  {
-    for(i=0;i<j;i++)
-      *skynoise += pwrd[i];
-    *skynoise /= (double)j;
-  }
-
-  /*make skynoise the result of freq search if unbelieveably small*/
-  if(*skynoise <= 1.) *skynoise = prm->noise.search;
-
-  free(pwrd);
+    *skynoise = prm->noise.search;
 
   return;
 }
