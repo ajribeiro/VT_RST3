@@ -51,8 +51,8 @@ COMMON temp_acfex_block
   endif else begin
     spawn,'cp '+filedir+' '+filename
     print,'cp '+filedir+' '+filename
-    spawn,'bunzip2 '+ filename+date+'.'+hstr+'*'
     print,'bunzip2 '+ filename+date+'.'+hstr+'*'
+    spawn,'bunzip2 '+ filename+date+'.'+hstr+'*'
 ;     spawn,'gunzip -f '+ filename+'.out'
 ;     print,'gunzip -f '+ filename+'.out'
     ;spawn,"bunzip2 /data/raw/"+date+"."+rad+".rawacf.bz2"
