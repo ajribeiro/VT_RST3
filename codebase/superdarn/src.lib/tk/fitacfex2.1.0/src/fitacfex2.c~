@@ -404,10 +404,10 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
       fitted_width = -2.9979e8*b/(prm->mpinc*1.e-6)/
                             (2*PI*1000.0*prm->tfreq);
       if(fitted_width<0.00) fitted_width = 0.0;
-      fitted_power = 10.0*log10((exp(a) + skynoise)/skynoise);
+			fitted_power = log(exp(a) + skynoise);
 
 			if(print)
-				fprintf(stdout,"%lf  %lf  %lf  %lf\n",fitted_power,fitted_width,a,b);
+				fprintf(stdout,"%lf  %lf  %lf  %lf\n",10.0*(fitted_power/2.3026 - log10(skynoise)),fitted_width,a,b);
 
       /* Determine Doppler velocity by comparing the phase with models */
       pwr = 0.0;
@@ -545,7 +545,7 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
 
         fit->rng[R].qflg  = 1;
 
-        fit->rng[R].p_l   = 10.0*log10((exp(a) + skynoise)/skynoise);
+        fit->rng[R].p_l   = 10.0*(fitted_power/2.3026 - log10(skynoise));
 
         fitted_power = log(exp(siga) + prm->noise.search);
         fit->rng[R].p_l_err   = fabs(fitted_power);

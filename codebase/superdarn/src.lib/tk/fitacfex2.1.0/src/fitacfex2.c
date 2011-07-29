@@ -512,8 +512,17 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
 			if(prm->stid == 204 || prm->stid == 205)
 				minpwr = 5.;
 
-      sct_flg = ((model_min<(model_mean - sderr*model_sd)) &&
-                 (10*log10((exp(a) + skynoise)/skynoise) > minpwr));
+      /*tauscan operation, check for exceptional minimum error, more SNR checking*/
+      if(prm->cp == 3310 || prm->cp == 503 || prm->cp == -503)
+        sct_flg = ((model_min<(model_mean - sderr*model_sd)) &&
+                  (10*log10((exp(a) + prm->noise.search)/
+                  prm->noise.search)> minpwr));
+      /*non-tauscan operation, check for exceptional minimum error, no badlag checking*/
+      else
+        sct_flg = (model_min<(model_mean - sderr*model_sd) &&
+                  (10*log10((exp(a) + skynoise)/
+                  skynoise) > minpwr));
+									
       fit->rng[R].p_0   = lag0pwr;
 
 			if(print)
