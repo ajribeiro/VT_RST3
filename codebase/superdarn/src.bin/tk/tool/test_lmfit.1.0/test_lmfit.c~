@@ -125,7 +125,7 @@ int main(int argc,char *argv[])
     exit(-1);
   }
 
-  envstr=getenv("SD_RADAR");
+  envstr="/rst/tables/superdarn/radar.dat";
   if (envstr==NULL)
 	{
     fprintf(stderr,"Environment variable 'SD_RADAR' must be defined.\n");
@@ -148,7 +148,7 @@ int main(int argc,char *argv[])
     exit(-1);
   }
 
-  envstr=getenv("SD_HDWPATH");
+  envstr="/rst/tables/superdarn/hdw/";
   if (envstr==NULL)
 	{
     fprintf(stderr,"Environment variable 'SD_HDWPATH' must be defined.\n");

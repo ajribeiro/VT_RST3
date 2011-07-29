@@ -59,7 +59,7 @@
 
 pro plot_fitex2,time
   ;the file we are reading data from
-  file_in = '/rst/output_files/'+time+'fitex2.test'
+  file_in = '/rst/output_files/'+time+'.fitex2.test'
 
   ;the file we are plotting to
   set_plot,'PS',/copy

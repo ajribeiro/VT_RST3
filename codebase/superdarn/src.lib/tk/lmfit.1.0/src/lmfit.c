@@ -392,7 +392,7 @@ double getguessex(int goodcnt, int nlags, int nslopes, struct exdatapoints * exd
 }
 
 void lmfit(struct RadarParm *prm,struct RawData *raw,
-              struct FitData *fit, struct FitBlock *fblk)
+              struct FitData *fit, struct FitBlock *fblk, int print)
 {
   float minpwr  = 3.0;
   double skynoise = 0.;
@@ -420,9 +420,6 @@ void lmfit(struct RadarParm *prm,struct RawData *raw,
   double perrorsingle[3];
   float *sigma = malloc(prm->mplgs*sizeof(double));
   struct exdatapoints * exdata = malloc(prm->mplgs*sizeof(struct exdatapoints));
-
-
-  int print=0;
 
   int *badlag = malloc(prm->mplgs * sizeof(int));
   struct FitACFBadSample badsmp;
@@ -467,7 +464,12 @@ void lmfit(struct RadarParm *prm,struct RawData *raw,
   }
 
 
-  print=0.;
+	if(print)
+	{
+		fprintf(stdout,"%d  %d  %lf  %d  %lf\n",prm->nrang,prm->mplgs,skynoise,prm->tfreq,prm->mpinc*1.e-6);
+		fprintf(stdout,"%d  %d  %d  %d  %d  %d  %d  %d\n",prm->stid,prm->time.yr,prm->time.mo,
+									prm->time.dy,prm->time.hr,prm->time.mt,(int)prm->time.sc,prm->bmnum);
+	}
   /* Loop every range gate and calculate parameters */
   for (R=0;R<prm->nrang;R++)
   {
@@ -498,7 +500,7 @@ void lmfit(struct RadarParm *prm,struct RawData *raw,
     lag0pwr  = 10.0*log10((raw->acfd[0][R*prm->mplgs]+skynoise)/skynoise);
 
     if(print)
-      fprintf(stdout,"%d  %d\n",R,prm->mplgs);
+      fprintf(stdout,"%d  %lf\n",R,raw->acfd[0][R*prm->mplgs]/sqrt(1.0*prm->nave));
 
     /*tauscan, new ROS version*/
     if((prm->cp == 3310 || prm->cp == 503 || prm->cp == -503) && prm->mplgs == 18)
@@ -516,7 +518,8 @@ void lmfit(struct RadarParm *prm,struct RawData *raw,
         }
         else lagpwr[lag] = 0.0;
         if(print)
-          fprintf(stdout,"%d  %lf  %lf  %d\n",lag,raw->acfd[0][R*prm->mplgs+L],raw->acfd[1][R*prm->mplgs+L],lagpwr[lag]>0.);
+          fprintf(stdout,"%d  %lf  %lf  %d\n",lag,raw->acfd[0][R*prm->mplgs+L],raw->acfd[1][R*prm->mplgs+L],
+																						(lagpwr[lag]>raw->acfd[0][R*prm->mplgs]/sqrt(1.0*prm->nave)));
       }
       pwr_flg = (lag0pwr>=minpwr);
     }
@@ -536,7 +539,8 @@ void lmfit(struct RadarParm *prm,struct RawData *raw,
         }
         else lagpwr[lag] = 0.0;
         if(print)
-          fprintf(stdout,"%d  %lf  %lf  %d\n",lag,raw->acfd[0][R*prm->mplgs+L],raw->acfd[1][R*prm->mplgs+L],lagpwr[lag]>0.);
+          fprintf(stdout,"%d  %lf  %lf  %d\n",lag,raw->acfd[0][R*prm->mplgs+L],raw->acfd[1][R*prm->mplgs+L],
+																								(lagpwr[lag]>raw->acfd[0][R*prm->mplgs]/sqrt(1.0*prm->nave)));
       }
       pwr_flg = (lag0pwr>=minpwr);
     }
@@ -561,7 +565,8 @@ void lmfit(struct RadarParm *prm,struct RawData *raw,
         }
         else lagpwr[lag] = 0.0;
         if(print)
-          fprintf(stdout,"%d  %lf  %lf  %d\n",lag,raw->acfd[0][R*prm->mplgs+L],raw->acfd[1][R*prm->mplgs+L],lagpwr[lag]>0.);
+          fprintf(stdout,"%d  %lf  %lf  %d\n",lag,raw->acfd[0][R*prm->mplgs+L],raw->acfd[1][R*prm->mplgs+L],
+																						(availflg && lagpwr[lag]>raw->acfd[0][R*prm->mplgs]/sqrt(1.0*prm->nave)));
       }
       pwr_flg = raw->acfd[0][R*prm->mplgs]>=skynoise;
       minlag = 4;
@@ -701,6 +706,9 @@ void lmfit(struct RadarParm *prm,struct RawData *raw,
       config.ftol = .001;
       config.nofinitecheck=0;
 
+			if(print)
+				fprintf(stdout,"%lf  %lf  %lf\n",psingle[0],psingle[1],psingle[2]);
+
       /*run a single-component fit*/
       status = mpfit(singlefit,availcnt,3,psingle,parssingle,&config,(void *)data,&result);
 
@@ -739,7 +747,16 @@ void lmfit(struct RadarParm *prm,struct RawData *raw,
 
       fitted_power = 10.0*log10((lag0pwrf+skynoise)/skynoise);
       fit->rng[R].p_0   = lag0pwrf;
-			
+
+			if(print)
+				fprintf(stdout,"%d  %d  %d  %lf  %lf  %lf  %lf  %d\n",
+									(result.status > 0 && fitted_power > minpwr && lag0pwrf > 2.*acferr),
+									result.status,result.npegged,t_if,f_if,lag0pwrf,acferr,result.niter);
+
+			/*the Hays radars are especially noisy*/
+			if(prm->stid == 204 || prm->stid == 205)
+				minpwr = 5.;
+
       /*if we have a good single component fit*/
       if(result.status > 0 && fitted_power > minpwr && lag0pwrf > 2.*acferr/* && result.npegged == 0*/)
       {

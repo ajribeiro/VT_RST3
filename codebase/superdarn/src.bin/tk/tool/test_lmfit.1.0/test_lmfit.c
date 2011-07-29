@@ -27,7 +27,7 @@
 #include "fitdata.h"
 #include "radar.h"
 
-#include "lmfit_test.h"
+#include "lmfit.h"
 #include "fitacf.h"
 #include "rawread.h"
 #include "fitwrite.h"
@@ -45,7 +45,7 @@ struct RawData *raw;
 struct FitData *fit;
 struct FitBlock *fblk;
 
-struct RadarNetwork *network;  
+struct RadarNetwork *network;
 struct Radar *radar;
 struct RadarSite *site;
 
@@ -220,7 +220,7 @@ int main(int argc,char *argv[])
 
 	if(prm->time.hr >= tgthr && prm->time.mt >= tgtmin && prm->bmnum == tgtbeam)
 	{
-		lmfit_test(prm,raw,fit,fblk);
+		lmfit(prm,raw,fit,fblk,1);
 		done=1;
 	}
 
@@ -245,7 +245,7 @@ int main(int argc,char *argv[])
 		if(prm->time.hr >= tgthr && prm->time.mt >= tgtmin && prm->bmnum == tgtbeam
 				&& status == 0 && !done)
 		{
-			lmfit_test(prm,raw,fit,fblk);
+			lmfit(prm,raw,fit,fblk,1);
 			done = 1;
 		}
 

@@ -373,7 +373,7 @@ void lmfit_test(struct RadarParm *prm,struct RawData *raw,
 				(result.status > 0 && fitted_power > minpwr && lag0pwrf > 2.*acferr),
 				result.status,result.npegged,t_if,f_if,lag0pwrf,acferr,result.niter);
 
-			
+
       /*if we have a good single component fit*/
       if(result.status > 0 && fitted_power > minpwr && lag0pwrf > 2.*acferr/* && result.npegged == 0*/)
       {

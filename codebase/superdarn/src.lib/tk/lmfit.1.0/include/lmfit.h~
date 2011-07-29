@@ -30,7 +30,7 @@ double getguessex(int goodcnt, int nlags, int nslopes, struct exdatapoints * exd
 int singlefit(int m, int n, double *p, double *deviates,
                         double **derivs, void *private);
 void lm_noise_stat(struct RadarParm *prm, struct RawData * raw,
-                double * skynoise, double * nonzeronoise);
+                double * skynoise);
 void setup_fblk(struct RadarParm *prm, struct RawData *raw,struct FitBlock *input);
 double calc_phi0(float *x,float *y, float m, int n);
 void ls_fit(float *x,float *y, int n, float *a, float *b);

@@ -216,7 +216,7 @@ int singlefit(int m, int n, double *p, double *deviates,
   for (i=0; i<m; i++)
   {
     tau=x[i];
-    re=y[i*2];
+    re=y[i*2]; 
     im=y[i*2+1];
     sig=ey[i];
     ti=p[0];

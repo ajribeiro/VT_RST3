@@ -24,7 +24,7 @@ struct exdatapoints
 };
 
 void lmfit(struct RadarParm *prm,struct RawData *ptr,
-                struct FitData *fit,struct FitBlock *fblk);
+                struct FitData *fit,struct FitBlock *fblk, int print);
 double getguessex(int goodcnt, int nlags, int nslopes, struct exdatapoints * exdata,
                   int tfreq, int mpinc);
 int singlefit(int m, int n, double *p, double *deviates,

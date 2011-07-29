@@ -179,7 +179,7 @@ void lmfit_test(struct RadarParm *prm,struct RawData *raw,
     /*non-tauscan operation (lag power checking, badlag checking, SNR checking)*/
     else
     {
-      FitACFCkRng(R,badlag,&badsmp,&fblk->prm);
+      FitACFCkRng(R+1,badlag,&badsmp,&fblk->prm);
       for (L=0;L<prm->mplgs;L++)
       {
         lag = abs(prm->lag[0][L] - prm->lag[1][L]);
