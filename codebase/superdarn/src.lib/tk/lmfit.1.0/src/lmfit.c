@@ -155,6 +155,7 @@ double calc_err(double w_guess, struct RawData *raw, float *good_lags, int goodc
 
       data_phi = atan2(raw->acfd[1][R*prm->mplgs+L],raw->acfd[0][R*prm->mplgs+L])*180.0/PI;
 
+
       delta_guess = fabs(data_phi - model_phi);
 
       if(delta_guess>180.0) delta_guess = 360 - delta_guess;

@@ -253,7 +253,7 @@ int main(int argc,char *argv[])
 			done = 1;
 		}
 
-  } while (status==0);
+  } while (status==0 && !done);
 
   FitACFFree(fblk);
   if (old) OldRawClose(rawfp);

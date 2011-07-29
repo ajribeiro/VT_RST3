@@ -68,7 +68,7 @@ int main(int argc,char *argv[])
   unsigned char new=0;
 
   char *envstr;
-  int status;
+  int status; 
   int arg;
 
   unsigned char help=0;

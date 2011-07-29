@@ -258,6 +258,7 @@ pro plot_fitex2
 		plots,models(i,*,0),models(i,*,1),psym=8,col=50,symsize=.6
 
 		if(sct_flgs(i) eq 0) then begin
+			loadct,0
 			if(pwr2_flgs(i) eq 0) then $
 				xyouts,.5,.25,'Power too low for a fit',/normal,align=.5,charsize=1.5,charthick=3.
 			if(err_flgs(i) eq 0) then $

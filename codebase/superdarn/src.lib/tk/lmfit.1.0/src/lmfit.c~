@@ -154,6 +154,7 @@ double calc_err(double w_guess, struct RawData *raw, float *good_lags, int goodc
       model_phi = phi - p*360;
 
       data_phi = atan2(raw->acfd[1][R*prm->mplgs+L],raw->acfd[0][R*prm->mplgs+L])*180.0/PI;
+			if(R == 0) fprintf(stderr,"main  lag %d  data phi %lf\n",lag,data_phi);
 
       delta_guess = fabs(data_phi - model_phi);
 
@@ -257,7 +258,7 @@ void lm_noise_stat(struct RadarParm *prm, struct RawData * raw,
   }
 
   /*make skynoise the result of freq search if unbelieveably small*/
-  if(*skynoise < 1.) *skynoise = prm->noise.search;
+  if(*skynoise <= 1.) *skynoise = prm->noise.search;
 
   free(pwrd);
 

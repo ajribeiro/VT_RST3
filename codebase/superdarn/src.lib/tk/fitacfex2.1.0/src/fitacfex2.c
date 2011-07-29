@@ -191,7 +191,7 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
   int   minlag  = 4;
   int   nslopes = 120;
   int availflg = 0;
-  int pwr_flg,sct_flg;
+  int pwr_flg,sct_flg,mplgs;
   float a,b,siga,sigb,chi2,q;
   float *model_phi,*model_vels,*model_errors,*xcf_phases;
   float model_slope,model_vel_pos;
@@ -271,9 +271,11 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
     else FitACFBadlagsStereo(&fblk->prm,&badsmp);
   }
 
+	mplgs = prm->mplgs;
+
 	if(print)
 	{
-		fprintf(stdout,"%d  %d  %lf  %d  %lf  %d  %lf\n",prm->nrang,prm->mplgs,skynoise,prm->tfreq,prm->mpinc*1.e-6,nslopes,diff);
+		fprintf(stdout,"%d  %d  %lf  %d  %lf  %d  %lf\n",prm->nrang,mplgs,skynoise,prm->tfreq,prm->mpinc*1.e-6,nslopes,diff);
 		fprintf(stdout,"%d  %d  %d  %d  %d  %d  %d  %d  %d\n",prm->stid,prm->time.yr,prm->time.mo,
 										prm->time.dy,prm->time.hr,prm->time.mt,(int)prm->time.sc,prm->bmnum,prm->cp);
 	}
@@ -359,7 +361,7 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
     else
     {
       FitACFCkRng(R+1,badlag,&badsmp,&fblk->prm);
-      for (L=0;L<prm->mplgs;L++)
+      for (L=0;L<mplgs;L++)
       {
         lag = abs(prm->lag[0][L] - prm->lag[1][L]);
         re  = raw->acfd[0][R*prm->mplgs+L];
@@ -402,10 +404,10 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
       fitted_width = -2.9979e8*b/(prm->mpinc*1.e-6)/
                             (2*PI*1000.0*prm->tfreq);
       if(fitted_width<0.00) fitted_width = 0.0;
-      fitted_power = 10.0*log10((exp(a) + skynoise)/skynoise);
+			fitted_power = log(exp(a) + skynoise);
 
 			if(print)
-				fprintf(stdout,"%lf  %lf  %lf  %lf\n",fitted_power,fitted_width,a,b);
+				fprintf(stdout,"%lf  %lf  %lf  %lf\n",10.0*(fitted_power/2.3026 - log10(skynoise)),fitted_width,a,b);
 
       /* Determine Doppler velocity by comparing the phase with models */
       pwr = 0.0;
@@ -415,15 +417,16 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
         if((prm->cp == 3310 || prm->cp == 503 || prm->cp == -503) && prm->mplgs == 18)
         	L = lag;
         else
-        	for(j=0;j<prm->mplgs;j++)
+        	for(j=0;j<mplgs;j++)
           {
-            if(abs(prm->lag[0][L]-prm->lag[1][L])==lag)
+            if(abs(prm->lag[0][j]-prm->lag[1][j])==lag)
             {
               L = j;
             }
           }
 
         data_phi = atan2(raw->acfd[1][R*prm->mplgs+L],raw->acfd[0][R*prm->mplgs+L])*180.0/PI;
+
 				if(fblk->prm.xcf)
 					xcf_phases[i]=atan2(raw->xcfd[1][R*prm->mplgs+L],raw->xcfd[0][R*prm->mplgs+L])*180./PI;
         data_phi_pos[i] = data_phi;
@@ -512,7 +515,7 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
       sct_flg = ((model_min<(model_mean - sderr*model_sd)) &&
                  (10*log10((exp(a) + skynoise)/skynoise) > minpwr));
       fit->rng[R].p_0   = lag0pwr;
-			
+
 			if(print)
 				fprintf(stdout,"%lf  %d  %lf  %d  %d  %d\n",(model_mean - sderr*model_sd),mininx,model_vels[mininx],
 																		(10*log10((exp(a) + skynoise)/skynoise) > minpwr),(model_min<(model_mean - sderr*model_sd)),sct_flg);

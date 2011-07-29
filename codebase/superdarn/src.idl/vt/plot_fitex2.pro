@@ -229,7 +229,7 @@ pro plot_fitex2
 					yticklen=-.01,title=ptitle,charthick=3,charsize=.75
 		loadct,34
 		usersym,cos(S),sin(S)
-		plots,[0,max(lagnums(i,*))],[threshs(i),threshs(i)],linestyle=2,col=250,thick=3
+		plots,[0,max(lagnums(i,*))],[fluct_levs(i),fluct_levs(i)],linestyle=2,col=250,thick=3
 		pwr_fit = dblarr(mplgs)
 		for j=0,mplgs-1 do begin
 			pwr_fit(j) = exp(decay_times(i)*j+y_inters(i))
