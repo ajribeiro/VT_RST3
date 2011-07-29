@@ -177,7 +177,7 @@ double bisect(float w_guess, float diff, struct RawData *raw, float *good_lags, 
 	{
 		if(print)
 			fprintf(stdout,"%lf\n%lf\n",x2,f2);
-    return x2;
+    return x2; 
 	}
 }
 
@@ -520,7 +520,7 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
         sct_flg = (model_min<(model_mean - sderr*model_sd) &&
                   (10*log10((exp(a) + skynoise)/
                   skynoise) > minpwr));
-									
+
       fit->rng[R].p_0   = lag0pwr;
 
 			if(print)

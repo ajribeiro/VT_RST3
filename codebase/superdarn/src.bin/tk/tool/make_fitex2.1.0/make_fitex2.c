@@ -151,7 +151,7 @@ int main(int argc,char *argv[])
     fprintf(stderr,"Environment variable 'SD_HDWPATH' must be defined.\n");
     exit(-1);
   }
-
+ 
   RadarLoadHardware(envstr,network);
 
 

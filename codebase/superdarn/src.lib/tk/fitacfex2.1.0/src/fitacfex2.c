@@ -507,7 +507,7 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
 
       model_sd = sqrt(model_sd/(nslopes*2));
 
-			if(prm->stid == 204 || prm->stid == 205)
+			if(prm->stid == 204 || prm->stid == 205) 
 				minpwr = 5.;
 
       /*tauscan operation, check for exceptional minimum error, more SNR checking*/
@@ -520,7 +520,7 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
         sct_flg = (model_min<(model_mean - sderr*model_sd) &&
                   (10*log10((exp(a) + skynoise)/
                   skynoise) > minpwr));
-									
+
       fit->rng[R].p_0   = lag0pwr;
 
 			if(print)
