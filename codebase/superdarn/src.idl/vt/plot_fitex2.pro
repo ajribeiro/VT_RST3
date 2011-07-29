@@ -14,7 +14,10 @@
 ; 	test_fitex2 [-new] -hr 5 -min 3 -beam 7 myfile.rawacf > /rst/output_files/fitex2.test
 ;
 ; next, call the IDL routine, e.g.
-; 	plot_fitex2
+; 	plot_fitex2,time
+;
+;	INPUTS:
+;		time:  a string with a timestamp to be used for a file name
 ;
 ; OPTIONAL INPUTS:
 ;
@@ -54,13 +57,13 @@
 ; Written by AJ Ribeiro 07/15/2011
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-pro plot_fitex2
+pro plot_fitex2,time
   ;the file we are reading data from
-  file_in = '/rst/output_files/fitex2.test'
+  file_in = '/rst/output_files/'+time+'.fitex2.test'
 
   ;the file we are plotting to
   set_plot,'PS',/copy
-  device,/landscape,/COLOR,BITS_PER_PIXEL=8,filename='/rst/output_plots/fitex2.ps'
+  device,/landscape,/COLOR,BITS_PER_PIXEL=8,filename='/rst/output_plots/'+time+'.fitex2.ps'
 
   S = findgen(17)*(!PI*2./16.)
   !p.multi = [0,1,1]
