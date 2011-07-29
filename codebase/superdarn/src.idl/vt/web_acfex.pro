@@ -1,6 +1,5 @@
-PRO web_acfex
+PRO web_acfex,date,hr,mn,rad,beam,nmod,time
 
-COMMON temp_acfex_block
 
   date=strtrim(date,2)
   yr = strmid(date,0,4)
@@ -9,6 +8,7 @@ COMMON temp_acfex_block
   rad=strtrim(rad,2)
   beam=strtrim(beam,2)
   nmod=strtrim(nmod,2)
+  time=strtrim(time,2)
 
   case rad of
     "rkn": rad_old="i"
@@ -44,6 +44,8 @@ COMMON temp_acfex_block
   filedir = '/sd-data/'+yr+'/rawacf/'+rad+'/'+date+'.'+hstr+'*'
   filename= '/data/fit/aj/acfex/temp_files/'
 
+  print,time
+
 
   if((fix(strmid(date,0,4)) lt 2006) OR $
       ((fix(strmid(date,0,4)) eq 2006)AND(fix(strmid(date,4,2)) lt 07))) then begin
@@ -56,8 +58,8 @@ COMMON temp_acfex_block
 ;     spawn,'gunzip -f '+ filename+'.out'
 ;     print,'gunzip -f '+ filename+'.out'
     ;spawn,"bunzip2 /data/raw/"+date+"."+rad+".rawacf.bz2"
-    print,"/rst/bin/test_fitex2 -new -hr "+hr+" -min "+mn+" -beam "+beam+' '+filename+date+'.'+hstr+'*'+' > /rst/output_files/fitex2.test'
-    spawn,"/rst/bin/test_fitex2 -new -hr "+hr+" -min "+mn+" -beam "+beam+' '+filename+date+'.'+hstr+'*'+' > /rst/output_files/fitex2.test'
+    print,"/rst/bin/test_fitex2 -new -hr "+hr+" -min "+mn+" -beam "+beam+' '+filename+date+'.'+hstr+'*'+' > /rst/output_files/'+time+'fitex2.test'
+    spawn,"/rst/bin/test_fitex2 -new -hr "+hr+" -min "+mn+" -beam "+beam+' '+filename+date+'.'+hstr+'*'+' > /rst/output_files/'+time+'fitex2.test'
     ;spawn,"bzip2 /data/raw/"+date+"."+rad+".rawacf"
   endelse
 
