@@ -191,7 +191,7 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
   int   minlag  = 4;
   int   nslopes = 120;
   int availflg = 0;
-  int pwr_flg,sct_flg,mplgs;
+  int pwr_flg,sct_flg;
   float a,b,siga,sigb,chi2,q;
   float *model_phi,*model_vels,*model_errors,*xcf_phases;
   float model_slope,model_vel_pos;
@@ -271,11 +271,9 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
     else FitACFBadlagsStereo(&fblk->prm,&badsmp);
   }
 
-	mplgs = prm->mplgs;
-
 	if(print)
 	{
-		fprintf(stdout,"%d  %d  %lf  %d  %lf  %d  %lf\n",prm->nrang,mplgs,skynoise,prm->tfreq,prm->mpinc*1.e-6,nslopes,diff);
+		fprintf(stdout,"%d  %d  %lf  %d  %lf  %d  %lf\n",prm->nrang,prm->mplgs,skynoise,prm->tfreq,prm->mpinc*1.e-6,nslopes,diff);
 		fprintf(stdout,"%d  %d  %d  %d  %d  %d  %d  %d  %d\n",prm->stid,prm->time.yr,prm->time.mo,
 										prm->time.dy,prm->time.hr,prm->time.mt,(int)prm->time.sc,prm->bmnum,prm->cp);
 	}
@@ -361,7 +359,7 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
     else
     {
       FitACFCkRng(R+1,badlag,&badsmp,&fblk->prm);
-      for (L=0;L<mplgs;L++)
+      for (L=0;L<prm->mplgs;L++)
       {
         lag = abs(prm->lag[0][L] - prm->lag[1][L]);
         re  = raw->acfd[0][R*prm->mplgs+L];
@@ -417,7 +415,7 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
         if((prm->cp == 3310 || prm->cp == 503 || prm->cp == -503) && prm->mplgs == 18)
         	L = lag;
         else
-        	for(j=0;j<mplgs;j++)
+        	for(j=0;j<prm->mplgs;j++)
           {
             if(abs(prm->lag[0][j]-prm->lag[1][j])==lag)
             {
