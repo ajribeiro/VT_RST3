@@ -173,7 +173,7 @@ int main(int argc,char *argv[])
     if (fp==NULL)
 		{
       fprintf(stderr,"File not found.\n");
-      exit(-1);
+      exit(-1); 
     }
     status=RawFread(fp,prm,raw);
   }
@@ -212,7 +212,7 @@ int main(int argc,char *argv[])
       fprintf(stderr,"%d-%d-%d %d:%d:%d beam=%d\n",prm->time.yr,prm->time.mo,
 	     prm->time.dy,prm->time.hr,prm->time.mt,prm->time.sc,prm->bmnum);
 
-
+ 
   fblk=FitACFMake(site,prm->time.yr);
 
   fitacfex2(prm,raw,fit,fblk,0);
