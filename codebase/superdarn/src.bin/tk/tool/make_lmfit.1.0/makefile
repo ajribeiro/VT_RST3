@@ -7,7 +7,7 @@
 include $(MAKECFG).$(SYSTEM)
 
 INCLUDE=-I$(IPATH)/base -I$(IPATH)/general -I$(IPATH)/superdarn
-OBJS = make_lmfit.o
+OBJS = make_lmfit.o 
 
 SRC=hlpstr.h errstr.h make_lmfit.c
 

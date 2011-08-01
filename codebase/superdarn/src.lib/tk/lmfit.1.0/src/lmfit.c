@@ -11,7 +11,7 @@
 #include <math.h>
 #include <zlib.h>
 #include "rtypes.h"
-#include "rmath.h"
+#include "rmath.h" 
 #include "nrfit.h"
 #include "rprm.h"
 #include "rawdata.h" 
@@ -204,6 +204,7 @@ double calc_phi0(float *x,float *y, float m, int n)
 int singlefit(int m, int n, double *p, double *deviates,
                         double **derivs, void *private)
 {
+
   int i;
   double tau,re,im,sig,wi,ti;
 
@@ -221,11 +222,12 @@ int singlefit(int m, int n, double *p, double *deviates,
     sig=ey[i];
     ti=p[0];
     wi=p[1];
-    lag0mag = p[2];/*
-    fprintf(stderr,"%lf  %lf  %lf  %lf  %lf  %lf  %lf\n",tau,re,im,sig,ti,wi,lag0mag);*/
+    lag0mag = p[2];
+    /*fprintf(stderr,"%lf  %lf  %lf  %lf  %lf  %lf  %lf\n",tau,re,im,sig,ti,wi,lag0mag);*/
     deviates[i] = sqrt((pow(re-lag0mag*exp(-1.*tau/ti)*cos(wi*tau),2) +
                        pow(im-lag0mag*exp(-1.*tau/ti)*sin(wi*tau),2))/**sig*/);
   }
+
   return 0;
 }
 
@@ -408,7 +410,6 @@ void lmfit(struct RadarParm *prm,struct RawData *raw,
   double acferr;
 
   /*variable needed for mpfit call*/
-  mp_par    parsdouble[6];
   mp_par    parssingle[3];
   mp_result result;
   mp_config config;
@@ -416,7 +417,6 @@ void lmfit(struct RadarParm *prm,struct RawData *raw,
   double psingle[3];
   double w_limit,t_limit,t_if,w_if,lag0pwrf,v_if,f_if,lambda,tau,ref,imf;
   int status;
-  double perrordouble[6];
   double perrorsingle[3];
   float *sigma = malloc(prm->mplgs*sizeof(double));
   struct exdatapoints * exdata = malloc(prm->mplgs*sizeof(struct exdatapoints));
@@ -607,7 +607,7 @@ void lmfit(struct RadarParm *prm,struct RawData *raw,
         /*non-tauscan OR old ROS*/
         else
           for(j=0;j<prm->mplgs;j++)
-            if(abs(prm->lag[0][L]-prm->lag[1][L])==lag)
+            if(abs(prm->lag[0][j]-prm->lag[1][j])==lag)
               L = j;
         re = raw->acfd[0][R*prm->mplgs+L];
         im = raw->acfd[1][R*prm->mplgs+L];
@@ -631,20 +631,6 @@ void lmfit(struct RadarParm *prm,struct RawData *raw,
         data->ey[i] = lagpwr[lag]/pwr;
       }
 
-
-      /*zero out mpfit structures*/
-      bzero(&parsdouble[0], sizeof(mp_par));
-      bzero(&parsdouble[1], sizeof(mp_par));
-      bzero(&parsdouble[2], sizeof(mp_par));
-      bzero(&parsdouble[3], sizeof(mp_par));
-      bzero(&parsdouble[4], sizeof(mp_par));
-      bzero(&parsdouble[5], sizeof(mp_par));
-      bzero(&config, sizeof(config));
-      bzero(&result, sizeof(result));
-      memset(&result, 0, sizeof(result));
-      result.xerror = perrordouble;
-
-
       /*get velocity guess from model comparisons*/
       double model_guess = getguessex(goodcnt,prm->mplgs,120,exdata,prm->tfreq,prm->mpinc);
       w_limit = model_guess;
@@ -652,17 +638,12 @@ void lmfit(struct RadarParm *prm,struct RawData *raw,
       /*initial velocity guess in angular Doppler frequency*/
       pdouble[1] = w_limit*4.*PI/lambda;
 
-      /*
-      if(print)
-        fprintf(stdout,"%d  %lf  %lf  %lf  %lf  %lf  %lf\n",
-              prm->tfreq,lambda,prm->mpinc*1.e-6,fitted_width,
-              quarter_period,lambda*pdouble[1]/(4.*PI),raw->acfd[R][0][0]);*/
-
 
       /* Determine lambda power and decay time initial guesses from lsfit*/
       nrfit(good_lags,logpwr,goodcnt,sigma,1,&a,&b,&siga,&sigb,&chi2,&q);
       fitted_width = -2.9979e8*b/(prm->mpinc*1.e-6)/(2*PI*1000.0*prm->tfreq);
       if(fitted_width < 0.00) fitted_width = 1.e-3;
+      if(isnan(fitted_width)) fitted_width = 1.e6;
       fitted_power = log(exp(a) + skynoise);
 
 
@@ -692,13 +673,14 @@ void lmfit(struct RadarParm *prm,struct RawData *raw,
       /*lag0power initial guess*/
       psingle[2] = raw->acfd[0][R*prm->mplgs];
 
-      /*same limit as before, same reason*/
-      t_limit = -999999.;
-      parssingle[0].limited[0] = 1;
-      parssingle[0].limits[0]  = t_limit;
+
+      /*limit values to prevent fit from going to +- inf and breaking*/
       t_limit = 999999.;
+      parssingle[0].limited[0] = 1;
+      parssingle[0].limits[0]  = -1.*t_limit;
       parssingle[0].limited[1] = 1;
       parssingle[0].limits[1]  = t_limit;
+
 
 
       /*max iterations*/
@@ -745,10 +727,10 @@ void lmfit(struct RadarParm *prm,struct RawData *raw,
       fit->rng[R].p_0   = lag0pwrf;
 
 			/*the Hays radars are especially noisy*/
-			if(prm->stid == 204 || prm->stid == 205)
+			if(prm->stid == 204 || prm->stid == 205) 
 				minpwr = 5.;
 
-			sct_flg = (result.status > 0 && fitted_power > minpwr && lag0pwrf > 2.*acferr);
+			sct_flg = (result.status > 0 && fitted_power > minpwr/* && lag0pwrf > 2.*acferr*/);
 
 			if(print)
 				fprintf(stdout,"%d  %d  %d  %lf  %lf  %lf  %lf  %d\n",

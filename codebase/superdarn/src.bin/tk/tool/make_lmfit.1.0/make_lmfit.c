@@ -45,7 +45,7 @@ struct RawData *raw;
 struct FitData *fit;
 struct FitBlock *fblk;
 
-struct RadarNetwork *network;  
+struct RadarNetwork *network;
 struct Radar *radar;
 struct RadarSite *site;
 
@@ -213,7 +213,7 @@ int main(int argc,char *argv[])
 
   fblk=FitACFMake(site,prm->time.yr);
 
-  lmfit(prm,raw,fit,fblk,0);
+	lmfit(prm,raw,fit,fblk,0);
 
   if (old)
   {
@@ -227,7 +227,7 @@ int main(int argc,char *argv[])
     sprintf(vstr,"%d.%d",fit->revision.major,fit->revision.minor);
     OldFitHeaderFwrite(fitfp,"make_fit","fitacf",vstr);
   }
-
+ 
 
   do
   {
@@ -255,7 +255,8 @@ int main(int argc,char *argv[])
 	     prm->time.dy,prm->time.hr,prm->time.mt,prm->time.sc,prm->bmnum);
 
 
-    if (status==0) lmfit(prm,raw,fit,fblk,0);
+    if (status==0)
+			lmfit(prm,raw,fit,fblk,0);
 
   } while (status==0);
 
