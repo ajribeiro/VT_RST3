@@ -226,7 +226,7 @@ int main(int argc,char *argv[])
 
   do
   {
-    ctime = time((time_t) 0);
+    ctime = time((time_t) 0); 
     RadarParmSetOriginCommand(prm,command);
     strcpy(tmstr,asctime(gmtime(&ctime)));
     tmstr[24]=0;
@@ -237,7 +237,7 @@ int main(int argc,char *argv[])
       status=OldRawRead(rawfp,prm,raw);
     else
       status=RawFread(fp,prm,raw);
-
+ 
      if (vb)
       fprintf(stderr,"%d-%d-%d %d:%d:%d beam=%d\n",prm->time.yr,prm->time.mo,
 	     prm->time.dy,prm->time.hr,prm->time.mt,prm->time.sc,prm->bmnum);

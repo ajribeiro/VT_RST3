@@ -460,7 +460,7 @@ void lmfit(struct RadarParm *prm,struct RawData *raw,
   if(prm->cp != 3310 && prm->cp != 503 && prm->cp != -503)
   {
     if(fblk->prm.channel==0) FitACFBadlags(&fblk->prm,&badsmp);
-    else FitACFBadlagsStereo(&fblk->prm,&badsmp);
+    else FitACFBadlagsStereo(&fblk->prm,&badsmp); 
   }
 
 
@@ -493,6 +493,7 @@ void lmfit(struct RadarParm *prm,struct RawData *raw,
     fit->rng[R].sdev_s   = 0.0;
     fit->rng[R].sdev_phi = 0.0;
     fit->rng[R].qflg     = 0;
+		fit->rng[R].nump     = 0;
     fit->rng[R].gsct     = 0;
     availcnt = 0;
 
@@ -740,25 +741,22 @@ void lmfit(struct RadarParm *prm,struct RawData *raw,
       }
       acferr = sqrt(acferr);
 
-      if(print)
-        fprintf(stdout,"%d  %d  %d  %lf  %lf  %lf  %lf  %lf  %lf  %d\n",
-              1,result.status,result.npegged,t_if,f_if,lag0pwrf,w_if,v_if,acferr,result.niter);
-
-
       fitted_power = 10.0*log10((lag0pwrf+skynoise)/skynoise);
       fit->rng[R].p_0   = lag0pwrf;
-
-			if(print)
-				fprintf(stdout,"%d  %d  %d  %lf  %lf  %lf  %lf  %d\n",
-									(result.status > 0 && fitted_power > minpwr && lag0pwrf > 2.*acferr),
-									result.status,result.npegged,t_if,f_if,lag0pwrf,acferr,result.niter);
 
 			/*the Hays radars are especially noisy*/
 			if(prm->stid == 204 || prm->stid == 205)
 				minpwr = 5.;
 
+			sct_flg = (result.status > 0 && fitted_power > minpwr && lag0pwrf > 2.*acferr);
+
+			if(print)
+				fprintf(stdout,"%d  %d  %d  %lf  %lf  %lf  %lf  %d\n",
+									sct_flg,result.status,result.npegged,t_if,f_if,lag0pwrf,acferr,result.niter);
+
+
       /*if we have a good single component fit*/
-      if(result.status > 0 && fitted_power > minpwr && lag0pwrf > 2.*acferr/* && result.npegged == 0*/)
+      if(sct_flg)
       {
         fit->rng[R].v     = v_if;
         fit->rng[R].v_err = lambda*result.xerror[1]/(4.*PI);
@@ -781,7 +779,7 @@ void lmfit(struct RadarParm *prm,struct RawData *raw,
   }
 
   free(lagpwr);
-  free(logpwr);
+  free(logpwr); 
   free(lag_avail);
   free(good_lags);
   free(sigma);

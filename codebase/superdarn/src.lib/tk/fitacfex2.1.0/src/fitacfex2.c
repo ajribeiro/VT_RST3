@@ -258,7 +258,7 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
 
   /*setup fitblock parameter*/
   setup_fblk(prm, raw, fblk);
-
+ 
   FitSetRng(fit,fblk->prm.nrang);
   FitSetXrng(fit,fblk->prm.nrang);
   FitSetElv(fit,fblk->prm.nrang);
@@ -269,7 +269,7 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
   {
     if(fblk->prm.channel==0) FitACFBadlags(&fblk->prm,&badsmp);
     else FitACFBadlagsStereo(&fblk->prm,&badsmp);
-  }
+  } 
 
 	if(print)
 	{

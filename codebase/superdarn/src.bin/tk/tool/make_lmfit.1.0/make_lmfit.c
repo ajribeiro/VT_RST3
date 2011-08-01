@@ -12,7 +12,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/stat.h>
+#include <sys/stat.h> 
 #include <string.h>
 #include <time.h>
 #include <zlib.h>
@@ -213,7 +213,7 @@ int main(int argc,char *argv[])
 
   fblk=FitACFMake(site,prm->time.yr);
 
-  lmfit(prm,raw,fit,fblk);
+  lmfit(prm,raw,fit,fblk,0);
 
   if (old)
   {
@@ -255,7 +255,7 @@ int main(int argc,char *argv[])
 	     prm->time.dy,prm->time.hr,prm->time.mt,prm->time.sc,prm->bmnum);
 
 
-    if (status==0) lmfit(prm,raw,fit,fblk);
+    if (status==0) lmfit(prm,raw,fit,fblk,0);
 
   } while (status==0);
 
