@@ -681,6 +681,8 @@ void lmfit(struct RadarParm *prm,struct RawData *raw,
       parssingle[0].limited[1] = 1;
       parssingle[0].limits[1]  = t_limit;
 
+			fprintf(stderr,"%d  %lf  %lf  %lf\n",R,model_guess,psingle[1],psingle[2]);
+
 
 
       /*max iterations*/

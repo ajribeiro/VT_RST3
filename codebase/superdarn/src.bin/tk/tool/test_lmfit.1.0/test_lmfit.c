@@ -218,7 +218,7 @@ int main(int argc,char *argv[])
   fblk=FitACFMake(site,prm->time.yr);
 
 
-	if(prm->time.hr >= tgthr && prm->time.mt >= tgtmin && prm->bmnum == tgtbeam)
+	if(prm->time.hr >= tgthr && prm->time.mt >= tgtmin && prm->bmnum == tgtbeam && prm->channel != 2)
 	{
 		lmfit(prm,raw,fit,fblk,1);
 		done=1;
@@ -237,13 +237,13 @@ int main(int argc,char *argv[])
       status=OldRawRead(rawfp,prm,raw);
     else
       status=RawFread(fp,prm,raw);
- 
+
      if (vb)
       fprintf(stderr,"%d-%d-%d %d:%d:%d beam=%d\n",prm->time.yr,prm->time.mo,
 	     prm->time.dy,prm->time.hr,prm->time.mt,prm->time.sc,prm->bmnum);
 
 		if(prm->time.hr >= tgthr && prm->time.mt >= tgtmin && prm->bmnum == tgtbeam
-				&& status == 0 && !done)
+				&& status == 0 && !done && prm->channel != 2)
 		{
 			lmfit(prm,raw,fit,fblk,1);
 			done = 1;

@@ -226,7 +226,7 @@ int main(int argc,char *argv[])
 
   do
   {
-    ctime = time((time_t) 0);
+    ctime = time((time_t) 0); 
     RadarParmSetOriginCommand(prm,command);
     strcpy(tmstr,asctime(gmtime(&ctime)));
     tmstr[24]=0;

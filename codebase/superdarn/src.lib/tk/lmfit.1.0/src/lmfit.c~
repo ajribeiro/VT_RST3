@@ -634,7 +634,6 @@ void lmfit(struct RadarParm *prm,struct RawData *raw,
       /*get velocity guess from model comparisons*/
       double model_guess = getguessex(goodcnt,prm->mplgs,120,exdata,prm->tfreq,prm->mpinc);
       w_limit = model_guess;
-			fprintf(stderr,"GATE %d  %lf\n",R,model_guess);
       if(w_limit == -88888888.) continue;
       /*initial velocity guess in angular Doppler frequency*/
       pdouble[1] = w_limit*4.*PI/lambda;
@@ -681,6 +680,8 @@ void lmfit(struct RadarParm *prm,struct RawData *raw,
       parssingle[0].limits[0]  = -1.*t_limit;
       parssingle[0].limited[1] = 1;
       parssingle[0].limits[1]  = t_limit;
+
+			fprintf(stderr,"%d  %lf  %lf  %lf\n",R,psingle[0],psingle[1],psingle[2]);
 
 
 
