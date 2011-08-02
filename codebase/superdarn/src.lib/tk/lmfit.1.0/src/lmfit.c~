@@ -406,7 +406,7 @@ void lmfit(struct RadarParm *prm,struct RawData *raw,
   float lag0pwr,re,im,pwr;
   float fitted_width=0.0,fitted_power=0.0;
   int   *lag_avail=NULL,availcnt=0,goodcnt=0;
-  int   lastlag,lag,i,j,R,L;
+  int   lastlag,lag,i,j,R,L,mplgs,tauflg = 0;
   double acferr;
 
   /*variable needed for mpfit call*/
@@ -425,8 +425,12 @@ void lmfit(struct RadarParm *prm,struct RawData *raw,
   struct FitACFBadSample badsmp;
 
 
+	/*check for tauscan*/
+	if(prm->cp == 3310 || prm->cp == 503 || prm->cp == -503)
+		tauflg = 1;
+
   /* Find the highest lag, and allocate memory */
-  if(!((prm->cp == 3310 || prm->cp == 503 || prm->cp == -503) && prm->mplgs == 18))
+  if(!((tauflg) && prm->mplgs == 18))
   {
     lastlag = 0;
     for (j=0;j<prm->mplgs;j++)
@@ -449,7 +453,7 @@ void lmfit(struct RadarParm *prm,struct RawData *raw,
   setup_fblk(prm, raw, fblk);
 
   FitSetRng(fit,fblk->prm.nrang);
-  if (fblk->prm.xcf)
+  if(fblk->prm.xcf)
   {
    FitSetXrng(fit,fblk->prm.nrang);
    FitSetElv(fit,fblk->prm.nrang);
@@ -457,16 +461,20 @@ void lmfit(struct RadarParm *prm,struct RawData *raw,
 
   /*calculate noise levels*/
   lm_noise_stat(prm,raw,&skynoise);
-  if(prm->cp != 3310 && prm->cp != 503 && prm->cp != -503)
+  if(!tauflg)
   {
+		/*check for stereo operation*/
     if(fblk->prm.channel==0) FitACFBadlags(&fblk->prm,&badsmp);
-    else FitACFBadlagsStereo(&fblk->prm,&badsmp); 
+    else FitACFBadlagsStereo(&fblk->prm,&badsmp);
   }
+
+  if(prm->cp == 153) mplgs = prm->mplgs - 1;
+  else mplgs = prm->mplgs;
 
 
 	if(print)
 	{
-		fprintf(stdout,"%d  %d  %lf  %d  %lf\n",prm->nrang,prm->mplgs,skynoise,prm->tfreq,prm->mpinc*1.e-6);
+		fprintf(stdout,"%d  %d  %lf  %d  %lf\n",prm->nrang,mplgs,skynoise,prm->tfreq,prm->mpinc*1.e-6);
 		fprintf(stdout,"%d  %d  %d  %d  %d  %d  %d  %d\n",prm->stid,prm->time.yr,prm->time.mo,
 									prm->time.dy,prm->time.hr,prm->time.mt,(int)prm->time.sc,prm->bmnum);
 	}
@@ -500,78 +508,52 @@ void lmfit(struct RadarParm *prm,struct RawData *raw,
     /*calculate SNR of lag0power*/
     lag0pwr  = 10.0*log10((raw->acfd[0][R*prm->mplgs]+skynoise)/skynoise);
 
+		/*output range gate and statistical fluctuation level*/
     if(print)
       fprintf(stdout,"%d  %lf\n",R,raw->acfd[0][R*prm->mplgs]/sqrt(1.0*prm->nave));
 
-    /*tauscan, new ROS version*/
-    if((prm->cp == 3310 || prm->cp == 503 || prm->cp == -503) && prm->mplgs == 18)
-    {
-      for (L=0;L<prm->mplgs;L++)
-      {
-        lag = L;
-        re  = raw->acfd[0][R*prm->mplgs+L];
-        im  = raw->acfd[1][R*prm->mplgs+L];
-        lagpwr[lag] = sqrt(re*re + im*im);
-        if(lagpwr[lag]>raw->acfd[0][R*prm->mplgs]/sqrt(1.0*prm->nave))
-        {
-            lag_avail[availcnt] = lag;
-            availcnt++;
-        }
-        else lagpwr[lag] = 0.0;
-        if(print)
-          fprintf(stdout,"%d  %lf  %lf  %d\n",lag,raw->acfd[0][R*prm->mplgs+L],raw->acfd[1][R*prm->mplgs+L],
-																						(lagpwr[lag]>raw->acfd[0][R*prm->mplgs]/sqrt(1.0*prm->nave)));
-      }
-      pwr_flg = (lag0pwr>=minpwr);
-    }
-    /*tauscan, old ROS version (lag power checking, no badlag checking, SNR checking)*/
-    else if(prm->cp == 3310 || prm->cp == 503 || prm->cp == -503)
-    {
-      for (L=0;L<prm->mplgs;L++)
-      {
-        lag = abs(prm->lag[0][L] - prm->lag[1][L]);
-        re  = raw->acfd[0][R*prm->mplgs+L];
-        im  = raw->acfd[1][R*prm->mplgs+L];
-        lagpwr[lag] = sqrt(re*re + im*im);
-        if (lagpwr[lag]>raw->acfd[0][R*prm->mplgs]/sqrt(1.0*prm->nave))
-        {
-          lag_avail[availcnt] = lag;
-          availcnt++;
-        }
-        else lagpwr[lag] = 0.0;
-        if(print)
-          fprintf(stdout,"%d  %lf  %lf  %d\n",lag,raw->acfd[0][R*prm->mplgs+L],raw->acfd[1][R*prm->mplgs+L],
-																								(lagpwr[lag]>raw->acfd[0][R*prm->mplgs]/sqrt(1.0*prm->nave)));
-      }
-      pwr_flg = (lag0pwr>=minpwr);
-    }
-    /*non-tauscan operation (lag power checking, badlag checking, SNR checking)*/
-    else
-    {
-      FitACFCkRng(R+1,badlag,&badsmp,&fblk->prm);
-      for (L=0;L<prm->mplgs;L++)
-      {
-        lag = abs(prm->lag[0][L] - prm->lag[1][L]);
-        re  = raw->acfd[0][R*prm->mplgs+L];
-        im  = raw->acfd[1][R*prm->mplgs+L];
-        lagpwr[lag] = sqrt(re*re + im*im);
-        if(badlag[L])
+		/*Preliminaries, badlag checking, power level checking*/
+		for(L=0;L<mplgs;L++)
+		{
+			/*not tauscan, check for badlags*/
+			if(!tauflg) FitACFCkRng(R+1,badlag,&badsmp,&fblk->prm);
+			/*tauscan, new ROS*/
+			if(tauflg && prm->mplgs == 18) lag = L;
+			/*old ROS*/
+			else lag = abs(prm->lag[0][L] - prm->lag[1][L]);
+
+			re  = raw->acfd[0][R*prm->mplgs+L];
+      im  = raw->acfd[1][R*prm->mplgs+L];
+			lagpwr[lag] = sqrt(re*re + im*im);
+
+			if(tauflg)
+				availflg = 1;
+			else
+			{
+				if(badlag[L])
           availflg = 0;
         else
           availflg = 1;
-        if(availflg && lagpwr[lag]>raw->acfd[0][R*prm->mplgs]/sqrt(1.0*prm->nave))
-        {
-          lag_avail[availcnt] = lag;
-          availcnt++;
-        }
-        else lagpwr[lag] = 0.0;
-        if(print)
-          fprintf(stdout,"%d  %lf  %lf  %d\n",lag,raw->acfd[0][R*prm->mplgs+L],raw->acfd[1][R*prm->mplgs+L],
-																						(availflg && lagpwr[lag]>raw->acfd[0][R*prm->mplgs]/sqrt(1.0*prm->nave)));
+			}
+
+			if(availflg && lagpwr[lag]>raw->acfd[0][R*prm->mplgs]/sqrt(1.0*prm->nave))
+      {
+        lag_avail[availcnt] = lag;
+        availcnt++;
       }
-      pwr_flg = raw->acfd[0][R*prm->mplgs]>=skynoise;
-      minlag = 4;
-    }
+      else lagpwr[lag] = 0.0;
+      if(print)
+          fprintf(stdout,"%d  %lf  %lf  %d\n",lag,raw->acfd[0][R*prm->mplgs+L],raw->acfd[1][R*prm->mplgs+L],
+																						(availflg && sqrt(re*re + im*im)>raw->acfd[0][R*prm->mplgs]/sqrt(1.0*prm->nave)));
+		}
+		if(tauflg)
+			pwr_flg = (lag0pwr>=minpwr);
+		else
+		{
+			pwr_flg = raw->acfd[0][R*prm->mplgs]>=skynoise;
+			minlag = 4;
+		}
+
     if(print)
       fprintf(stdout,"%d  %d\n",(pwr_flg),(availcnt>=minlag));
 
@@ -606,7 +588,7 @@ void lmfit(struct RadarParm *prm,struct RawData *raw,
           L = lag;
         /*non-tauscan OR old ROS*/
         else
-          for(j=0;j<prm->mplgs;j++)
+          for(j=0;j<mplgs;j++)
             if(abs(prm->lag[0][j]-prm->lag[1][j])==lag)
               L = j;
         re = raw->acfd[0][R*prm->mplgs+L];
@@ -632,7 +614,7 @@ void lmfit(struct RadarParm *prm,struct RawData *raw,
       }
 
       /*get velocity guess from model comparisons*/
-      double model_guess = getguessex(goodcnt,prm->mplgs,120,exdata,prm->tfreq,prm->mpinc);
+      double model_guess = getguessex(goodcnt,mplgs,120,exdata,prm->tfreq,prm->mpinc);
       w_limit = model_guess;
       if(w_limit == -88888888.) continue;
       /*initial velocity guess in angular Doppler frequency*/
@@ -679,9 +661,9 @@ void lmfit(struct RadarParm *prm,struct RawData *raw,
       parssingle[0].limited[0] = 1;
       parssingle[0].limits[0]  = -1.*t_limit;
       parssingle[0].limited[1] = 1;
-      parssingle[0].limits[1]  = t_limit;
+      parssingle[0].limits[1]  = t_limit;/*
 
-			fprintf(stderr,"%d  %lf  %lf  %lf\n",R,psingle[0],psingle[1],psingle[2]);
+			fprintf(stderr,"%d  %lf  %lf  %lf\n",R,model_guess,psingle[1],psingle[2]);*/
 
 
 
@@ -711,10 +693,10 @@ void lmfit(struct RadarParm *prm,struct RawData *raw,
       for(i=0;i<goodcnt;i++)
       {
         lag = good_lags[i];
-        if((prm->cp == 3310 || prm->cp == 503 || prm->cp == -503) && prm->mplgs == 18)
+        if(tauflg && prm->mplgs == 18)
         	L = lag;
         else
-          for(j=0;j<prm->mplgs;j++)
+          for(j=0;j<mplgs;j++)
             if(abs(prm->lag[0][L]-prm->lag[1][L])==lag)
               L = j;
 
