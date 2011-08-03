@@ -1,14 +1,7 @@
 /* fit_demo.c
    ==========
-   Author: R.J.Barnes
 */
 
-/*
- (c) 2010 JHU/APL & Others - Please Consult LICENSE.superdarn-rst.3.2-beta-4-g32f7302.txt for more information.
-
-
-
-*/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -31,6 +24,9 @@
 #include "fitacf.h"
 #include "fitread.h"
 #include "oldfitread.h"
+#include "scandata.h"
+#include "fitscan.h"
+#include "oldfitscan.h"
 
 
 #include "errstr.h"
@@ -50,11 +46,12 @@
 *
 *************************************************************************************/
 
-
 /*radar operating parameter structure, 1 per beam sounding*/
 struct RadarParm *prm;
 /*fit data structure, 1 per beam sounding*/
 struct FitData *fit;
+/*radar scan structure, contains several beam soundings*/
+struct RadarScan *scan;
 
 
 struct RadarNetwork *network;
@@ -98,7 +95,8 @@ int main(int argc,char *argv[])
 
   char *envstr;
   int status;
-  int arg,i;
+  int arg,range,beam,i=0;
+	int state=0;
 
   unsigned char help=0;
   unsigned char option=0;
@@ -113,6 +111,7 @@ int main(int argc,char *argv[])
 	/*initialize the data structures*/
   prm=RadarParmMake();
   fit=FitMake();
+	scan = RadarScanMake();
 
 	/*process command line options*/
   OptionAdd(&opt,"-help",'x',&help);
@@ -168,13 +167,14 @@ int main(int argc,char *argv[])
   RadarLoadHardware(envstr,network);
 
 	/*now, lets actually read the fit file*/
+	/*one way to read the fit file is a single beam record at a time, like so:*/
 	/*old format files (.fit) have to be read like this*/
 	if(old)
 	{
-		oldfitfp=OldFitOpen(argv[arg],NULL);
+		oldfitfp=OldFitOpen(argv[arg+1],NULL);
 		if(oldfitfp==NULL)
 		{
-			fprintf(stderr,"File not found.\n");
+			fprintf(stderr,"File not found.  %s\n",argv[arg+1]);
 			exit(-1);
 		}
 		status = OldFitRead(oldfitfp,prm,fit);
@@ -185,13 +185,98 @@ int main(int argc,char *argv[])
 		fitfp=fopen(argv[arg],"r");
 		if (fitfp==NULL)
 		{
-			fprintf(stderr,"File not found.\n");
+			fprintf(stderr,"File not found.  %s\n",argv[arg]);
       exit(-1);
     }
     status = FitFread(fitfp,prm,fit);
 	}
 
-	/*get time-specific radar inromation*/
+	/*get time-specific radar information*/
+	radar=RadarGetRadar(network,prm->stid);
+  if (radar==NULL)
+	{
+    fprintf(stderr,"Failed to get radar information.\n");
+    exit(-1);
+  }
+  site=RadarYMDHMSGetSite(radar,prm->time.yr,prm->time.mo,
+												prm->time.dy,prm->time.hr,prm->time.mt,prm->time.sc);
+	fprintf(stdout,"**********************************************************\n");
+	fprintf(stdout,"First, we will read 10 fit data racords 1 record at a time\n");
+	fprintf(stdout,"**********************************************************\n\n");
+	/*fit files can be long, so we'll only read the first 10 records*/
+	do
+	{
+		i++;
+		/*now, lets examine some radar parameters*/
+		/*the radar parameter structure is defined in rst/codebase/superdarn/src/lib/tk/radar.1.20/include/rprm.h*/
+		fprintf(stdout,"Date: %d-%d-%d Time: %d:%d:%d Beam: %d\n",prm->time.yr,prm->time.mo,
+	     prm->time.dy,prm->time.hr,prm->time.mt,prm->time.sc,prm->bmnum);
+
+		fprintf(stdout,"Scan Flag (!= 0 indicates a new scan is starting) : %d\n",prm->scan);
+
+		fprintf(stdout,"# of range gates : %d  Distance to First Range : %d km\n\n",prm->nrang,prm->lagfr);
+		fprintf(stdout,"Range gates containing backscatter:\n");
+		/*now, lets go through the range gates and look at the fit data*/
+		/*the fit data structure is defined in rst/codebase/superdarn/src/lib/tk/fit.1.33/include/fitdata.h*/
+		/*the fit range structure is defined in rst/codebase/superdarn/src/lib/tk/fitacf.2.4/include/fitblk.h*/
+		for(range=0;range<prm->nrang;range++)
+		{
+			/*check quality flag to see if range gate contains backscatter*/
+			if(fit->rng[range].qflg)
+				fprintf(stdout,"Range Gate : %d  Lag 0 Power : %lf  Power : %lf dB  Velocity : %lf m/s  Spectral Width : %lf m/s\n",
+								range,fit->rng[range].p_0,fit->rng[range].p_l,fit->rng[range].v,fit->rng[range].w_l);
+		}
+
+		fprintf(stdout,"END OF BEAM SOUNDING RECORD\n********************************************************\n\n");
+
+		/*now, read the next record*/
+		if(old)
+			status = OldFitRead(oldfitfp,prm,fit);
+		/*new format files (.fitacf/.fitex) have to be read like this*/
+		else
+			status = FitFread(fitfp,prm,fit);
+
+	} while (i < 10);
+
+	/*close the file pointer*/
+  if(old)
+		OldFitClose(oldfitfp);
+	else
+		fclose(fitfp);
+
+	/*we have finished reading the fit file one record at a time,
+	now lets try reading it into a scan structure, like so:*/
+	/*we will only read the first 3 records*/
+
+	fitfp=NULL;
+  oldfitfp=NULL;
+
+	i=0;
+
+	/*old format files (.fit) have to be read like this*/
+	if(old)
+	{
+		oldfitfp=OldFitOpen(argv[arg],NULL);
+		if(oldfitfp==NULL)
+		{
+			fprintf(stderr,"File not found.\n");
+			exit(-1);
+		}
+		status = OldFitReadRadarScan(oldfitfp,&state,scan,prm,fit,0,0,0);
+	}
+	/*new format files (.fitacf/.fitex) have to be read like this*/
+	else
+	{
+		fitfp=fopen(argv[arg],"r");
+		if (fitfp==NULL)
+		{
+			fprintf(stderr,"File not found.\n");
+      exit(-1);
+    }
+    status = FitFreadRadarScan(fitfp,&state,scan,prm,fit,0,0,0);
+	}
+
+	/*get time-specific radar information*/
 	radar=RadarGetRadar(network,prm->stid);
   if (radar==NULL)
 	{
@@ -201,40 +286,48 @@ int main(int argc,char *argv[])
   site=RadarYMDHMSGetSite(radar,prm->time.yr,prm->time.mo,
 												prm->time.dy,prm->time.hr,prm->time.mt,prm->time.sc);
 
+	fprintf(stdout,"************************************************\n");
+	fprintf(stdout,"Now, we will read fit data into a scan structure\n");
+	fprintf(stdout,"************************************************\n\n");
+	/*fit files can be long, so we'll only read the first 10 records*/
 	do
 	{
-		/*now, lets examine some radar parameters*/
-		fprintf(stdout,"Date: %d-%d-%d Time: %d:%d:%d Beam: %d\n",prm->time.yr,prm->time.mo,
-	     prm->time.dy,prm->time.hr,prm->time.mt,prm->time.sc,prm->bmnum);
+		i++;
+		/*now, lets examine some scan information*/
+		/*the radar scan structure is defined in rst/codebase/superdarn/src/lib/tk/scan.1.6/include/scandata.h*/
+		fprintf(stdout,"Radar Scan start time (epoch) : %lf\n",scan->st_time);
+		fprintf(stdout,"Radar Scan end time (epoch) : %lf\n",scan->ed_time);
+		fprintf(stdout,"Number of beams in scan : %d\n\n",scan->num);
 
-		fprintf(stdout,"Scan Flag (!= 0 indicates a new scan is starting) : %d\n",prm->scan);
-
-		fprintf(stdout,"# of range gates : %d  Distance to First Range : %d km\n",prm->nrang,prm->lagfr);
-
-		/*now, lets go through the range gates*/
-		for(i=0;i<prm->nrang;i++)
+		/*now, lets look at the individual beams*/
+		for(beam=0;beam<scan->num;beam++)
 		{
-			fprintf(stdout,"Range Gate : %d  Lag 0 Power : %lf  Power : %lf dB  Velocity : %lf m/s  Spectral Width : %lf m/s\n",
-							i,fit->rng[i].p_0,fit->rng[i].p_l,fit->rng[i].v,fit->rng[i].w_l);
+			fprintf(stdout,"Beam # : %d  # of range gates : %d  Distance to First Range : %d km\n",
+											scan->bm[beam].bm,scan->bm[beam].nrang,scan->bm[beam].frang);
+			fprintf(stdout,"Range gates containing backscatter:\n");
+			/*now, lets go through the range gates and look at the fit data*/
+			for(range=0;range<scan->bm[beam].nrang;range++)
+			{
+				/*check quality flag to see if range gate contains backscatter*/
+				if(scan->bm[beam].sct[range])
+					fprintf(stdout,"Range Gate : %d  Lag 0 Power : %lf  Power : %lf dB  Velocity : %lf m/s  Spectral Width : %lf m/s\n",
+									range,scan->bm[beam].rng[range].p_0,scan->bm[beam].rng[range].p_l,scan->bm[beam].rng[range].v,scan->bm[beam].rng[range].w_l);
+			}
 		}
 
-		fprintf(stdout,"END OF BEAM SOUNDING RECORD\n\n\n");
+		fprintf(stdout,"END OF SCAN\n********************************************************\n\n");
 
 		/*now, read the next record*/
 		if(old)
-			status = OldFitRead(oldfitfp,prm,fit);
+			status = OldFitReadRadarScan(oldfitfp,&state,scan,prm,fit,0,0,0);
 		/*new format files (.fitacf/.fitex) have to be read like this*/
 		else
-			status = FitFread(fitfp,prm,fit);
+			status = FitFreadRadarScan(fitfp,&state,scan,prm,fit,0,0,0);
 
-	} while (status == 0);
+	} while (i < 3);
 
-	/*close the file pointer*/
-  if(old)
-		OldFitClose(oldfitfp);
 
 
 	return 0;
 }
 
-	
