@@ -1,0 +1,18 @@
+# makefile for fit_demo
+#
+#
+include $(MAKECFG).$(SYSTEM)
+
+
+
+INCLUDE= -I$(IPATH)/base -I$(IPATH)/general -I$(IPATH)/superdarn -I$(IPATH)/analysis
+SRC = fit_demo.c
+OBJS = fit_demo.o
+INC=$(IPATH)/superdarn
+DSTPATH=$(LIBPATH)
+OUTPUT=fit_demo
+LINK="1"
+
+
+
+include $(MAKELIB).$(SYSTEM)
