@@ -697,7 +697,7 @@ void lmfit(struct RadarParm *prm,struct RawData *raw,
         	L = lag;
         else
           for(j=0;j<mplgs;j++)
-            if(abs(prm->lag[0][L]-prm->lag[1][L])==lag)
+            if(abs(prm->lag[0][j]-prm->lag[1][j])==lag)
               L = j;
 
         tau = lag*prm->mpinc*1.e-6;
@@ -711,7 +711,7 @@ void lmfit(struct RadarParm *prm,struct RawData *raw,
       fit->rng[R].p_0   = lag0pwrf;
 
 			/*the Hays radars are especially noisy*/
-			if(prm->stid == 204 || prm->stid == 205) 
+			if(prm->stid == 204 || prm->stid == 205)
 				minpwr = 5.;
 
 			sct_flg = (result.status > 0 && fitted_power > minpwr && lag0pwrf > 1.5*acferr);

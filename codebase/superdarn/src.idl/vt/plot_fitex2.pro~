@@ -11,7 +11,7 @@
 ;
 ; CALLING SEQUENCE:
 ; first call the c routine test_fitex2, e.g.
-; 	test_fitex2 [-new] -hr 5 -min 3 -beam 7 myfile.rawacf > /rst/output_files/fitex2.test
+; 	test_fitex2 [-new] -hr 5 -min 3 -beam 7 myfile.rawacf > /rst/output_files/timestamp.fitex2.test
 ;
 ; next, call the IDL routine, e.g.
 ; 	plot_fitex2,time
@@ -24,11 +24,11 @@
 ; KEYWORD PARAMETERS:
 ;
 ; EXAMPLE:
-; test_fitex2 -new -hr 5 -min 3 -beam 7 myfile.rawacf > /rst/output_files/fitex2.test
+; test_fitex2 -new -hr 5 -min 3 -beam 7 myfile.rawacf > /rst/output_files/timestamp.fitex2.test
 ; plot_fitex2
 ;
 ; OUTPUT:
-; /rst/output_plots/fitex2.ps
+; /rst/output_plots/timestamp.fitex2.ps
 ;
 ;
 ; COPYRIGHT:

@@ -77,7 +77,7 @@ pro plot_fitex2,time
 
   lambda = 3.e8/(tfreq*1.e3)
 	;get rad info
-  radar_info,stid,glat,glon,mlat,mlon,oneletter,threeletter,name,STID_FLG=fix(stid)
+  radar_info,stid,glat,glon,mlat,mlon,oneletter,threeletter,name,fix(stid)
   date_str = name+'				'+$
 							strtrim(fix(yr),2)+'/'+strtrim(fix(mo),2)+'/'+strtrim(fix(dy),2)
   date_str = date_str+'				'
