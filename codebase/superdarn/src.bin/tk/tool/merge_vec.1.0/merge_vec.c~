@@ -20,7 +20,7 @@ this code reads in a fit file and produces an ascii file
 #include "option.h"
 #include "rtime.h"
 #include "radar.h"
-#include "rprm.h"
+#include "rprm.h" 
 #include "invmag.h" 
 #include "rpos.h"
 #include "fitdata.h"
@@ -218,14 +218,13 @@ int main(int argc,char *argv[])
   }
   TimeEpochToYMDHMS(scan2->st_time,&yr,&mo,&dy,&hr,&mn,&sc);
   site2=RadarYMDHMSGetSite(radar2,yr,mo,dy,hr,mn,sc);
-fprintf(stderr,"im in here\n");
 
 	if(scan1->ed_time-scan1->st_time >= scan2->ed_time-scan2->st_time)
 	{
-		fprintf(stderr,"im in here if\n");
 		/*read the second radars file until it catches up to the first radar*/
 		while(scan1->st_time-scan2->st_time > 0)
 		{
+			fprintf(stderr,"%lf  %lf\n",scan1->st_time,scan2->st_time);
 			s2=FitFreadRadarScan(fitfp2,&state2,scan2,tempprm2,tempfit2,0,0,0);
 			scan2->st_time = ((int)(scan2->st_time/60.))*60.;
 			scan2->ed_time = ((int)(scan2->ed_time/60.)+1)*60.;
@@ -233,7 +232,6 @@ fprintf(stderr,"im in here\n");
 	}
 	else
 	{
-		fprintf(stderr,"im in here else\n");
 		/*read the first radars file until it catches up to the second radar*/
 		while(scan2->st_time-scan1->st_time > 0)
 		{
@@ -242,7 +240,6 @@ fprintf(stderr,"im in here\n");
 			scan1->ed_time = ((int)(scan1->ed_time/60.)+1)*60.;
 		}
 	}
-fprintf(stderr,"im in here\n");
 	fprintf(stderr,"start merging\n");
   do
   {

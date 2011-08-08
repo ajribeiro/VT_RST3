@@ -21,7 +21,7 @@ this code reads in a fit file and produces an ascii file
 #include "rtime.h"
 #include "radar.h"
 #include "rprm.h"
-#include "invmag.h" 
+#include "invmag.h"
 #include "rpos.h"
 #include "fitdata.h"
 #include "fitread.h"

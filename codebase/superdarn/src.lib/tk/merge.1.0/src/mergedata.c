@@ -214,7 +214,7 @@ int MergeRead(int fid,struct MergeData *data)
   DataMapFree(ptr);
   return s;
 }
-
+ 
 int MergeFRead(FILE *fp,struct MergeData *data)
 {
   return MergeRead(fileno(fp),data);

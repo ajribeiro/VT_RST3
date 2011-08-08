@@ -128,6 +128,10 @@ int MergeDecode(struct DataMap *ptr,struct MergeData *data) {
       data->mlon=*(s->data.sptr);
 		if ((strcmp(s->name,"mazm")==0) && (s->type==DATAFLOAT))
       data->mazm=*(s->data.sptr);
+		if ((strcmp(s->name,"dgeo")==0) && (s->type==DATAFLOAT))
+      data->dgeo=*(s->data.sptr);
+		if ((strcmp(s->name,"dmag")==0) && (s->type==DATAFLOAT))
+      data->dmag=*(s->data.sptr);
 		if ((strcmp(s->name,"st_time")==0) && (s->type==DATAINT))
       data->st_time=*(s->data.sptr);
 		if ((strcmp(s->name,"ed_time")==0) && (s->type==DATAINT))
@@ -189,6 +193,8 @@ int MergeEncode(struct DataMap *ptr,struct MergeData *data)
 	DataMapAddScalar(ptr,"mlat",DATAFLOAT,&data->mlat);
 	DataMapAddScalar(ptr,"mlon",DATAFLOAT,&data->mlon);
 	DataMapAddScalar(ptr,"mazm",DATAFLOAT,&data->mazm);
+	DataMapAddScalar(ptr,"dgeo",DATAFLOAT,&data->dgeo);
+	DataMapAddScalar(ptr,"dmag",DATAFLOAT,&data->dmag);
 
 	DataMapAddScalar(ptr,"st_time",DATAINT,&data->st_time);
 	DataMapAddScalar(ptr,"ed_time",DATAINT,&data->ed_time);
