@@ -113,7 +113,7 @@ int main(int argc,char *argv[])
   unsigned char option = 0;
   double azm,elv;
   int sthr = -1, edhr = 26;
-  int s1 = 0, s2 = 0, vb = 0, state1 = 0, state2 = 0, d1, d2;
+  int s1 = 0, s2 = 0, vb = 0, state1 = 0, state2 = 0, d1, d2, nogs = 0;
 
   struct RadarScan *scan1 = RadarScanMake();
   struct RadarScan *scan2 = RadarScanMake();
@@ -160,6 +160,7 @@ int main(int argc,char *argv[])
   OptionAdd(&opt,"vb",'x',&vb);
   OptionAdd(&opt,"sthr",'i',&sthr);
   OptionAdd(&opt,"edhr",'i',&edhr);
+	OptionAdd(&opt,"nogs",'x',&nogs);
 
   /*process the options*/
   arg=OptionProcess(1,argc,argv,&opt,NULL);
@@ -178,6 +179,7 @@ int main(int argc,char *argv[])
     fprintf(stderr,"File %s not found.\n",argv[arg]);
     exit(-1);
   }
+
 
 
 	s1=FitFreadRadarScan(fitfp1,&state1,scan1,tempprm1,tempfit1,0,0,0);
@@ -216,9 +218,11 @@ int main(int argc,char *argv[])
   }
   TimeEpochToYMDHMS(scan2->st_time,&yr,&mo,&dy,&hr,&mn,&sc);
   site2=RadarYMDHMSGetSite(radar2,yr,mo,dy,hr,mn,sc);
+fprintf(stderr,"im in here\n");
 
 	if(scan1->ed_time-scan1->st_time >= scan2->ed_time-scan2->st_time)
 	{
+		fprintf(stderr,"im in here if\n");
 		/*read the second radars file until it catches up to the first radar*/
 		while(scan1->st_time-scan2->st_time > 0)
 		{
@@ -229,6 +233,7 @@ int main(int argc,char *argv[])
 	}
 	else
 	{
+		fprintf(stderr,"im in here else\n");
 		/*read the first radars file until it catches up to the second radar*/
 		while(scan2->st_time-scan1->st_time > 0)
 		{
@@ -237,7 +242,7 @@ int main(int argc,char *argv[])
 			scan1->ed_time = ((int)(scan1->ed_time/60.)+1)*60.;
 		}
 	}
-
+fprintf(stderr,"im in here\n");
 	fprintf(stderr,"start merging\n");
   do
   {
@@ -320,7 +325,8 @@ int main(int argc,char *argv[])
 							h = haversine(del_lat)+cos(lat1)*cos(lat2)*haversine(del_lon);
 							d = 2.*6378.*asin(sqrt(h));
 							/*if we have 2 close, unmatched points, or a better match for a point*/
-							if((d < 51. && !comb[p][k].matched) || d < comb[p][k].diff)
+							if(((d < 51. && !comb[p][k].matched) || d < comb[p][k].diff) &&
+								(!nogs || (scan1->bm[p].rng[k].gsct == 0 && scan2->bm[m].rng[l].gsct == 0)))
 							{
 								double Det_A  =  cos(azm1)*sin(azm2) - cos(azm2)*sin(azm1);
 								v_n    = (1./Det_A) * (v1*sin(azm2)  - v2*sin(azm1));

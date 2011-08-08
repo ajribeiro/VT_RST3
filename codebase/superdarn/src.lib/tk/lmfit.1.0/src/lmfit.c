@@ -274,7 +274,7 @@ double getguessex(int goodcnt, int nlags, int nslopes, struct exdatapoints * exd
           model_slope, diff=180./nslopes, w_guess,
           phi, model_vel_pos, data_phi, pwr=0, delta_pos, delta_neg;
 
-  int i, j, lastlag=nlags-1, p, mininx, sct_flg, sderr=3, lag;
+  int i, j, lastlag=nlags, p, mininx, sct_flg, sderr=3, lag;
 
 
   double * model_phi    = malloc(sizeof(double)*(nslopes+1)*(lastlag+1));

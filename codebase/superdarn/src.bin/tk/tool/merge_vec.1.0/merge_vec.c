@@ -181,6 +181,7 @@ int main(int argc,char *argv[])
   }
 
 
+
 	s1=FitFreadRadarScan(fitfp1,&state1,scan1,tempprm1,tempfit1,0,0,0);
 	scan1->st_time = ((int)(scan1->st_time/60.))*60.;
 	scan1->ed_time = ((int)(scan1->ed_time/60.)+1)*60.;
@@ -223,6 +224,7 @@ int main(int argc,char *argv[])
 		/*read the second radars file until it catches up to the first radar*/
 		while(scan1->st_time-scan2->st_time > 0)
 		{
+			fprintf(stderr,"%lf  %lf\n",scan1->st_time,scan2->st_time);
 			s2=FitFreadRadarScan(fitfp2,&state2,scan2,tempprm2,tempfit2,0,0,0);
 			scan2->st_time = ((int)(scan2->st_time/60.))*60.;
 			scan2->ed_time = ((int)(scan2->ed_time/60.)+1)*60.;
@@ -238,7 +240,6 @@ int main(int argc,char *argv[])
 			scan1->ed_time = ((int)(scan1->ed_time/60.)+1)*60.;
 		}
 	}
-
 	fprintf(stderr,"start merging\n");
   do
   {

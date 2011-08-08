@@ -12,7 +12,7 @@
 #include <zlib.h>
 #include "rtypes.h"
 #include "rmath.h" 
-#include "nrfit.h"
+#include "nrfit.h" 
 #include "rprm.h"
 #include "rawdata.h" 
 #include "fitdata.h"
