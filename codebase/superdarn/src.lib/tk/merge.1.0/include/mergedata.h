@@ -76,14 +76,6 @@ struct MergeData {
 
 };
 
-int MergeEncode(struct DataMap *ptr,struct MergeData *data);
-int MergeDecode(struct DataMap *ptr,struct MergeData *data);
-
-int MergeRead(int fid,struct MergeData *data);
-int MergeFRead(FILE *fp,struct MergeData *data);
-int MergeWrite(int fid,struct MergeData *data);
-int MergeFwrite(FILE *fp,struct MergeData *data);
-
 
 
 

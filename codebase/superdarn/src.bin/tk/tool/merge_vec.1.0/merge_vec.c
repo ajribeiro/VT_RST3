@@ -13,13 +13,13 @@ this code reads in a fit file and produces an ascii file
 #include <sys/types.h>
 #include <unistd.h>
 #include <ctype.h>
-#include <math.h>
+#include <math.h> 
 #include <zlib.h>
 #include "rtypes.h"
 #include "dmap.h"
 #include "option.h"
 #include "rtime.h"
-#include "radar.h"
+#include "radar.h" 
 #include "rprm.h"
 #include "invmag.h"
 #include "rpos.h"
@@ -28,6 +28,8 @@ this code reads in a fit file and produces an ascii file
 #include "scandata.h"
 #include "fitscan.h"
 #include "mergedata.h"
+#include "mergewrite.h"
+#include "mergeread.h"
 
 struct RadarNetwork *network;
 struct Radar *radar1;
@@ -256,7 +258,7 @@ int main(int argc,char *argv[])
     }
 		struct MergeData **data = malloc(scan1->num*sizeof(struct MergeData *));
 		for(p=0;p<scan1->num;p++)
-		{
+		{ 
 			data[p] = malloc(scan1->bm[p].nrang*sizeof(struct MergeData));
 			for(k=0;k<scan1->bm[p].nrang;k++)
 				memset(&data[p][k],0,sizeof(struct MergeData));
@@ -448,6 +450,7 @@ int main(int argc,char *argv[])
 				if(data[p][k].radar1.qflg != 0 && data[p][k].radar2.qflg != 0)
 				{
 					MergeFwrite(stdout,&data[p][k]);
+					MergeFread(stdin,&data[p][k]);
 				}
 
 		for(p=0;p<scan1->num;p++)

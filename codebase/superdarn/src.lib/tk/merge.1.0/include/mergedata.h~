@@ -67,6 +67,8 @@ struct MergeData {
 	float mlat;
 	float mlon;
 	float mazm;
+	float dgeo;
+	float dmag;
 
 	int32 st_time;
 	int32 ed_time;

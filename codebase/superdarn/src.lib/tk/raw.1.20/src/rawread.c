@@ -48,7 +48,7 @@ int RawDecode(struct DataMap *ptr,struct RawData *raw) {
 
   for (c=0;c<ptr->snum;c++) {
     s=ptr->scl[c];
-   
+
     if ((strcmp(s->name,"rawacf.revision.major")==0) && (s->type==DATAINT))
       raw->revision.major=*(s->data.iptr);
     if ((strcmp(s->name,"rawacf.revision.minor")==0) && (s->type==DATAINT))
