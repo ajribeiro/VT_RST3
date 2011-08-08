@@ -15,13 +15,13 @@ this code reads in a fit file and produces an ascii file
 #include <ctype.h>
 #include <math.h>
 #include <zlib.h>
-#include "rtypes.h"
+#include "rtypes.h" 
 #include "dmap.h"
 #include "option.h"
 #include "rtime.h"
 #include "radar.h"
-#include "rprm.h" 
-#include "invmag.h" 
+#include "rprm.h"
+#include "invmag.h"
 #include "rpos.h"
 #include "fitdata.h"
 #include "fitread.h"
@@ -448,6 +448,7 @@ int main(int argc,char *argv[])
 				if(data[p][k].radar1.qflg != 0 && data[p][k].radar2.qflg != 0)
 				{
 					MergeFwrite(stdout,&data[p][k]);
+					MergeFread(stdin,&data[p][k]);
 				}
 
 		for(p=0;p<scan1->num;p++)

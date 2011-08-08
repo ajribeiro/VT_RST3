@@ -15,7 +15,7 @@ this code reads in a fit file and produces an ascii file
 #include <ctype.h>
 #include <math.h>
 #include <zlib.h>
-#include "rtypes.h"
+#include "rtypes.h" 
 #include "dmap.h"
 #include "option.h"
 #include "rtime.h"
