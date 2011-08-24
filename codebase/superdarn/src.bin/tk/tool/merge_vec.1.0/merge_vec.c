@@ -450,7 +450,6 @@ int main(int argc,char *argv[])
 				if(data[p][k].radar1.qflg != 0 && data[p][k].radar2.qflg != 0)
 				{
 					MergeFwrite(stdout,&data[p][k]);
-					MergeFread(stdin,&data[p][k]);
 				}
 
 		for(p=0;p<scan1->num;p++)
@@ -478,7 +477,7 @@ int main(int argc,char *argv[])
 				scan1->ed_time = ((int)(scan1->ed_time/60.)+1)*60.;
 			}
 		}
-		else
+		else 
 		{
 			if(s1 != -1)
 			{
