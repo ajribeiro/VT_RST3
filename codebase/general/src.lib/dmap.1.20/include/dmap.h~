@@ -113,7 +113,7 @@ struct DataMap *DataMapReadBlock(int fid,int *s);
 struct DataMap *DataMapFreadBlock(FILE *fp,int *s);
 
 
-struct DataMap *DataMapReadBlockZ(struct gzFile file,int *s);
+struct DataMap *DataMapReadBlockZ(gzFile file,int *s);
 struct DataMap *DataMapReadZ(gzFile file);
 int DataMapWriteZ(gzFile file,struct DataMap *ptr);
 

@@ -35,7 +35,7 @@
 
 static IDL_MSG_DEF msg_arr[] =
   {
-    {  "RAW_ERROR",   "%NError: %s." }, 
+    {  "RAW_ERROR",   "%NError: %s." },
   };
 
 static IDL_MSG_BLOCK msg_block;

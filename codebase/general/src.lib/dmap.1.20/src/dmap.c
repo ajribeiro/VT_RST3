@@ -15,7 +15,7 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h> 
-#include <unistd.h>
+#include <unistd.h> 
 #include <zlib.h>
 #include "rtypes.h"
 #include "rconvert.h"
@@ -862,7 +862,7 @@ struct DataMap *DataMapFreadBlock(FILE *fp,int *s) {
   return DataMapReadBlock(fileno(fp),s);
 }
 
-struct DataMap *DataMapRead(int fid) {
+struct DataMap *DataMapRead(int fid) { 
   return DataMapReadBlock(fid,NULL);
 }
 

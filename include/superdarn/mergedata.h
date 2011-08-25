@@ -76,6 +76,7 @@ struct MergeData {
 
 };
 
+<<<<<<< HEAD
 int MergeEncode(struct DataMap *ptr,struct MergeData *data);
 int MergeDecode(struct DataMap *ptr,struct MergeData *data);
 
@@ -84,6 +85,8 @@ int MergeFread(FILE *fp,struct MergeData *data);
 int MergeWrite(int fid,struct MergeData *data);
 int MergeFwrite(FILE *fp,struct MergeData *data);
 
+=======
+>>>>>>> merge_tools
 
 
 

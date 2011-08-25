@@ -394,7 +394,6 @@ unsigned char *DataMapEncodeBuffer(struct DataMap *ptr,int *size) {
       off++;
       break;
     case DATASHORT:
-			fprintf(stderr,"%s\n",s->name);
       ConvertFromShort(*(s->data.sptr),buf+off);
       off+=sizeof(int16);
       break;
