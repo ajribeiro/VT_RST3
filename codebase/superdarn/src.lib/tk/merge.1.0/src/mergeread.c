@@ -38,9 +38,16 @@ int MergeDecode(struct DataMap *ptr,struct MergeData *data)
   for (c=0;c<ptr->snum;c++)
 	{
     s=ptr->scl[c];
+<<<<<<< HEAD
 
     if ((strcmp(s->name,"radar1.stid")==0) && (s->type==DATASHORT))
       data->radar1.stid=*(s->data.sptr);
+=======
+		fprintf(stderr,"%d  %s  %d  %f\n",ptr->snum,s->name,s->type,(float)(*s->data.fptr));
+
+    if ((strcmp(s->name,"radar1.stid")==0) && (s->type==DATASHORT))
+      data->radar1.stid=*(s->data.iptr);
+>>>>>>> fitcomp
 		if ((strcmp(s->name,"radar1.qflg")==0) && (s->type==DATASHORT))
       data->radar1.qflg=*(s->data.sptr);
 		if ((strcmp(s->name,"radar1.cpid")==0) && (s->type==DATASHORT))
@@ -50,6 +57,7 @@ int MergeDecode(struct DataMap *ptr,struct MergeData *data)
 		if ((strcmp(s->name,"radar1.rng")==0) && (s->type==DATASHORT))
       data->radar1.rng=*(s->data.sptr);
 		if ((strcmp(s->name,"radar1.gsflg")==0) && (s->type==DATASHORT))
+<<<<<<< HEAD
       data->radar1.gsflg=*(s->data.fptr);
 		if ((strcmp(s->name,"radar1.vel")==0) && (s->type==DATAFLOAT))
       data->radar1.vel=*(s->data.fptr);
@@ -75,6 +83,33 @@ int MergeDecode(struct DataMap *ptr,struct MergeData *data)
       data->radar1.st_time=*(s->data.iptr);
 		if ((strcmp(s->name,"radar1.ed_time")==0) && (s->type==DATAINT))
       data->radar1.ed_time=*(s->data.iptr);
+=======
+      data->radar1.gsflg=*(s->data.sptr);
+		if ((strcmp(s->name,"radar1.vel")==0) && (s->type==DATAFLOAT))
+      data->radar1.vel=*(s->data.sptr);
+		if ((strcmp(s->name,"radar1.vel_err")==0) && (s->type==DATAFLOAT))
+      data->radar1.vel_err=*(s->data.sptr);
+		if ((strcmp(s->name,"radar1.pwr")==0) && (s->type==DATAFLOAT))
+      data->radar1.pwr=*(s->data.sptr);
+		if ((strcmp(s->name,"radar1.w_l")==0) && (s->type==DATAFLOAT))
+      data->radar1.w_l=*(s->data.sptr);
+		if ((strcmp(s->name,"radar1.glat")==0) && (s->type==DATAFLOAT))
+      data->radar1.glat=*(s->data.sptr);
+		if ((strcmp(s->name,"radar1.glon")==0) && (s->type==DATAFLOAT))
+      data->radar1.glon=*(s->data.sptr);
+		if ((strcmp(s->name,"radar1.gazm")==0) && (s->type==DATAFLOAT))
+      data->radar1.gazm=*(s->data.sptr);
+		if ((strcmp(s->name,"radar1.mlat")==0) && (s->type==DATAFLOAT))
+      data->radar1.mlat=*(s->data.sptr);
+		if ((strcmp(s->name,"radar1.mlon")==0) && (s->type==DATAFLOAT))
+      data->radar1.mlon=*(s->data.sptr);
+		if ((strcmp(s->name,"radar1.mazm")==0) && (s->type==DATAFLOAT))
+      data->radar1.mazm=*(s->data.sptr);
+		if ((strcmp(s->name,"radar1.st_time")==0) && (s->type==DATAINT))
+      data->radar1.st_time=*(s->data.sptr);
+		if ((strcmp(s->name,"radar1.ed_time")==0) && (s->type==DATAINT))
+      data->radar1.ed_time=*(s->data.sptr);
+>>>>>>> fitcomp
 
 
 		if ((strcmp(s->name,"radar2.stid")==0) && (s->type==DATASHORT))
@@ -88,6 +123,7 @@ int MergeDecode(struct DataMap *ptr,struct MergeData *data)
 		if ((strcmp(s->name,"radar2.rng")==0) && (s->type==DATASHORT))
       data->radar2.rng=*(s->data.sptr);
 		if ((strcmp(s->name,"radar2.gsflg")==0) && (s->type==DATASHORT))
+<<<<<<< HEAD
       data->radar2.gsflg=*(s->data.fptr);
 		if ((strcmp(s->name,"radar2.vel")==0) && (s->type==DATAFLOAT))
       data->radar2.vel=*(s->data.fptr);
@@ -138,6 +174,58 @@ int MergeDecode(struct DataMap *ptr,struct MergeData *data)
       data->st_time=*(s->data.iptr);
 		if ((strcmp(s->name,"ed_time")==0) && (s->type==DATAINT))
       data->ed_time=*(s->data.iptr);
+=======
+      data->radar2.gsflg=*(s->data.sptr);
+		if ((strcmp(s->name,"radar2.vel")==0) && (s->type==DATAFLOAT))
+      data->radar2.vel=*(s->data.sptr);
+		if ((strcmp(s->name,"radar2.vel_err")==0) && (s->type==DATAFLOAT))
+      data->radar2.vel_err=*(s->data.sptr);
+		if ((strcmp(s->name,"radar2.pwr")==0) && (s->type==DATAFLOAT))
+      data->radar2.pwr=*(s->data.sptr);
+		if ((strcmp(s->name,"radar2.w_l")==0) && (s->type==DATAFLOAT))
+      data->radar2.w_l=*(s->data.sptr);
+		if ((strcmp(s->name,"radar2.glat")==0) && (s->type==DATAFLOAT))
+      data->radar2.glat=*(s->data.sptr);
+		if ((strcmp(s->name,"radar2.glon")==0) && (s->type==DATAFLOAT))
+      data->radar2.glon=*(s->data.sptr);
+		if ((strcmp(s->name,"radar2.gazm")==0) && (s->type==DATAFLOAT))
+      data->radar2.gazm=*(s->data.sptr);
+		if ((strcmp(s->name,"radar2.mlat")==0) && (s->type==DATAFLOAT))
+      data->radar2.mlat=*(s->data.sptr);
+		if ((strcmp(s->name,"radar2.mlon")==0) && (s->type==DATAFLOAT))
+      data->radar2.mlon=*(s->data.sptr);
+		if ((strcmp(s->name,"radar2.mazm")==0) && (s->type==DATAFLOAT))
+      data->radar2.mazm=*(s->data.sptr);
+		if ((strcmp(s->name,"radar2.st_time")==0) && (s->type==DATAINT))
+      data->radar2.st_time=*(s->data.sptr);
+		if ((strcmp(s->name,"radar2.ed_time")==0) && (s->type==DATAINT))
+      data->radar2.ed_time=*(s->data.sptr);
+
+		if ((strcmp(s->name,"velg")==0) && (s->type==DATAFLOAT))
+      data->velg=*(s->data.sptr);
+		if ((strcmp(s->name,"velm")==0) && (s->type==DATAFLOAT))
+      data->velm=*(s->data.sptr);
+		if ((strcmp(s->name,"glat")==0) && (s->type==DATAFLOAT))
+      data->glat=*(s->data.sptr);
+		if ((strcmp(s->name,"glon")==0) && (s->type==DATAFLOAT))
+      data->glon=*(s->data.sptr);
+		if ((strcmp(s->name,"gazm")==0) && (s->type==DATAFLOAT))
+      data->gazm=*(s->data.sptr);
+		if ((strcmp(s->name,"mlat")==0) && (s->type==DATAFLOAT))
+      data->mlat=*(s->data.sptr);
+		if ((strcmp(s->name,"mlon")==0) && (s->type==DATAFLOAT))
+      data->mlon=*(s->data.sptr);
+		if ((strcmp(s->name,"mazm")==0) && (s->type==DATAFLOAT))
+      data->mazm=*(s->data.sptr);
+		if ((strcmp(s->name,"dgeo")==0) && (s->type==DATAFLOAT))
+      data->dgeo=*(s->data.sptr);
+		if ((strcmp(s->name,"dmag")==0) && (s->type==DATAFLOAT))
+      data->dmag=*(s->data.sptr);
+		if ((strcmp(s->name,"st_time")==0) && (s->type==DATAINT))
+      data->st_time=*(s->data.sptr);
+		if ((strcmp(s->name,"ed_time")==0) && (s->type==DATAINT))
+      data->ed_time=*(s->data.sptr);
+>>>>>>> fitcomp
 
   }
 

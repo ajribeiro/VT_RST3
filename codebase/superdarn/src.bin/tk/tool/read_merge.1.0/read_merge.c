@@ -13,7 +13,11 @@ this code reads in a fit file and produces an ascii file
 #include <sys/types.h>
 #include <unistd.h>
 #include <ctype.h>
+<<<<<<< HEAD
 #include <math.h> 
+=======
+#include <math.h>
+>>>>>>> fitcomp
 #include <zlib.h>
 #include "rtypes.h"
 #include "dmap.h"
@@ -132,7 +136,11 @@ int main(int argc,char *argv[])
 							myData.velg,myData.glat,myData.glon,myData.gazm,jTime);
 
 		s = MergeFread(mergefp,&myData);
+<<<<<<< HEAD
 		
+=======
+
+>>>>>>> fitcomp
 	} while (s == 0);
 
 
