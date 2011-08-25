@@ -298,7 +298,7 @@ int main(int argc,char *argv[])
 
 	for(i=0;i<20;i++)
 		for(j=0;j<10;j++)
-			for(k=0;k<1;k++)
+			for(k=0;k<4;k++)
 				fprintf(stdout,"%f  %f  %lf  %lf  %lf\n",i*100.+50.,(j+1)*1.e-2,errors[i][j][0][k]/n,errors[i][j][1][k]/n,errors[i][j][2][k]/n);
 
 	fprintf(stderr,"%d  %d\n",n,n2);
