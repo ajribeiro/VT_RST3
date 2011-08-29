@@ -16,7 +16,7 @@
 #include <string.h>
 #include <time.h>
 #include <zlib.h>
-
+ 
 #include "rtypes.h"
 #include "option.h"
 
@@ -199,7 +199,7 @@ int main(int argc,char *argv[]) {
 
   fblk=FitACFMake(site,prm->time.yr); 
 
-  FitACF(prm,raw,fblk,fit);
+  FitACF(prm,raw,fblk,fit,0);
   
   if (old) {
     char vstr[256];
@@ -246,7 +246,7 @@ int main(int argc,char *argv[]) {
 	     prm->time.dy,prm->time.hr,prm->time.mt,prm->time.sc,prm->bmnum);
 
 
-    if (status==0) FitACF(prm,raw,fblk,fit);
+    if (status==0) FitACF(prm,raw,fblk,fit,0);
 
   
   } while (status==0);

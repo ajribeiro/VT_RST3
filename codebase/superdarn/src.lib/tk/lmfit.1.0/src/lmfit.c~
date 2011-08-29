@@ -274,7 +274,7 @@ double getguessex(int goodcnt, int nlags, int nslopes, struct exdatapoints * exd
           model_slope, diff=180./nslopes, w_guess,
           phi, model_vel_pos, data_phi, pwr=0, delta_pos, delta_neg;
 
-  int i, j, lastlag=nlags-1, p, mininx, sct_flg, sderr=3, lag;
+  int i, j, lastlag=nlags, p, mininx, sct_flg, sderr=3, lag;
 
 
   double * model_phi    = malloc(sizeof(double)*(nslopes+1)*(lastlag+1));
@@ -512,11 +512,13 @@ void lmfit(struct RadarParm *prm,struct RawData *raw,
     if(print)
       fprintf(stdout,"%d  %lf\n",R,raw->acfd[0][R*prm->mplgs]/sqrt(1.0*prm->nave));
 
+		/*not tauscan, check for badlags*/
+		if(!tauflg) FitACFCkRng(R+1,badlag,&badsmp,&fblk->prm);
+
 		/*Preliminaries, badlag checking, power level checking*/
 		for(L=0;L<mplgs;L++)
-		{
-			/*not tauscan, check for badlags*/
-			if(!tauflg) FitACFCkRng(R+1,badlag,&badsmp,&fblk->prm);
+		{/*
+			fprintf(stdout,"lmfit badlag  %d  %d  %d\n",R,L,badlag[L]);*/
 			/*tauscan, new ROS*/
 			if(tauflg && prm->mplgs == 18) lag = L;
 			/*old ROS*/

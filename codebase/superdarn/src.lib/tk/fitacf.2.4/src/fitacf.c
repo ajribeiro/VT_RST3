@@ -66,7 +66,7 @@ struct FitBlock *FitACFMake(struct RadarSite *hd,
 
 int FitACF(struct RadarParm *prm,
             struct RawData *raw,struct FitBlock *input,
-	    struct FitData *fit) {
+	    struct FitData *fit,int print) {
   int i,j,n;
   int fnum,goose;
   void *tmp=NULL;
@@ -170,6 +170,6 @@ int FitACF(struct RadarParm *prm,
   
   goose=((prm->stid)==GOOSEBAY);
 
-  fnum=do_fit(input,5,goose,fit->rng,fit->xrng,fit->elv,&fit->noise);
+  fnum=do_fit(input,5,goose,fit->rng,fit->xrng,fit->elv,&fit->noise,print);
   return 0;
 }

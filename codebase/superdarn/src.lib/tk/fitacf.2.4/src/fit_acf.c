@@ -35,7 +35,7 @@ int fit_acf (struct complex *acf,int range,
              int *badlag,struct FitACFBadSample *badsmp,int lag_lim,
 			 struct FitPrm *prm,
 		     double noise_lev_in,char xflag,double xomega,
-		     struct FitRange *ptr) {
+		     struct FitRange *ptr,int print) {
 
   double sum_np,sum_w,sum_wk,sum_wk2,*sum_wk2_arr=NULL,sum_wk4;
   double sum_p,sum_pk,sum_pk2,sum_phi,sum_kphi;
@@ -72,6 +72,10 @@ int fit_acf (struct complex *acf,int range,
    acf */
 
   int acf_stat=ACF_UNMODIFIED;
+
+	if(print)
+		fprintf(stdout,"%d  %lf\n",range-1,acf[0].x/sqrt(1.0*prm->nave));
+
 
 /* ----------------End of declarations ----------------------------------*/
  
@@ -140,6 +144,26 @@ int fit_acf (struct complex *acf,int range,
 
 
   FitACFCkRng(range, badlag, badsmp, prm);
+
+	if(print)
+	{
+		int availflg,lag;
+		for(j=0;j<prm->mplgs;j++)
+		{
+			/*tauscan, new ROS*/
+			if((prm->cp == 3310 || prm->cp == 503 || prm->cp == -503) && prm->mplgs == 18) lag = j;
+			/*old ROS*/
+			else lag = abs(prm->lag[0][j] - prm->lag[1][j]);
+
+			if(badlag[j] != 0)
+				availflg = 0;
+			else
+				availflg = 1;
+
+			if(print)
+					fprintf(stdout,"%d  %lf  %lf  %d\n",lag,acf[j].x,acf[j].y,availflg);
+		}
+	}
 
   /* Save the original ACF in a new variable so we can try some
      preprocessing on it.
@@ -219,6 +243,26 @@ int fit_acf (struct complex *acf,int range,
 
   sum_np = more_badlags(w, badlag, noise_lev, prm->mplgs,prm->nave);
 
+	if(print)
+	{
+		int availflg,lag;
+		for(j=0;j<prm->mplgs;j++)
+		{
+			/*tauscan, new ROS*/
+			if((prm->cp == 3310 || prm->cp == 503 || prm->cp == -503) && prm->mplgs == 18) lag = j;
+			/*old ROS*/
+			else lag = abs(prm->lag[0][j] - prm->lag[1][j]);
+
+			if(badlag[j] != 0)
+				availflg = 0;
+			else
+				availflg = 1;
+
+			if(print)
+					fprintf(stdout,"%d  %lf  %lf  %d\n",lag,acf[j].x,acf[j].y,availflg);
+		}
+	}
+
   ptr->nump = (char) sum_np;
 
   /*  We must have at least lag_lim good lags */
@@ -235,6 +279,8 @@ int fit_acf (struct complex *acf,int range,
     if (wt2 !=NULL) free(wt2);
     if (wp !=NULL) free(wp);
     if (bad_pwr !=NULL) free(bad_pwr);
+		if(print)
+			fprintf(stdout,"4\n");
     return 4;
   }
 
@@ -300,6 +346,8 @@ int fit_acf (struct complex *acf,int range,
     if (wt2 !=NULL) free(wt2);
     if (wp !=NULL) free(wp);
     if (bad_pwr !=NULL) free(bad_pwr);
+		if(print)
+			fprintf(stdout,"2\n");
     return 2;
   }
 
@@ -429,8 +477,18 @@ int fit_acf (struct complex *acf,int range,
       if (wt2 !=NULL) free(wt2);
       if (wp !=NULL) free(wp);
       if (bad_pwr !=NULL) free(bad_pwr);
+			if(print)
+				fprintf(stdout,"3\n");
       return 2;
     }
+
+    if(print)
+		{
+			fprintf(stdout,"0\n");
+			fprintf(stdout,"%lf\n",omega_loc);
+		}
+
+		
 
     ptr->p_l = c_log;
     ptr->p_s = c_log;

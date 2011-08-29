@@ -512,11 +512,12 @@ void lmfit(struct RadarParm *prm,struct RawData *raw,
     if(print)
       fprintf(stdout,"%d  %lf\n",R,raw->acfd[0][R*prm->mplgs]/sqrt(1.0*prm->nave));
 
+		/*not tauscan, check for badlags*/
+		if(!tauflg) FitACFCkRng(R+1,badlag,&badsmp,&fblk->prm);
+
 		/*Preliminaries, badlag checking, power level checking*/
 		for(L=0;L<mplgs;L++)
 		{
-			/*not tauscan, check for badlags*/
-			if(!tauflg) FitACFCkRng(R+1,badlag,&badsmp,&fblk->prm);
 			/*tauscan, new ROS*/
 			if(tauflg && prm->mplgs == 18) lag = L;
 			/*old ROS*/

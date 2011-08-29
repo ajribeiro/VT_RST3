@@ -206,6 +206,7 @@ int main(int argc,char *argv[])
 		          prm->time.dy,prm->time.hr,prm->time.mt,
                           prm->time.sc);
 
+
   if (site==NULL)
 	{
     fprintf(stderr,"Failed to get site information.\n");
@@ -250,6 +251,7 @@ int main(int argc,char *argv[])
 			/*check for 3 good fits*/
 			if(fitacf->rng[i].qflg && fitlm->rng[i].qflg && fitex->rng[i].qflg && fitacf->rng[i].v != 0.)
 			{
+				fprintf(stderr,"power:  %lf  %lf\n",fitacf->rng[i].p_l,fitlm->rng[i].p_l);
 				n++;
 				vbin = (vel/100);
 				tbin = (t_d/10)-1;
@@ -288,7 +290,6 @@ int main(int argc,char *argv[])
 			}
 		}
 
-
     status=RawFread(fp,prm,raw);
 
     if (vb)
@@ -304,7 +305,7 @@ int main(int argc,char *argv[])
 			fitacfex2(prm,raw,fitex,fblkex,0);
 		}
 
-  } while (status==0 && print==0);
+  } while (status==0 && print==0);/*
 
 	for(i=0;i<20;i++)
 		for(j=0;j<10;j++)
@@ -314,7 +315,7 @@ int main(int argc,char *argv[])
 									sqrt(errors[i][j][0][k]/num[i][j]),sqrt(errors[i][j][1][k]/num[i][j]),sqrt(errors[i][j][2][k]/num[i][j]),num[i][j]);
 				else
 					fprintf(stdout,"%f  %f  %lf  %lf  %lf  %lf\n",i*100.+50.,(j+1)*1.e-2,
-									errors[i][j][0][k]/num[i][j],errors[i][j][1][k]/num[i][j],errors[i][j][2][k]/num[i][j],num[i][j]);
+									errors[i][j][0][k]/num[i][j],errors[i][j][1][k]/num[i][j],errors[i][j][2][k]/num[i][j],num[i][j]);*/
 
 	fprintf(stderr,"%d  %d\n",n,n2);
 

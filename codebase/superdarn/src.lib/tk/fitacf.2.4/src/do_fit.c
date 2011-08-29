@@ -29,7 +29,7 @@
 int do_fit(struct FitBlock *iptr,int lag_lim,int goose,
 	   struct FitRange *ptr,struct FitRange *xptr,
            struct FitElv *elv,
-	   struct FitNoise *nptr) {
+	   struct FitNoise *nptr,int print) {
 
   struct FitACFBadSample badsmp;
   int *badlag=NULL;
@@ -104,6 +104,7 @@ int do_fit(struct FitBlock *iptr,int lag_lim,int goose,
   if (mnpwr < 1.0) mnpwr = iptr->prm.noise;
   nptr->skynoise = mnpwr;
 
+
   /* Now determine the level which will be used as the cut-off power 
      for fit_acf.  This is the average power at all non-zero lags of all
      acfs which have lag0 power < 1.6*mnpwr + 1 stnd. deviation from that
@@ -174,12 +175,18 @@ int do_fit(struct FitBlock *iptr,int lag_lim,int goose,
   /* ----------------------------------------------------------------------*/
   /* 	Now do the fits for each acf */
 
-  for (k=0, i=0; k<iptr->prm.nrang;k++) {
+	if(print)
+		fprintf(stdout,"%d  %d  %lf  %d  %lf\n",iptr->prm.nrang,iptr->prm.mplgs,nptr->skynoise,iptr->prm.tfreq,iptr->prm.mpinc*1.e-6);
+
+  for (k=0, i=0; k<iptr->prm.nrang;k++)
+	{
 
     ptr[k].qflg = fit_acf(&iptr->acfd[k*iptr->prm.mplgs], k+1,
                               &badlag[k*iptr->prm.mplgs],&badsmp,
-                              lag_lim,&iptr->prm,noise_pwr,0,0.0,&ptr[k]);
+                              lag_lim,&iptr->prm,noise_pwr,0,0.0,&ptr[k],print);
     xomega=ptr[k].v;
+		if(print)
+			fprintf(stdout,"%d\n",ptr[k].qflg);
     if (ptr[k].qflg == 1)	{
       /* several changes have been made here to 
 	 fix an apparent problem in handling HUGE_VAL.
@@ -221,8 +228,8 @@ int do_fit(struct FitBlock *iptr,int lag_lim,int goose,
       /* flag absurdly high velocities with qflg of 8 */
 
       if (ptr[k].v > (freq_to_vel* (PI* 1000.0* 1000.0)/ iptr->prm.mpinc))
-         ptr[k].qflg= 8;	  
-	  
+         ptr[k].qflg= 8;
+
       ptr[k].v_err = (ptr[k].v_err == HUGE_VAL) ?
 			  HUGE_VAL : 
 			  freq_to_vel*ptr[k].v_err;
@@ -252,12 +259,15 @@ int do_fit(struct FitBlock *iptr,int lag_lim,int goose,
       ptr[k].w_s_err = (ptr[k].w_s_err == HUGE_VAL) ?
 	                    HUGE_VAL :
 	                    3.33*freq_to_vel*ptr[k].w_s_err;
-       
+
 
       /*  Now check the values of power, velocity and width
           to see if this should be flagged as ground-scatter */
-	        
-      if (ptr[k].gsct == 0) ptr[k].gsct=ground_scatter(&ptr[k]); 
+
+      if (ptr[k].gsct == 0) ptr[k].gsct=ground_scatter(&ptr[k]);
+
+			if(print)
+				fprintf(stdout,"%lf  %lf  %lf  %lf\n",ptr[k].v,ptr[k].v_err,ptr[k].p_l,ptr[k].w_l);
     }
 	
     if ((iptr->prm.xcf==0) || (ptr[k].qflg !=1)) {
@@ -269,7 +279,7 @@ int do_fit(struct FitBlock *iptr,int lag_lim,int goose,
     xptr[k].qflg = fit_acf(&iptr->xcfd[k*iptr->prm.mplgs], k+1,
                                   &badlag[k*iptr->prm.mplgs],&badsmp,
                                   lag_lim,&iptr->prm,noise_pwr,1,xomega,
-				  &xptr[k]);
+				  &xptr[k],0);
        
     if (xptr[k].qflg == 1) {
       xptr[k].p_l = xptr[k].p_l*LN_TO_LOG - skylog;

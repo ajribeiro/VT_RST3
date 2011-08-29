@@ -47,7 +47,7 @@ struct RadarParm {
   int16 lagfr;
   int16 smsep;
   int16  ercod;
-  
+
   struct {
     int16 agc;
     int16 lopwr;
