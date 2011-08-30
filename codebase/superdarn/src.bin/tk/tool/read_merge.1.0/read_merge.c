@@ -13,15 +13,11 @@ this code reads in a fit file and produces an ascii file
 #include <sys/types.h>
 #include <unistd.h>
 #include <ctype.h>
-<<<<<<< HEAD
-#include <math.h> 
-=======
 #include <math.h>
->>>>>>> fitcomp
 #include <zlib.h>
 #include "rtypes.h"
-#include "dmap.h"
-#include "option.h"
+#include "dmap.h" 
+#include "option.h" 
 #include "rtime.h"
 #include "radar.h"
 #include "rprm.h"
@@ -124,6 +120,8 @@ int main(int argc,char *argv[])
 		TimeEpochToYMDHMS((double)myData.st_time,&yr,&mo,&dy,&hr,&mt,&sc);
 		jTime = TimeYMDHMSToJulian(yr,mo,dy,hr,mt,sc);
 
+		fprintf(stderr,"%lf\n",jTime);
+
 		if(mag_flg)
 			fprintf(out,"%lf  %lf  %lf  %lf  %lf  %lf  %lf  %lf  %lf  %lf  %lf  %lf  %lf  %lf  %lf  %lf  %lf\n",
 							myData.radar1.vel,myData.radar1.pwr,myData.radar1.w_l,myData.radar1.mlat,myData.radar1.mlon,myData.radar1.mazm,
@@ -136,11 +134,7 @@ int main(int argc,char *argv[])
 							myData.velg,myData.glat,myData.glon,myData.gazm,jTime);
 
 		s = MergeFread(mergefp,&myData);
-<<<<<<< HEAD
-		
-=======
 
->>>>>>> fitcomp
 	} while (s == 0);
 
 

@@ -1,7 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;+
 ;NAME:
-; plot_fitex2
+; plot_lmfit
 ;
 ; PURPOSE:
 ; Plots the results of fitting ACFs from 1 beam sounding with the lmfit algorithm

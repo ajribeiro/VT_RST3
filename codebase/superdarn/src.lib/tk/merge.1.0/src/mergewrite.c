@@ -23,10 +23,6 @@
 int MergeEncode(struct DataMap *ptr,struct MergeData *data)
 {
 
-<<<<<<< HEAD
-=======
-
->>>>>>> fitcomp
   DataMapAddScalar(ptr,"radar1.stid",DATASHORT,&data->radar1.stid);
 	DataMapAddScalar(ptr,"radar1.qflg",DATASHORT,&data->radar1.qflg);
 	DataMapAddScalar(ptr,"radar1.cpid",DATASHORT,&data->radar1.cpid);

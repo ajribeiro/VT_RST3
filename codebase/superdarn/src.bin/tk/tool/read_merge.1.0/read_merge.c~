@@ -13,10 +13,10 @@ this code reads in a fit file and produces an ascii file
 #include <sys/types.h>
 #include <unistd.h>
 #include <ctype.h>
-#include <math.h> 
+#include <math.h>
 #include <zlib.h>
 #include "rtypes.h"
-#include "dmap.h"
+#include "dmap.h" 
 #include "option.h"
 #include "rtime.h"
 #include "radar.h"
@@ -112,13 +112,15 @@ int main(int argc,char *argv[])
     exit(-1);
 	}
 	out = fopen(outfile,"w");
-	fprintf(out,"%d\n",mag_flg);
+	fprintf(out,"%d  %d  %d\n",mag_flg,myData.radar1.stid,myData.radar2.stid);
 
 	do
 	{
 
 		TimeEpochToYMDHMS((double)myData.st_time,&yr,&mo,&dy,&hr,&mt,&sc);
 		jTime = TimeYMDHMSToJulian(yr,mo,dy,hr,mt,sc);
+
+		fprintf(stderr,"%lf\n",jTime);
 
 		if(mag_flg)
 			fprintf(out,"%lf  %lf  %lf  %lf  %lf  %lf  %lf  %lf  %lf  %lf  %lf  %lf  %lf  %lf  %lf  %lf  %lf\n",
@@ -132,7 +134,7 @@ int main(int argc,char *argv[])
 							myData.velg,myData.glat,myData.glon,myData.gazm,jTime);
 
 		s = MergeFread(mergefp,&myData);
-		
+
 	} while (s == 0);
 
 

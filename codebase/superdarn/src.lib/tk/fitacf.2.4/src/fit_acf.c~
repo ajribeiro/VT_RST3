@@ -73,7 +73,7 @@ int fit_acf (struct complex *acf,int range,
 
   int acf_stat=ACF_UNMODIFIED;
 
-	if(print)
+	if(print && prm->channel < 2)
 		fprintf(stdout,"%d  %lf\n",range-1,acf[0].x/sqrt(1.0*prm->nave));
 
 
@@ -136,16 +136,20 @@ int fit_acf (struct complex *acf,int range,
     if (wt2 !=NULL) free(wt2);
     if (wp !=NULL) free(wp);
     if (bad_pwr !=NULL) free(bad_pwr);
+		if(print && prm->channel < 2)
+				fprintf(stdout,"-1\n");
     return -1;
   }
 
   /* initialize the table of abs(acf[k]) and log(abs(acf[k])) */
 
 
+	if(print && prm->channel < 2)
+				fprintf(stdout,"0\n");
 
   FitACFCkRng(range, badlag, badsmp, prm);
 
-	if(print)
+	if(print && prm->channel < 2)
 	{
 		int availflg,lag;
 		for(j=0;j<prm->mplgs;j++)
@@ -160,8 +164,7 @@ int fit_acf (struct complex *acf,int range,
 			else
 				availflg = 1;
 
-			if(print)
-					fprintf(stdout,"%d  %lf  %lf  %d\n",lag,acf[j].x,acf[j].y,availflg);
+			fprintf(stdout,"%d  %lf  %lf  %d\n",lag,acf[j].x,acf[j].y,availflg);
 		}
 	}
 
@@ -234,19 +237,23 @@ int fit_acf (struct complex *acf,int range,
     if (wt2 !=NULL) free(wt2);
     if (wp !=NULL) free(wp);
     if (bad_pwr !=NULL) free(bad_pwr);
+		if(print && prm->channel < 2)
+				fprintf(stdout,"1\n");
     return 2; 
   } 
     /* give up if left over pwr is too low */
 
+	if(print && prm->channel < 2)
+			fprintf(stdout,"0\n");
 
   /*  identify any additional bad lags */
 
   sum_np = more_badlags(w, badlag, noise_lev, prm->mplgs,prm->nave);
 
-	if(print)
+	if(print && prm->channel < 2)
 	{
 		int availflg,lag;
-		for(j=0;j<mplgs;j++)
+		for(j=0;j<prm->mplgs;j++)
 		{
 			/*tauscan, new ROS*/
 			if((prm->cp == 3310 || prm->cp == 503 || prm->cp == -503) && prm->mplgs == 18) lag = j;
@@ -258,8 +265,7 @@ int fit_acf (struct complex *acf,int range,
 			else
 				availflg = 1;
 
-			if(print)
-					fprintf(stdout,"%d  %lf  %lf  %d\n",lag,acf[j].x,acf[j].y,availflg);
+			fprintf(stdout,"%d  %lf  %lf  %d\n",lag,acf[j].x,acf[j].y,availflg);
 		}
 	}
 
@@ -279,7 +285,7 @@ int fit_acf (struct complex *acf,int range,
     if (wt2 !=NULL) free(wt2);
     if (wp !=NULL) free(wp);
     if (bad_pwr !=NULL) free(bad_pwr);
-		if(print)
+		if(print && prm->channel < 2)
 			fprintf(stdout,"4\n");
     return 4;
   }
@@ -346,7 +352,7 @@ int fit_acf (struct complex *acf,int range,
     if (wt2 !=NULL) free(wt2);
     if (wp !=NULL) free(wp);
     if (bad_pwr !=NULL) free(bad_pwr);
-		if(print)
+		if(print && prm->channel < 2)
 			fprintf(stdout,"2\n");
     return 2;
   }
@@ -477,16 +483,10 @@ int fit_acf (struct complex *acf,int range,
       if (wt2 !=NULL) free(wt2);
       if (wp !=NULL) free(wp);
       if (bad_pwr !=NULL) free(bad_pwr);
-			if(print)
+			if(print && prm->channel < 2)
 				fprintf(stdout,"3\n");
       return 2;
     }
-
-    if(print)
-		{
-			fprintf(stdout,"0\n");
-			fprintf(stdout,"%lf\n",omega_loc);
-		}
 
 		
 
@@ -643,6 +643,12 @@ int fit_acf (struct complex *acf,int range,
       ptr->gsct = 0;
     }
   }
+
+	if(print && prm->channel < 2)
+	{
+		fprintf(stdout,"0\n");
+		fprintf(stdout,"%lf\n",omega_loc);
+	}
 
   if (sum_wk2_arr !=NULL) free(sum_wk2_arr);
   if (phi_res !=NULL)  free(phi_res);

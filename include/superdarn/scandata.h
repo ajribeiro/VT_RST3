@@ -46,7 +46,7 @@ struct RadarBeam {
   int freq;
   int noise;
   int atten;
-  int channel;  
+  int channel;
   int nrang;
   unsigned char *sct;
   struct RadarCell *rng;

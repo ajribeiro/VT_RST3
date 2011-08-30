@@ -175,7 +175,7 @@ int do_fit(struct FitBlock *iptr,int lag_lim,int goose,
   /* ----------------------------------------------------------------------*/
   /* 	Now do the fits for each acf */
 
-	if(print)
+	if(print && iptr->prm.channel < 2)
 		fprintf(stdout,"%d  %d  %lf  %d  %lf\n",iptr->prm.nrang,iptr->prm.mplgs,nptr->skynoise,iptr->prm.tfreq,iptr->prm.mpinc*1.e-6);
 
   for (k=0, i=0; k<iptr->prm.nrang;k++)
@@ -185,7 +185,7 @@ int do_fit(struct FitBlock *iptr,int lag_lim,int goose,
                               &badlag[k*iptr->prm.mplgs],&badsmp,
                               lag_lim,&iptr->prm,noise_pwr,0,0.0,&ptr[k],print);
     xomega=ptr[k].v;
-		if(print)
+		if(print && iptr->prm.channel < 2)
 			fprintf(stdout,"%d\n",ptr[k].qflg);
     if (ptr[k].qflg == 1)	{
       /* several changes have been made here to 
@@ -266,7 +266,7 @@ int do_fit(struct FitBlock *iptr,int lag_lim,int goose,
 
       if (ptr[k].gsct == 0) ptr[k].gsct=ground_scatter(&ptr[k]);
 
-			if(print)
+			if(print && iptr->prm.channel < 2)
 				fprintf(stdout,"%lf  %lf  %lf  %lf\n",ptr[k].v,ptr[k].v_err,ptr[k].p_l,ptr[k].w_l);
     }
 	
