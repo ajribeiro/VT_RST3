@@ -105,6 +105,7 @@ int do_fit(struct FitBlock *iptr,int lag_lim,int goose,
   nptr->skynoise = mnpwr;
 
 
+
   /* Now determine the level which will be used as the cut-off power 
      for fit_acf.  This is the average power at all non-zero lags of all
      acfs which have lag0 power < 1.6*mnpwr + 1 stnd. deviation from that
@@ -183,7 +184,9 @@ int do_fit(struct FitBlock *iptr,int lag_lim,int goose,
 
     ptr[k].qflg = fit_acf(&iptr->acfd[k*iptr->prm.mplgs], k+1,
                               &badlag[k*iptr->prm.mplgs],&badsmp,
-                              lag_lim,&iptr->prm,noise_pwr,0,0.0,&ptr[k],print);
+                              lag_lim,&iptr->prm,noise_pwr,0,0.0,&ptr[k],print);/*
+
+		fprintf(stderr,"ONE  qflg  %d  pwr  %lf\n",ptr[k].qflg,ptr[k].p_l);*/
     xomega=ptr[k].v;
 		if(print && iptr->prm.channel < 2)
 			fprintf(stdout,"%d\n",ptr[k].qflg);
@@ -248,8 +251,8 @@ int do_fit(struct FitBlock *iptr,int lag_lim,int goose,
                       sqrt(ptr[k].w_s) : -sqrt(-ptr[k].w_s);
 
 
-      if ((ptr[k].w_s !=0.0) && (ptr[k].w_s_err != HUGE_VAL))  
-	   ptr[k].w_s_err = 0.5*ptr[k].w_s_err/fabs(ptr[k].w_s);
+      if ((ptr[k].w_s !=0.0) && (ptr[k].w_s_err != HUGE_VAL))
+				ptr[k].w_s_err = 0.5*ptr[k].w_s_err/fabs(ptr[k].w_s);
       else ptr[k].w_s_err=HUGE_VAL;
 
 
@@ -267,7 +270,10 @@ int do_fit(struct FitBlock *iptr,int lag_lim,int goose,
       if (ptr[k].gsct == 0) ptr[k].gsct=ground_scatter(&ptr[k]);
 
 			if(print && iptr->prm.channel < 2)
-				fprintf(stdout,"%lf  %lf  %lf  %lf\n",ptr[k].v,ptr[k].v_err,ptr[k].p_l,ptr[k].w_l);
+				fprintf(stdout,"%lf  %lf  %lf  %lf\n",ptr[k].v,ptr[k].v_err,ptr[k].p_l,ptr[k].w_l);/*
+
+
+			fprintf(stderr,"TWO  qflg  %d  pwr  %lf\n",ptr[k].qflg,ptr[k].p_l);*/
     }
 	
     if ((iptr->prm.xcf==0) || (ptr[k].qflg !=1)) {

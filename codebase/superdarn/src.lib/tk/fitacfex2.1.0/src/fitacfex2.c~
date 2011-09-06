@@ -269,7 +269,7 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
   {
     if(fblk->prm.channel==0) FitACFBadlags(&fblk->prm,&badsmp);
     else FitACFBadlagsStereo(&fblk->prm,&badsmp);
-  }
+  } 
 
 	if(print)
 	{

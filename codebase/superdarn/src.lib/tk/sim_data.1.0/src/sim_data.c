@@ -541,11 +541,11 @@ void sim_data(double *t_d, double *t_g, double *t_c, double *v_dop, int * qflg,
   for(r=0;r<nrang;r++)
     for(i=0;i<n_lags;i++)
     {
-      out_acfs[r][i] = acfs[r][i]*amp0[r]/(nave*pwrtot/numtot);
+      out_acfs[r][i] = 1./(pow(r+1,2))*acfs[r][i]*amp0[r]/(nave*pwrtot/numtot);
       if(noise_flg)
       {
         noise_acfs[r][i] *= pow(noise_lev,2)/(nave*npwrtot/nnumtot);
-        out_acfs[r][i] += noise_acfs[r][i];
+        out_acfs[r][i] += amp0[r]*noise_acfs[r][i];
       }
     }
 

@@ -234,9 +234,17 @@ int main(int argc,char *argv[])
 	fblkacf=FitACFMake(site,prm->time.yr);
 	fblkex=FitACFMake(site,prm->time.yr);
 
-	FitACF(prm,raw,fblkacf,fitacf);
+	FitACF(prm,raw,fblkacf,fitacf,0);
 	lmfit(prm,raw,fitlm,fblklm,0);
 	fitacfex2(prm,raw,fitex,fblkex,0);
+
+	int ** very_bad = malloc(20*sizeof(int *));
+	for(i=0;i<20;i++)
+	{
+		very_bad[i] = malloc(3*sizeof(int));
+		for(j=0;j<3;j++)
+			very_bad[i][j] = 0;
+	}
 
 	n = 0;
 	int print=0,n2=0;
@@ -251,7 +259,6 @@ int main(int argc,char *argv[])
 			/*check for 3 good fits*/
 			if(fitacf->rng[i].qflg && fitlm->rng[i].qflg && fitex->rng[i].qflg && fitacf->rng[i].v != 0.)
 			{
-				fprintf(stderr,"power:  %lf  %lf\n",fitacf->rng[i].p_l,fitlm->rng[i].p_l);
 				n++;
 				vbin = (vel/100);
 				tbin = (t_d/10)-1;
@@ -274,18 +281,23 @@ int main(int argc,char *argv[])
 				/*fourth, absolute decay time*/
 				errors[vbin][tbin][0][3] += (double)t_d*1.e-3-lambda/(fitacf->rng[i].w_l*2.*3.14159); /*fitacf*/
 				errors[vbin][tbin][1][3] += (double)t_d*1.e-3-lambda/(fitex->rng[i].w_l*2.*3.14159); /*fitex2*/
-				errors[vbin][tbin][2][3] += (double)t_d*1.e-3-lambda/(fitlm->rng[i].w_l*2.*3.14159); /*lmfit*//*
+				errors[vbin][tbin][2][3] += (double)t_d*1.e-3-lambda/(fitlm->rng[i].w_l*2.*3.14159); /*lmfit*/
 
 				if(fabs((double)vel-fitacf->rng[i].v) > 500)
-				{
+				{/*
 					fprintf(stderr,"%d-%d-%d %d:%d:%d beam=%d\n",prm->time.yr,prm->time.mo,
 										prm->time.dy,prm->time.hr,prm->time.mt,prm->time.sc,prm->bmnum);
 					fprintf(stderr,"%lf  %lf\nfitacf %lf  %lf  \nfitex2  %lf  %lf\nlmfit  %lf  %lf\n",(double)vel,t_d*1.e-3,
 									fitacf->rng[i].v,(double)vel-fitacf->rng[i].v,
 									fitex->rng[i].v,(double)vel-fitex->rng[i].v,
-									fitlm->rng[i].v,(double)vel-fitlm->rng[i].v);
+									fitlm->rng[i].v,(double)vel-fitlm->rng[i].v);*/
 									n2++;
-				}*/
+					very_bad[vbin][0]++;
+				}
+				if(fabs((double)vel-fitex->rng[i].v) > 500)
+					very_bad[vbin][1]++;
+				if(fabs((double)vel-fitlm->rng[i].v) > 500)
+					very_bad[vbin][2]++;
 
 			}
 		}
@@ -294,18 +306,16 @@ int main(int argc,char *argv[])
 
     if (vb)
       fprintf(stderr,"%d-%d-%d %d:%d:%d beam=%d\n",prm->time.yr,prm->time.mo,
-	     prm->time.dy,prm->time.hr,prm->time.mt,prm->time.sc,prm->bmnum);/*
-
-    if (prm->time.hr==20 && prm->time.mt==44 && prm->time.sc == 35)
-			print=1;*/
+	     prm->time.dy,prm->time.hr,prm->time.mt,prm->time.sc,prm->bmnum);
+			 
     if (status==0)
 		{
 			lmfit(prm,raw,fitlm,fblklm,0);
-			FitACF(prm,raw,fblkacf,fitacf);
+			FitACF(prm,raw,fblkacf,fitacf,0);
 			fitacfex2(prm,raw,fitex,fblkex,0);
 		}
 
-  } while (status==0 && print==0);/*
+  } while (status==0 && print==0);
 
 	for(i=0;i<20;i++)
 		for(j=0;j<10;j++)
@@ -315,10 +325,30 @@ int main(int argc,char *argv[])
 									sqrt(errors[i][j][0][k]/num[i][j]),sqrt(errors[i][j][1][k]/num[i][j]),sqrt(errors[i][j][2][k]/num[i][j]),num[i][j]);
 				else
 					fprintf(stdout,"%f  %f  %lf  %lf  %lf  %lf\n",i*100.+50.,(j+1)*1.e-2,
-									errors[i][j][0][k]/num[i][j],errors[i][j][1][k]/num[i][j],errors[i][j][2][k]/num[i][j],num[i][j]);*/
+									errors[i][j][0][k]/num[i][j],errors[i][j][1][k]/num[i][j],errors[i][j][2][k]/num[i][j],num[i][j]);
+
+	for(i=0;i<20;i++)
+		fprintf(stderr,"%d  %d  %d  %d\n",i,very_bad[i][0],very_bad[i][1],very_bad[i][2]);
 
 	fprintf(stderr,"%d  %d\n",n,n2);
 
+	for(i=0;i<20;i++)
+		free(num[i]);
+	free(num[i]);
+
+	for(i=0;i<20;i++)
+	{
+		for(j=0;j<10;j++)
+		{
+			for(k=0;k<3;k++)
+				free(errors[i][j][k]);
+			free(errors[i][j]);
+		}
+		free(errors[i]);
+	}
+	free(errors);
+
+	free(very_bad);
 	FitACFFree(fblkacf);
   FitACFFree(fblklm);
 	FitACFFree(fblkex);
