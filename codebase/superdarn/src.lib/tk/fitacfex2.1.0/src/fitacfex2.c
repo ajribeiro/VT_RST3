@@ -400,8 +400,8 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
       }
       nrfit(good_lags,logpwr,goodcnt,NULL,0,&a,&b,&siga,&sigb,&chi2,&q);
       fitted_width = -2.9979e8*b/(prm->mpinc*1.e-6)/
-                            (2*PI*1000.0*prm->tfreq);
-      if(fitted_width<0.00) fitted_width = 0.0;
+                            (2*PI*1000.0*prm->tfreq);/*
+      if(fitted_width<0.00) fitted_width = 0.0;*/
 			fitted_power = log(exp(a) + skynoise);
 
 			if(print)
@@ -559,8 +559,8 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
 
         fit->rng[R].w_l   = fitted_width;
         fitted_width = 2.9979e8*sigb/(prm->mpinc*1.e-6)/
-                            (2*PI*1000.0*prm->tfreq);/*
-        if(fitted_width<0.00) fitted_width = 0.0;*/
+                            (2*PI*1000.0*prm->tfreq);
+        if(fitted_width<0.00) fitted_width = 0.;
         fit->rng[R].w_l_err = fitted_width;
 
         fit->rng[R].nump  = goodcnt;

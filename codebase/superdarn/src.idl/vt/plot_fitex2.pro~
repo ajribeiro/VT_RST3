@@ -59,11 +59,11 @@
 
 pro plot_fitex2,time
   ;the file we are reading data from
-  file_in = '/rst/output_files/'+time+'.fitex2.test'
+  file_in = '/rst_new/rst/output_files/'+time+'.fitex2.test'
 
   ;the file we are plotting to
   set_plot,'PS',/copy
-  device,/landscape,/COLOR,BITS_PER_PIXEL=8,filename='/rst/output_plots/'+time+'.fitex2.ps'
+  device,/landscape,/COLOR,BITS_PER_PIXEL=8,filename='/rst_new/rst/output_plots/'+time+'.fitex2.ps'
 
   S = findgen(17)*(!PI*2./16.)
   !p.multi = [0,1,1]
@@ -77,7 +77,7 @@ pro plot_fitex2,time
 
   lambda = 3.e8/(tfreq*1.e3)
 	;get rad info
-  radar_info,stid,glat,glon,mlat,mlon,oneletter,threeletter,name,STID_FLG=fix(stid)
+  radar_info,stid,glat,glon,mlat,mlon,oneletter,threeletter,name,fix(stid)
   date_str = name+'				'+$
 							strtrim(fix(yr),2)+'/'+strtrim(fix(mo),2)+'/'+strtrim(fix(dy),2)
   date_str = date_str+'				'

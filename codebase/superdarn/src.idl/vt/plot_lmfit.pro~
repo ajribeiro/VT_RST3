@@ -1,7 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;+
 ;NAME:
-; plot_fitex2
+; plot_lmfit
 ;
 ; PURPOSE:
 ; Plots the results of fitting ACFs from 1 beam sounding with the lmfit algorithm
@@ -60,9 +60,9 @@
 
 pro plot_lmfit,time
   ;the file we are reading data from
-  file_in = '/rst/output_files/'+time+'.lmfit.test'
+  file_in = '/rst_new/rst/output_files/'+time+'.lmfit.test'
   set_plot,'PS',/copy
-  device,/landscape,/COLOR,BITS_PER_PIXEL=8,filename='/rst/output_plots/'+time+'.lmfit.ps'
+  device,/landscape,/COLOR,BITS_PER_PIXEL=8,filename='/rst_new/rst/output_plots/'+time+'.lmfit.ps'
   S = findgen(17)*(!PI*2./16.)
   !p.multi = [0,1,1]
 

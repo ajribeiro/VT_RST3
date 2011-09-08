@@ -517,8 +517,7 @@ void lmfit(struct RadarParm *prm,struct RawData *raw,
 
 		/*Preliminaries, badlag checking, power level checking*/
 		for(L=0;L<mplgs;L++)
-		{/*
-			fprintf(stdout,"lmfit badlag  %d  %d  %d\n",R,L,badlag[L]);*/
+		{
 			/*tauscan, new ROS*/
 			if(tauflg && prm->mplgs == 18) lag = L;
 			/*old ROS*/

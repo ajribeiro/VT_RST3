@@ -258,7 +258,7 @@ void lm_noise_stat(struct RadarParm *prm, struct RawData * raw,
         *skynoise += pwrd[i];
       *skynoise /= (double)j;
     }
-    if(*skynoise <= 1.) *skynoise = prm->noise.search;
+    if(*skynoise <= prm->noise.search) *skynoise = prm->noise.search;
   }
   else
     *skynoise = prm->noise.search;

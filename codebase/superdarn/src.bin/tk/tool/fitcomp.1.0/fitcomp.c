@@ -299,6 +299,12 @@ int main(int argc,char *argv[])
 				if(fabs((double)vel-fitlm->rng[i].v) > 500)
 					very_bad[vbin][2]++;
 
+				if(fabs(t_d*1.e-3-lambda/(fitex->rng[i].w_l*2.*3.14159)) > 500)
+				{
+					fprintf(stderr,"%lf  %lf  %lf\n",t_d*1.e-3,lambda/(fitex->rng[i].w_l*2.*3.14159),fitex->rng[i].w_l);
+					exit(-1);
+				}
+
 			}
 		}
 
