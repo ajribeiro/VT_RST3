@@ -106,6 +106,7 @@ int do_fit(struct FitBlock *iptr,int lag_lim,int goose,
 
 
 
+
   /* Now determine the level which will be used as the cut-off power 
      for fit_acf.  This is the average power at all non-zero lags of all
      acfs which have lag0 power < 1.6*mnpwr + 1 stnd. deviation from that
@@ -138,8 +139,8 @@ int do_fit(struct FitBlock *iptr,int lag_lim,int goose,
 	ptr[i].w_s_err = 0.0;
 	ptr[i].v = 0.0;
 	ptr[i].v_err = 0.0;
-	ptr[i].phi0 = 0.0;
-	ptr[i].phi0_err=0.0;
+	ptr[i].phi0 = 0.0;/*
+	ptr[i].phi0_err=0.0;*/
 	ptr[i].sdev_l = 0.0;
 	ptr[i].sdev_s = 0.0;
 	ptr[i].sdev_phi = 0.0;
@@ -262,6 +263,10 @@ int do_fit(struct FitBlock *iptr,int lag_lim,int goose,
       ptr[k].w_s_err = (ptr[k].w_s_err == HUGE_VAL) ?
 	                    HUGE_VAL :
 	                    3.33*freq_to_vel*ptr[k].w_s_err;
+
+
+			ptr[k].phi0_err = mnpwr;
+
 
 
       /*  Now check the values of power, velocity and width

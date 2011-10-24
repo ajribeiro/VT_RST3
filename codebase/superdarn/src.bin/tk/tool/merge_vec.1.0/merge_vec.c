@@ -275,6 +275,7 @@ int main(int argc,char *argv[])
 			sflg = ((int)scan2->st_time >= (int)scan1->st_time && (int)scan2->st_time < (int)scan1->ed_time && s1 != -1 && s2 != -1 && hr >= sthr);
 		else
 			sflg = ((int)scan1->st_time >= (int)scan2->st_time && (int)scan1->st_time < (int)scan2->ed_time && s1 != -1 && s2 != -1 && hr >= sthr);
+
 		if(sflg)
     {
       if(vb)

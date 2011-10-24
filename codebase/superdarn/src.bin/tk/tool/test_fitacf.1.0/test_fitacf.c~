@@ -243,7 +243,7 @@ int main(int argc,char *argv[]) {
 	     prm->time.dy,prm->time.hr,prm->time.mt,prm->time.sc,prm->bmnum);
 
 
-    if(prm->time.hr >= tgthr && prm->time.mt >= tgtmin && prm->bmnum == tgtbeam
+    if(prm->time.hr == 13 && prm->time.mt== 42 && prm->time.sc > 47 && prm->bmnum == tgtbeam
 				&& status == 0 && !done && prm->channel != 2)
 		{
 			fprintf(stdout,"%d  %d  %d  %d  %d  %d  %d  %d\n",prm->stid,prm->time.yr,prm->time.mo,

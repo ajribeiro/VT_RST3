@@ -302,22 +302,48 @@ pro plot_fitex2,time
 		plot,findgen(1),findgen(1),/nodata,xrange=[0,max(lagnums(i,*))],yrange=[-!pi,!pi],$
 					xstyle=1,ystyle=1,xthick=4,ythick=4,pos=[.5,.14,.85,.29],/noerase,thick=2.,$
 					yticklen=-.01,title=ptitle,charthick=3,charsize=.75
+; 		loadct,34
+; 		usersym,cos(S),sin(S),/FILL
+; 		phase_fit = dblarr(mplgs)
+; 		for j=0,mplgs-1 do begin
+; 			t = final_params(i,0)*!pi/180.
+; 			phi = t*j
+; 			r = fix(t*j/!pi)
+; 			phase_fit(j) = phi - r*!pi*2
+; 		endfor
+; 		for j=0,mplgs-1 do begin
+; 			if(good_lags(i,j)) then $
+; 				plots,lagnums(i,j),atan(acfs(i,j,1),acfs(i,j,0)),psym=8,col=0
+; 		endfor
+; 		usersym,cos(S),sin(S)
+; 		plots,findgen(mplgs),phase_fit,linestyle=1,col=150
+;  		plots,findgen(mplgs),phase_fit,psym=8,col=150
+
+
+		mag = 10.^(snrs(i)/10)*skynoise
+		dopfreq = 2.*!pi*(final_params(i,1)*2./lambda)
+		t_d = lambda/(2.*!pi*final_params(i,0))
+
+		fitted_acfs = dblarr(mplgs,2)
+ 		for j=0,mplgs-1 do begin
+			tau = mpinc*lagnums(i,j)
+			fitted_acfs(j,0) = mag*exp(-1.0*tau/t_d)*cos(tau*dopfreq)
+			fitted_acfs(j,1) = mag*exp(-1.0*tau/t_d)*sin(tau*dopfreq)
+		endfor
+
 		loadct,34
-		usersym,cos(S),sin(S),/FILL
-		phase_fit = dblarr(mplgs)
+		phases = dblarr(mplgs)
 		for j=0,mplgs-1 do begin
-			t = final_params(i,0)*!pi/180.
-			phi = t*j
-			r = fix(t*j/!pi)
-			phase_fit(j) = phi - r*!pi*2
-		endfor
-		for j=0,mplgs-1 do begin
-			if(good_lags(i,j)) then $
+			;plot the actual ACF
+			if(good_lags(i,j)) then begin
+				usersym,cos(S),sin(S),/FILL
 				plots,lagnums(i,j),atan(acfs(i,j,1),acfs(i,j,0)),psym=8,col=0
+				usersym,cos(S),sin(S)
+			endif
+			plots,lagnums(i,j),atan(fitted_acfs(j,1),fitted_acfs(j,0)),psym=8,col=150
+			phases(j) = atan(fitted_acfs(j,1),fitted_acfs(j,0))
 		endfor
-		usersym,cos(S),sin(S)
-		plots,findgen(mplgs),phase_fit,linestyle=1,col=150
- 		plots,findgen(mplgs),phase_fit,psym=8,col=150
+		plots,lagnums(i,*),phases(*),linestyle=1,col=150,thick=2
 
 		erase
 	endfor

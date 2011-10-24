@@ -149,6 +149,7 @@ pro plot_merge,orig=orig
 			getendpoints,vel2,1,vel_max,.03,lat2,lon2,azm2,n_xy_e
 			;get beginning of vector
 			n_xy_s = convert_coord(lon2,lat2,/data,/to_normal)
+			print,lon2,lat2
 			color = (abs(vel2)/vel_max)*255
 			if(color gt 255) then color = 255
 			if(color lt 0) then color = 0
@@ -158,6 +159,7 @@ pro plot_merge,orig=orig
 		;if we are plotting merged vectors
 		endif else begin
 			;get end of vector
+			getendpoints,vel,3,vel_max,.03,lat,lon,azm,n_xy_e
 			getendpoints,vel,1,vel_max,.03,lat,lon,azm,n_xy_e
 			;get beginning of vector
 			n_xy_s = convert_coord(lon,lat,/data,/to_normal)

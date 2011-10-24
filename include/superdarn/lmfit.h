@@ -19,14 +19,14 @@ struct datapoints
 struct exdatapoints
 {
   int lagnum;
-  double phase;
-  double lagpwr;
+  float phase;
+  float lagpwr;
 };
 
 void lmfit(struct RadarParm *prm,struct RawData *ptr,
                 struct FitData *fit,struct FitBlock *fblk, int print);
-double getguessex(int goodcnt, int nlags, int nslopes, struct exdatapoints * exdata,
-                  int tfreq, int mpinc);
+double getguessex(struct RadarParm *prm,struct RawData *raw,
+              struct FitData *fit, struct FitBlock *fblk, int rang, double skynoise);
 int singlefit(int m, int n, double *p, double *deviates,
                         double **derivs, void *private);
 void lm_noise_stat(struct RadarParm *prm, struct RawData * raw,

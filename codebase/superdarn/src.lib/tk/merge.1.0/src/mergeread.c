@@ -30,11 +30,13 @@ int MergeDecode(struct DataMap *ptr,struct MergeData *data)
   int c;
   struct DataMapScalar *s;
 
-  if (ptr==NULL) return -1;
+  if (ptr==NULL) return -1; 
   if (data==NULL) return -1;
 
   memset(data,0,sizeof(struct MergeData));
 
+
+	fprintf(stderr," snum %d\n",ptr->snum);
   for (c=0;c<ptr->snum;c++)
 	{
     s=ptr->scl[c];
@@ -42,6 +44,8 @@ int MergeDecode(struct DataMap *ptr,struct MergeData *data)
     if ((strcmp(s->name,"radar1.stid")==0) && (s->type==DATASHORT))
       data->radar1.stid=*(s->data.sptr);
 		fprintf(stderr,"%d  %s  %d  %f\n",ptr->snum,s->name,s->type,(float)(*s->data.fptr));
+
+
 
     if ((strcmp(s->name,"radar1.stid")==0) && (s->type==DATASHORT))
       data->radar1.stid=*(s->data.iptr);
@@ -168,6 +172,7 @@ int MergeRead(int fid,struct MergeData *data)
 
 int MergeFread(FILE *fp,struct MergeData *data)
 {
+
   return MergeRead(fileno(fp),data);
 }
 

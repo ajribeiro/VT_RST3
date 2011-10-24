@@ -19,11 +19,7 @@ this code reads in a fit file and produces an ascii file
 #include "dmap.h"
 #include "option.h"
 #include "rtime.h"
-<<<<<<< HEAD
-#include "radar.h"
-=======
 #include "radar.h" 
->>>>>>> merge_tools
 #include "rprm.h"
 #include "invmag.h"
 #include "rpos.h"
@@ -279,6 +275,7 @@ int main(int argc,char *argv[])
 			sflg = ((int)scan2->st_time >= (int)scan1->st_time && (int)scan2->st_time < (int)scan1->ed_time && s1 != -1 && s2 != -1 && hr >= sthr);
 		else
 			sflg = ((int)scan1->st_time >= (int)scan2->st_time && (int)scan1->st_time < (int)scan2->ed_time && s1 != -1 && s2 != -1 && hr >= sthr);
+
 		if(sflg)
     {
       if(vb)
@@ -331,6 +328,7 @@ int main(int argc,char *argv[])
 							if(((d < 51. && !comb[p][k].matched) || d < comb[p][k].diff) &&
 								(!nogs || (scan1->bm[p].rng[k].gsct == 0 && scan2->bm[m].rng[l].gsct == 0)))
 							{
+								fprintf(stderr,"in\n");
 								double Det_A  =  cos(azm1)*sin(azm2) - cos(azm2)*sin(azm1);
 								v_n    = (1./Det_A) * (v1*sin(azm2)  - v2*sin(azm1));
 								v_e    = (1./Det_A) * (-v1*cos(azm2) + v2*cos(azm1));
@@ -454,7 +452,6 @@ int main(int argc,char *argv[])
 				if(data[p][k].radar1.qflg != 0 && data[p][k].radar2.qflg != 0)
 				{
 					MergeFwrite(stdout,&data[p][k]);
-					MergeFread(stdin,&data[p][k]);
 				}
 
 		for(p=0;p<scan1->num;p++)
@@ -482,7 +479,7 @@ int main(int argc,char *argv[])
 				scan1->ed_time = ((int)(scan1->ed_time/60.)+1)*60.;
 			}
 		}
-		else
+		else 
 		{
 			if(s1 != -1)
 			{

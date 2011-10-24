@@ -158,13 +158,11 @@ pro plot_merge,orig=orig
 		;if we are plotting merged vectors
 		endif else begin
 			;get end of vector
-<<<<<<< HEAD
 			getendpoints,vel,3,vel_max,.03,lat,lon,azm,n_xy_e
-=======
 			getendpoints,vel,1,vel_max,.03,lat,lon,azm,n_xy_e
->>>>>>> fitcomp
 			;get beginning of vector
 			n_xy_s = convert_coord(lon,lat,/data,/to_normal)
+						print,lon,lat
 			color = (abs(vel)/vel_max)*255
 			if(color gt 255) then color = 255
 			if(color lt 0) then color = 0

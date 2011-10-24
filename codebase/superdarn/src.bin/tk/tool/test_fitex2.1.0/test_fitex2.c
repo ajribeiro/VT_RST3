@@ -219,7 +219,7 @@ int main(int argc,char *argv[])
 
   fblk=FitACFMake(site,prm->time.yr);
 
-	if(prm->time.hr >= tgthr && prm->time.mt >= tgtmin && prm->bmnum == tgtbeam)
+	if(prm->time.hr == 2 && prm->time.mt== 57 && prm->time.sc > 52 && prm->bmnum == tgtbeam && prm->channel != 2)
 	{
 		fitacfex2(prm,raw,fit,fblk,1);
 		done=1;
@@ -246,8 +246,8 @@ int main(int argc,char *argv[])
 	     prm->time.dy,prm->time.hr,prm->time.mt,prm->time.sc,prm->bmnum);
 
 
-		if(prm->time.hr >= tgthr && prm->time.mt >= tgtmin && prm->bmnum == tgtbeam
-				&& status == 0 && !done)
+		if(prm->time.hr == 13 && prm->time.mt== 4 && prm->time.sc > 54 && prm->bmnum == tgtbeam
+				&& status == 0 && !done && prm->channel != 2)
 		{
 			fitacfex2(prm,raw,fit,fblk,1);
 			done = 1;

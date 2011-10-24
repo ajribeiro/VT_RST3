@@ -56,8 +56,8 @@ PRO web_acflm,date,hr,mn,rad,beam,time
 ;     spawn,'gunzip -f '+ filename+'.out'
 ;     print,'gunzip -f '+ filename+'.out'
     ;spawn,"bunzip2 /data/raw/"+date+"."+rad+".rawacf.bz2"
-    print,"/rst/bin/test_lmfit -new -hr "+hr+" -min "+mn+" -beam "+beam+' '+filename+date+'.'+hstr+'*'+' > /rst/output_files/'+time+'.lmfit.test'
-    spawn,"/rst/bin/test_lmfit -new -hr "+hr+" -min "+mn+" -beam "+beam+' '+filename+date+'.'+hstr+'*'+' > /rst/output_files/'+time+'.lmfit.test'
+    print,"/rst/bin/test_lmfit -new -hr "+hr+" -min "+mn+" -beam "+beam+' /data/raw/100000.amp10000.rawacf > /rst/output_files/'+time+'.lmfit.test'
+    spawn,"/rst/bin/test_lmfit -new -hr "+hr+" -min "+mn+" -beam "+beam+' /data/raw/100000.amp10000.rawacf > /rst/output_files/'+time+'.lmfit.test'
     ;spawn,"bzip2 /data/raw/"+date+"."+rad+".rawacf"
   endelse
 

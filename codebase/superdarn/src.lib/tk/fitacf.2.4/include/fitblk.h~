@@ -25,7 +25,6 @@ struct FitPrm {
   int lagfr;
   int mppul;
   int bmnum;
-  int ifmode;
   int old;
   int *lag[2];
   int *pulse;
@@ -75,6 +74,7 @@ struct FitRange {  /* fitted parameters for a single range */
   double sdev_phi;
   int qflg,gsct;
   char nump;
+	double noise_lev;
 };
       
 #endif

@@ -207,6 +207,7 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
   float diff,err;
   int *badlag = malloc(prm->mplgs * sizeof(int));
   struct FitACFBadSample badsmp;
+	float *sigma = malloc(prm->mplgs*sizeof(double));
 
   /* need this for bisection method */
   diff=(180.0/nslopes);
@@ -269,7 +270,9 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
   {
     if(fblk->prm.channel==0) FitACFBadlags(&fblk->prm,&badsmp);
     else FitACFBadlagsStereo(&fblk->prm,&badsmp);
-  } 
+  }
+
+  prm->noise.mean = skynoise;
 
 	if(print)
 	{
@@ -282,6 +285,7 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
   {
 
     raw->acfd[0][R*prm->mplgs] -= skynoise;
+
 
     fit->rng[R].v        = 0.;
     fit->rng[R].v_err    = HUGE_VAL;
@@ -391,17 +395,24 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
     {
       /* Determine Lambda Power and Spectral Width from least square fit */
       goodcnt = 0;
+			pwr = 0;
+			for(i=0;i<availcnt;i++)
+      {
+        lag = lag_avail[i];
+        pwr += lagpwr[lag];
+      }
       for(i=0;i<availcnt;i++)
       {
         lag = lag_avail[i];
         logpwr[goodcnt]    = log(lagpwr[lag]);
+				sigma[i] = pwr/lagpwr[lag];
         good_lags[goodcnt] = lag;
         goodcnt++;
       }
-      nrfit(good_lags,logpwr,goodcnt,NULL,0,&a,&b,&siga,&sigb,&chi2,&q);
+      nrfit(good_lags,logpwr,goodcnt,sigma,1,&a,&b,&siga,&sigb,&chi2,&q);
       fitted_width = -2.9979e8*b/(prm->mpinc*1.e-6)/
                             (2*PI*1000.0*prm->tfreq);
-      if(fitted_width<0.00) fitted_width = 0.0;
+      if(fitted_width<=0.00) fitted_width = 1.e-2;
 			fitted_power = log(exp(a) + skynoise);
 
 			if(print)
@@ -423,8 +434,8 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
             }
           }
 
-        data_phi = atan2(raw->acfd[1][R*prm->mplgs+L],raw->acfd[0][R*prm->mplgs+L])*180.0/PI;
 
+        data_phi = atan2(raw->acfd[1][R*prm->mplgs+L],raw->acfd[0][R*prm->mplgs+L])*180.0/PI;
 				if(fblk->prm.xcf)
 					xcf_phases[i]=atan2(raw->xcfd[1][R*prm->mplgs+L],raw->xcfd[0][R*prm->mplgs+L])*180./PI;
         data_phi_pos[i] = data_phi;
@@ -523,6 +534,8 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
 
       fit->rng[R].p_0   = lag0pwr;
 
+
+
 			if(print)
 				fprintf(stdout,"%lf  %d  %lf  %d  %d  %d\n",(model_mean - sderr*model_sd),mininx,model_vels[mininx],
 																		(10*log10((exp(a) + skynoise)/skynoise) > minpwr),(model_min<(model_mean - sderr*model_sd)),sct_flg);
@@ -560,7 +573,7 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
         fit->rng[R].w_l   = fitted_width;
         fitted_width = 2.9979e8*sigb/(prm->mpinc*1.e-6)/
                             (2*PI*1000.0*prm->tfreq);
-        if(fitted_width<=0.00) fitted_width = 1e-6;
+        if(fitted_width<0.00) fitted_width = 0.;
         fit->rng[R].w_l_err = fitted_width;
 
         fit->rng[R].nump  = goodcnt;
@@ -627,6 +640,7 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
   free(data_phi_pos);
   free(data_phi_neg);
   free(lag_avail);
+	free(sigma);
   free(good_lags);
 
   return;

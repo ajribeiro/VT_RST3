@@ -16,18 +16,18 @@ pro draw_colorbar,vel_max,vel_min,title,units,loc,ct=ct
   plots, [loc(0), loc(0), loc(2), loc(2), loc(0)],[loc(1), loc(3), loc(3), loc(1), loc(1)], /NORMAL
   xyouts,xsize/2.+loc(0),loc(3)+.025,title,alignment=0.5,/normal,charthick=3
   xyouts,xsize/2.+loc(0),loc(1)-.02,units,alignment=0.5,/normal,charsize=0.7,charthick=3
-  xyouts,loc(2)+.01,loc(1)-.005,strmid(strtrim(float(vel_min),2),0,4),alignment=0.,/normal,charthick=3
-  xyouts,loc(2)+.01,loc(3)-.005,strmid(strtrim(float(vel_max),2),0,4),alignment=0.,/normal,charthick=3
+  xyouts,loc(2)+.01,loc(1)-.005,strmid(strtrim(float(vel_min),2),0,7),alignment=0.,/normal,charthick=3
+  xyouts,loc(2)+.01,loc(3)-.005,strmid(strtrim(float(vel_max),2),0,7),alignment=0.,/normal,charthick=3
   xyouts,loc(2)+.01,loc(1)+ysize/4.-.005,$
-        strmid(strtrim(float(vel_min + (vel_max-vel_min)*.25),2),0,4),$
+        strmid(strtrim(float(vel_min + (vel_max-vel_min)*.25),2),0,7),$
         alignment=0.,/normal,charthick=3
   plots,[loc(0),loc(2)],[loc(1)+ysize/4.,loc(1)+ysize/4.],/normal
   xyouts,loc(2)+.01,loc(1)+ysize/2.-.005,$
-        strmid(strtrim(float(vel_min + (vel_max-vel_min)*.5),2),0,4),$
+        strmid(strtrim(float(vel_min + (vel_max-vel_min)*.5),2),0,7),$
         alignment=0.,/normal,charthick=3
   plots,[loc(0),loc(2)],[loc(1)+ysize/2.,loc(1)+ysize/2.],/normal
   xyouts,loc(2)+.01,loc(1)+3*ysize/4.-.005,$
-        strmid(strtrim(float(vel_min + (vel_max-vel_min)*.75),2),0,4),$
+        strmid(strtrim(float(vel_min + (vel_max-vel_min)*.75),2),0,7),$
         alignment=0.,/normal,charthick=3
   plots,[loc(0),loc(2)],[loc(1)+3*ysize/4.,loc(1)+3*ysize/4.],/normal
 end

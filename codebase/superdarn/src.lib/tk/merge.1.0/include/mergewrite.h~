@@ -20,3 +20,5 @@
 int MergeEncode(struct DataMap *ptr,struct MergeData *data);
 int MergeFwrite(FILE *fp,struct MergeData *data);
 int MergeWrite(int fid,struct MergeData *data);
+
+#endif

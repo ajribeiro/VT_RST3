@@ -8,7 +8,7 @@
 
 
 
-*/ 
+*/
 
 
 #include <stdio.h>
@@ -36,7 +36,7 @@ int MergeDecode(struct DataMap *ptr,struct MergeData *data) {
   for (c=0;c<ptr->snum;c++)
 	{
     s=ptr->scl[c];
-
+ 
     if ((strcmp(s->name,"radar1.stid")==0) && (s->type==DATASHORT))
       data->radar1.stid=*(s->data.sptr);
 		if ((strcmp(s->name,"radar1.qflg")==0) && (s->type==DATASHORT))
@@ -119,11 +119,11 @@ int MergeDecode(struct DataMap *ptr,struct MergeData *data) {
 		if ((strcmp(s->name,"glat")==0) && (s->type==DATAFLOAT))
       data->glat=*(s->data.sptr);
 		if ((strcmp(s->name,"glon")==0) && (s->type==DATAFLOAT))
-      data->glon=*(s->data.sptr); 
+      data->glon=*(s->data.sptr);
 		if ((strcmp(s->name,"gazm")==0) && (s->type==DATAFLOAT))
       data->gazm=*(s->data.sptr);
 		if ((strcmp(s->name,"mlat")==0) && (s->type==DATAFLOAT))
-      data->mlat=*(s->data.sptr); 
+      data->mlat=*(s->data.sptr);
 		if ((strcmp(s->name,"mlon")==0) && (s->type==DATAFLOAT))
       data->mlon=*(s->data.sptr);
 		if ((strcmp(s->name,"mazm")==0) && (s->type==DATAFLOAT))
@@ -137,7 +137,7 @@ int MergeDecode(struct DataMap *ptr,struct MergeData *data) {
 		if ((strcmp(s->name,"ed_time")==0) && (s->type==DATAINT))
       data->ed_time=*(s->data.sptr);
 
-  } 
+  }
 
   return 0;
 }
@@ -211,17 +211,11 @@ int MergeRead(int fid,struct MergeData *data)
   ptr=DataMapRead(fid);
   if (ptr==NULL) return -1;
   s=MergeDecode(ptr,data);
-	if (s !=0)
-	{
-    DataMapFree(ptr);
-    return s;
-  }
-  s=MergeDecode(ptr,data);
   DataMapFree(ptr);
   return s;
 }
- 
-int MergeFread(FILE *fp,struct MergeData *data)
+
+int MergeFRead(FILE *fp,struct MergeData *data)
 {
   return MergeRead(fileno(fp),data);
 }

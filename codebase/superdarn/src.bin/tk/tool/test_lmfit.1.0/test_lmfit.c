@@ -218,7 +218,7 @@ int main(int argc,char *argv[])
   fblk=FitACFMake(site,prm->time.yr);
 
 
-	if(prm->time.hr >= tgthr && prm->time.mt >= tgtmin && prm->bmnum == tgtbeam && prm->channel != 2)
+	if(prm->time.hr == 2 && prm->time.mt== 51 && prm->time.sc > 26 && prm->bmnum == tgtbeam && prm->channel != 2)
 	{
 		lmfit(prm,raw,fit,fblk,1);
 		done=1;
@@ -242,7 +242,7 @@ int main(int argc,char *argv[])
       fprintf(stderr,"%d-%d-%d %d:%d:%d beam=%d\n",prm->time.yr,prm->time.mo,
 	     prm->time.dy,prm->time.hr,prm->time.mt,prm->time.sc,prm->bmnum);
 
-		if(prm->time.hr >= tgthr && prm->time.mt >= tgtmin && prm->bmnum == tgtbeam
+		if(prm->time.hr == 13 && prm->time.mt== 4 && prm->time.sc > 54 && prm->bmnum == tgtbeam
 				&& status == 0 && !done && prm->channel != 2)
 		{
 			lmfit(prm,raw,fit,fblk,1);
