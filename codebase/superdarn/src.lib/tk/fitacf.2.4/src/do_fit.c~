@@ -191,6 +191,7 @@ int do_fit(struct FitBlock *iptr,int lag_lim,int goose,
     xomega=ptr[k].v;
 		if(print && iptr->prm.channel < 2)
 			fprintf(stdout,"%d\n",ptr[k].qflg);
+		fprintf(stderr,"%d  %d  %lf\n",k,ptr[k].qflg,ptr[k].w_l);
     if (ptr[k].qflg == 1)	{
       /* several changes have been made here to 
 	 fix an apparent problem in handling HUGE_VAL.
@@ -239,7 +240,6 @@ int do_fit(struct FitBlock *iptr,int lag_lim,int goose,
 			  freq_to_vel*ptr[k].v_err;
 
       /* convert decay parameters to spectral widths */
-
       ptr[k].w_l = freq_to_vel*2*ptr[k].w_l;
       ptr[k].w_l_err = (ptr[k].w_l_err == HUGE_VAL) ?
 	                   HUGE_VAL :

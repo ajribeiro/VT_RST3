@@ -195,6 +195,7 @@ int main(int argc,char *argv[])
   double velo = 0.;                         /*standard devation of gaussian velocity spread*/
   int cri_flg = 1;                          /*cross-range interference flag*/
   int smp_flg = 0;                          /*output raw samples flag*/
+  int decayflg = 0;
 
   /*other variables*/
   long i,j,r;
@@ -247,6 +248,8 @@ int main(int argc,char *argv[])
   "         at other range gates)\n"
   "-samples: output raw samples (to iqdat file) instead of ACFs\n"
   "         default is output ACFs (to rawacf file)\n"
+  "-decay: set ACFs to have a decaying amplitude by a\n"
+  "         factor of 1/r^2\n"
   "\nNOTE: all option inputs must be integers\n";
 
 
@@ -289,6 +292,9 @@ int main(int argc,char *argv[])
     /*command line number of range gates*/
     else if (strcmp(argv[i], "-nrang") == 0)
       nrang = atoi(argv[i+1]);
+		/*command line power decay with range*/
+    else if (strcmp(argv[i], "-decay") == 0)
+      decayflg = atoi(argv[i+1]);
     /*command line nave*/
     else if (strcmp(argv[i], "-nave") == 0)
     {
@@ -487,7 +493,7 @@ int main(int argc,char *argv[])
   /*call the simulation function*/
   sim_data(t_d_arr, t_g_arr, t_c_arr, v_dop_arr, qflg, velo_arr, amp0_arr, freq, noise_lev,
             noise_flg, nave, nrang, lagfr, n_good, smsep, cpid, life_dist,
-            n_samples, n_pul, cri_flg, n_lags, pulse_t, tau, dt, raw_samples, acfs);
+            n_samples, n_pul, cri_flg, n_lags, pulse_t, tau, dt, raw_samples, acfs,decayflg);
 
   /*pill the parameter structure*/
   struct RadarParm * prm;

@@ -16,13 +16,13 @@ struct irreg
   double velo;          /*random velocity component (Gaussian)*/
 };
 
-void acf_27(complex double * aa, complex double * rr, int cpid);
+void acf_27(a_complex double * aa, a_complex double * rr, int cpid);
 void sim_data(double *t_d, double *t_g, double *t_c, double *v_dop, int * qflg,
               double *velo, double *amp0, double freq, double noise_lev,
               int noise_flg, int nave, int nrang, int lagfr, int n_good,
               double smsep, int cpid, int life_dist, long n_samples,
-              int n_pul, int cri_flg, int n_lags, unsigned short * pulse_t, int * tau,
-              double dt, complex double * out_samples, complex double ** out_acfs);
+              int n_pul, int cri_flg, int n_lags, int * pulse_t, int * tau,
+              double dt, complex double * out_samples, complex double ** out_acfs, int decayflg);
 float ran1(long *idum);
 float gasdev(long *idum);
 

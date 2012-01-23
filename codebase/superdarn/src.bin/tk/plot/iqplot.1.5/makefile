@@ -17,7 +17,7 @@ XLIB=-lxwin.1
 
 ifdef XPATH
 DSTPATH = $(BINPATH)
-OUTPUT = iqplot
+OUTPUT = iqplot2
 endif
 
 

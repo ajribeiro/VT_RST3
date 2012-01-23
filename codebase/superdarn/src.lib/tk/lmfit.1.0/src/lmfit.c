@@ -217,15 +217,16 @@ int singlefit(int m, int n, double *p, double *deviates,
   for (i=0; i<m; i++)
   {
     tau=x[i];
-    re=y[i*2];
-    im=y[i*2+1];
+    re=y[i];
     sig=ey[i];
     ti=p[0];
     wi=p[1];
     lag0mag = p[2];
-    /*fprintf(stderr,"%lf  %lf  %lf  %lf  %lf  %lf  %lf\n",tau,re,im,sig,ti,wi,lag0mag);*/
-    deviates[i] = sqrt((pow(re-lag0mag*exp(-1.*tau/ti)*cos(wi*tau),2) +
-                       pow(im-lag0mag*exp(-1.*tau/ti)*sin(wi*tau),2))*sig);
+
+		if(i < m/2)
+			deviates[i] = re-lag0mag*exp(-1.*tau/ti)*cos(wi*tau);
+		else
+			deviates[i] = re-lag0mag*exp(-1.*tau/ti)*sin(wi*tau);
   }
 
   return 0;
@@ -593,7 +594,7 @@ void lmfit(struct RadarParm *prm,struct RawData *raw,
 {
   float minpwr  = 3.0;
   double skynoise = 0.;
-  int   minlag  = 6; 
+  int   minlag  = 6;
   int availflg = 0;
   int pwr_flg,sct_flg;
   float a,b,siga,sigb,chi2,q;
@@ -678,7 +679,7 @@ void lmfit(struct RadarParm *prm,struct RawData *raw,
   for (R=0;R<prm->nrang;R++)
   {
 
-    /*subtract noise level from lag 0*/ 
+    /*subtract noise level from lag 0*/
     raw->acfd[0][R*prm->mplgs] -= skynoise;
 
     /*initialize parameters*/
@@ -759,9 +760,9 @@ void lmfit(struct RadarParm *prm,struct RawData *raw,
     {
       /*structure needed for mpfit*/
       struct datapoints * data = malloc(sizeof(struct datapoints));
-      data->x = malloc(availcnt*sizeof(double));
+      data->x = malloc(availcnt*2*sizeof(double));
       data->y = malloc(2*availcnt*sizeof(double));
-      data->ey = malloc(availcnt*sizeof(double));
+      data->ey = malloc(availcnt*2*sizeof(double));
 
       /*wavelength, needed for mpfit*/
       lambda = 2.9979e8/(prm->tfreq*1.e3);
@@ -791,9 +792,12 @@ void lmfit(struct RadarParm *prm,struct RawData *raw,
         re = raw->acfd[0][R*prm->mplgs+L];
         im = raw->acfd[1][R*prm->mplgs+L];
 
+
         data->x[i] = lag*prm->mpinc*1.e-6;
-        data->y[i*2] = re;
-        data->y[i*2+1] = im;
+				data->x[i+goodcnt] = lag*prm->mpinc*1.e-6;
+        data->y[i] = re;
+        data->y[i+goodcnt] = im;
+
         exdata[i].lagnum = lag;
         exdata[i].phase = atan2(im,re)*180./PI;
         exdata[i].lagpwr = sqrt(re*re+im*im);
@@ -808,12 +812,13 @@ void lmfit(struct RadarParm *prm,struct RawData *raw,
         lag = good_lags[i];
         sigma[i] = pwr/exdata[i].lagpwr;
         data->ey[i] = exdata[i].lagpwr/pwr;
+				data->ey[i+goodcnt] = exdata[i].lagpwr/pwr;
       }
 
       /*get velocity guess from model comparisons*/
       double model_guess = getguessex(prm,raw,fit,fblk,R,skynoise);
       w_limit = model_guess;
-      if(w_limit == -88888888.) continue;
+      if(w_limit == -88888888.) w_limit=0;
       /*initial velocity guess in angular Doppler frequency*/
       pdouble[1] = w_limit*4.*PI/lambda;
 
@@ -845,7 +850,7 @@ void lmfit(struct RadarParm *prm,struct RawData *raw,
       t_limit = lambda/(2.*PI*fitted_width);
       psingle[0] = t_limit;
       w_limit = model_guess;
-      if(w_limit == -88888888.) continue;
+      if(w_limit == -88888888.) w_limit=0;
       /*initial velocity guess in angular Doppler frequency*/
       psingle[1] = w_limit*4.*PI/lambda;
 
@@ -876,7 +881,7 @@ void lmfit(struct RadarParm *prm,struct RawData *raw,
 				fprintf(stdout,"%lf  %lf  %lf\n",psingle[0],psingle[1],psingle[2]);
 
       /*run a single-component fit*/
-      status = mpfit(singlefit,availcnt,3,psingle,parssingle,&config,(void *)data,&result);
+      status = mpfit(singlefit,availcnt*2,3,psingle,parssingle,&config,(void *)data,&result);
 
       /*final params from single-component fit*/
       t_if = psingle[0];
@@ -946,7 +951,7 @@ void lmfit(struct RadarParm *prm,struct RawData *raw,
   }
 
   free(lagpwr);
-  free(logpwr); 
+  free(logpwr);
   free(lag_avail);
   free(good_lags);
   free(sigma);

@@ -24,6 +24,7 @@ this code reads in a fit file and produces an ascii file
 #include "invmag.h" 
 #include "rpos.h"
 #include "mergedata.h"
+#include "mergeread.h"
 
 struct OptionData opt;
 struct RadarNetwork *network;
@@ -116,13 +117,8 @@ int main(int argc,char *argv[])
 	{
 
 		TimeEpochToYMDHMS((double)myData.st_time,&yr,&mo,&dy,&hr,&mt,&sc);
-
-		fprintf(stderr,"%lf  %d  %d  %d  %d  %d\n",(double)myData.st_time,yr,mo,dy,hr,mt);
 		jTime = TimeYMDHMSToJulian(yr,mo,dy,hr,mt,sc);
 
-		fprintf(stderr,"%lf  %lf  %lf\n",jTime, myData.radar1.mlat,myData.radar1.mlon);
-
-		exit(0);
 
 		if(mag_flg)
 			fprintf(out,"%lf  %lf  %lf  %lf  %lf  %lf  %lf  %lf  %lf  %lf  %lf  %lf  %lf  %lf  %lf  %lf  %lf\n",

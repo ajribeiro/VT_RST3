@@ -284,7 +284,9 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
   for (R=0;R<prm->nrang;R++)
   {
 
-    raw->acfd[0][R*prm->mplgs] -= skynoise;
+
+		if(!((prm->cp == 3310 || prm->cp == 503 || prm->cp == -503) && prm->mplgs == 18))
+			raw->acfd[0][R*prm->mplgs] -= skynoise;
 
 
     fit->rng[R].v        = 0.;
@@ -381,7 +383,7 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
         else lagpwr[lag] = 0.0;
         if(print)
 					fprintf(stdout,"%d  %lf  %lf  %d\n",lag,raw->acfd[0][R*prm->mplgs+L],raw->acfd[1][R*prm->mplgs+L],
-																						(availflg && lagpwr[lag]>raw->acfd[0][R*prm->mplgs]/sqrt(1.0*prm->nave)));
+																						(availflg/* && lagpwr[lag]>raw->acfd[0][R*prm->mplgs]/sqrt(1.0*prm->nave)*/));
       }
       pwr_flg = (sqrt(raw->acfd[0][R*prm->mplgs]*raw->acfd[0][R*prm->mplgs])>=skynoise);
       minlag = 4;

@@ -230,9 +230,8 @@ int main(int argc,char *argv[]) {
     RadarParmSetOriginCommand(prm,command);
     strcpy(tmstr,asctime(gmtime(&ctime)));
     tmstr[24]=0;
-    RadarParmSetOriginTime(prm,tmstr);  
-
-    
+    RadarParmSetOriginTime(prm,tmstr);
+ 
     if (old)
 			status=OldRawRead(rawfp,prm,raw);
     else

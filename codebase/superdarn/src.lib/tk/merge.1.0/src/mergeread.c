@@ -36,14 +36,13 @@ int MergeDecode(struct DataMap *ptr,struct MergeData *data)
   memset(data,0,sizeof(struct MergeData));
 
 
-	fprintf(stderr," snum %d\n",ptr->snum);
   for (c=0;c<ptr->snum;c++)
 	{
     s=ptr->scl[c];
 
     if ((strcmp(s->name,"radar1.stid")==0) && (s->type==DATASHORT))
       data->radar1.stid=*(s->data.sptr);
-		fprintf(stderr,"%d  %s  %d  %f\n",ptr->snum,s->name,s->type,(float)(*s->data.fptr));
+
 
 
 

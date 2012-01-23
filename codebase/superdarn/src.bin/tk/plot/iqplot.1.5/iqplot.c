@@ -303,7 +303,7 @@ int main(int argc,char *argv[]) {
   }
   XwinShowWindow(win);
 
-  PlotDocumentStart(plot,"image",NULL,wdt,hgt,24);      
+  PlotDocumentStart(plot,"image",NULL,wdt,hgt,24);
 
   plt=GrplotMake(wdt,hgt,xpnum,ypnum,lpad,rpad,bpad,tpad,xoff,yoff);
   GrplotSetPlot(plt,plot);
@@ -334,6 +334,9 @@ int main(int argc,char *argv[]) {
 
   if (ymajor==0) ymajor=ymax/4;
   if (yminor==0) yminor=ymax/20;
+
+  char buf[80], *p;
+
 
   while(IQFread(fp,prm,iq,&badtr,&samples)==0) {
 
@@ -375,6 +378,7 @@ int main(int argc,char *argv[]) {
           ay=ptr[2*(x-1)+1];
           bx=x;
           by=ptr[2*x+1];
+					fprintf(stderr,"%d  real: %d  imag: %d  mag: %lf\n",x-(pxmin+1),ptr[2*x],ptr[2*x+1],sqrt(ptr[2*x+1]*ptr[2*x+1]+ptr[2*x]*ptr[2*x]));
           GrplotLine(plt,0,ax,ay,bx,by,xmin,xmax,ymin,ymax,icol,0x0f,lne,NULL);
         }
       }
@@ -417,7 +421,10 @@ int main(int argc,char *argv[]) {
      
       FrameBufferFree(img);
       img=NULL;
+			p = fgets (buf, 80, stdin);
     }
+
+
 
   } 
   PlotDocumentEnd(plot);

@@ -34,7 +34,7 @@ THE SOFTWARE.
 
 #include "rtypes.h"
 #include "option.h"
-
+ 
 #include "dmap.h"
 #include "rprm.h"
 #include "rawdata.h"
@@ -53,7 +53,6 @@ THE SOFTWARE.
 #include "errstr.h"
 #include "hlpstr.h"
 #include "fitacfex2.h"
-
 
 
 struct RadarParm *prm1;
@@ -75,7 +74,7 @@ struct RadarSite *site;
 
 struct OptionData opt;
 
-int main(int argc,char *argv[])
+int main(int argc,char *argv[]) 
 {
 
   /* File format transistion
@@ -146,7 +145,7 @@ int main(int argc,char *argv[])
 				num[i][j][k] = 0.;
 		}
 	}
-	
+
   OptionAdd(&opt,"-help",'x',&help);
   OptionAdd(&opt,"-option",'x',&option);
   OptionAdd(&opt,"vb",'x',&vb);
@@ -238,12 +237,20 @@ int main(int argc,char *argv[])
   for (c=0;c<argc;c++)
 	{
     n+=strlen(argv[c])+1;
-    if (n>127) break;
+    if (n>127) break; 
     if (c !=0) strcat(command," ");
     strcat(command,argv[c]);
   }
 
+	double lm_v_err[100000],ex_v_err[100000],acf_v_err[100000];
+	long n_acf=0, n_lm=0,n_ex=0;
+	double mean_v_acf,mean_v_lm,mean_v_ex;
 
+	double lm_t_err[100000],ex_t_err[100000],acf_t_err[100000];
+	double mean_t_acf,mean_t_lm,mean_t_ex;
+
+	double lm_f_err[100000],ex_f_err[100000],acf_f_err[100000];
+	double mean_f_acf,mean_f_lm,mean_f_ex;
 
   if (vb)
       fprintf(stderr,"%d-%d-%d %d:%d:%d beam=%d\n",prm1->time.yr,prm1->time.mo,
@@ -275,21 +282,27 @@ int main(int argc,char *argv[])
 		lambda = 3.e8/(prm1->tfreq*1.e3);
 
 
-		/*go thought all of the range gates*/
+		/*go through all of the range gates*/
 		for(i=0;i<10;i++)
 		{
 			/*fitacf error calculations*/
-			if(fitacf->rng[i].qflg)
+			if(fitacf->rng[i].qflg == 1)
 			{
 				vbin = (vel/100);
 				tbin = (t_d/10)-1;
 				num[vbin][tbin][0] += 1.;
+
+				acf_v_err[n_acf] = fabs((double)vel-fitacf->rng[i].v)/(double)vel;
+				acf_t_err[n_acf] = fabs((double)t_d*1.e-3-lambda/(fitacf->rng[i].w_l*2.*3.14159))/((double)t_d*1.e-3);
 
 				/*rms velocity*/
 				errors[vbin][tbin][0][0] += pow((double)vel-fitacf->rng[i].v,2);
 				/*true velocity*/
 				errors[vbin][tbin][0][1] += fitacf->rng[i].v-(double)vel;
 				errors[vbin][tbin][0][2] += pow((double)t_d*1.e-3-lambda/(fitacf->rng[i].w_l*2.*3.14159),2);
+
+
+				if(pow((double)t_d*1.e-3-lambda/(fitacf->rng[i].w_l*2.*3.14159),2) > 999999.) exit(-1);
 				/*calc ACFERR*/
 				t_if = lambda/(fitacf->rng[i].w_l*2.*3.14159);
 				f_if = 4.*3.14159*fitacf->rng[i].v/lambda;
@@ -310,12 +323,19 @@ int main(int argc,char *argv[])
 				acferr = sqrt(acferr);
 				errors[vbin][tbin][0][4] += acferr;
 
+				acf_f_err[n_acf] = acferr;
+				n_acf++;
+
 			}
 			if(fitex->rng[i].qflg)
 			{
 				vbin = (vel/100);
 				tbin = (t_d/10)-1;
 				num[vbin][tbin][1] += 1.;
+
+				ex_v_err[n_ex] = fabs((double)vel-fitex->rng[i].v)/(double)vel;
+				ex_t_err[n_ex] = fabs((double)t_d*1.e-3-lambda/(fitex->rng[i].w_l*2.*3.14159))/((double)t_d*1.e-3);
+
 				errors[vbin][tbin][1][0] += pow((double)vel-fitex->rng[i].v,2); /*fitex2*/
 				errors[vbin][tbin][1][1] += fitex->rng[i].v-(double)vel;  /*fitex2*/
 				errors[vbin][tbin][1][2] += pow((double)t_d*1.e-3-lambda/(fitex->rng[i].w_l*2.*3.14159),2); /*fitex2*/
@@ -340,12 +360,19 @@ int main(int argc,char *argv[])
 				acferr /= prm2->mplgs;
 				acferr = sqrt(acferr);
 				errors[vbin][tbin][1][4] += acferr;
+
+				ex_f_err[n_ex] = acferr;
+				n_ex++;
 			}
 			if(fitlm->rng[i].qflg)
 			{
 				vbin = (vel/100);
 				tbin = (t_d/10)-1;
 				num[vbin][tbin][2] += 1.;
+
+				lm_v_err[n_lm] = fabs((double)vel-fitlm->rng[i].v)/(double)vel;
+				lm_t_err[n_lm] = fabs((double)t_d*1.e-3-lambda/(fitlm->rng[i].w_l*2.*3.14159))/((double)t_d*1.e-3);
+
 				errors[vbin][tbin][2][0] += pow((double)vel-fitlm->rng[i].v,2); /*lmfit*/
 				errors[vbin][tbin][2][1] += fitlm->rng[i].v-(double)vel;  /*lmfit*/
 				errors[vbin][tbin][2][2] += pow((double)t_d*1.e-3-lambda/(fitlm->rng[i].w_l*2.*3.14159),2); /*lmfit*/
@@ -371,6 +398,9 @@ int main(int argc,char *argv[])
 				acferr /= prm3->mplgs;
 				acferr = sqrt(acferr);
 				errors[vbin][tbin][2][4] += acferr;
+
+				lm_f_err[n_lm] = acferr;
+				n_lm++;
 			}
 			/*check for 3 good fits*/
 			if(fitacf->rng[i].qflg && fitex->rng[i].qflg && fitlm->rng[i].qflg )
@@ -412,6 +442,63 @@ int main(int argc,char *argv[])
 
 	fprintf(stderr,"number of times each had the best vel fit:\nfitacf: %d  fitex2: %d  lmfit: %d  total # of fits: %d\n",one, two, three, n);
 
+	qsort(acf_v_err, n_acf, sizeof(double), lm_dbl_cmp);
+	qsort(ex_v_err, n_ex, sizeof(double), lm_dbl_cmp);
+	qsort(lm_v_err, n_lm, sizeof(double), lm_dbl_cmp);
+
+	for(i=0;i<n_acf;i++)
+		mean_v_acf += acf_v_err[i];
+	mean_v_acf /= (double)n_acf;
+
+	for(i=0;i<n_ex;i++)
+		mean_v_ex += ex_v_err[i];
+	mean_v_ex /= (double)n_ex;
+
+	for(i=0;i<n_lm;i++)
+		mean_v_lm += lm_v_err[i];
+	mean_v_lm /= (double)n_lm;
+
+	qsort(acf_t_err, n_acf, sizeof(double), lm_dbl_cmp);
+	qsort(ex_t_err, n_ex, sizeof(double), lm_dbl_cmp);
+	qsort(lm_t_err, n_lm, sizeof(double), lm_dbl_cmp);
+
+	for(i=0;i<n_acf;i++)
+		mean_t_acf += acf_t_err[i];
+	mean_t_acf /= (double)n_acf;
+
+	for(i=0;i<n_ex;i++)
+		mean_t_ex += ex_t_err[i];
+	mean_t_ex /= (double)n_ex;
+
+	for(i=0;i<n_lm;i++)
+		mean_t_lm += lm_t_err[i];
+	mean_t_lm /= (double)n_lm;
+
+	qsort(acf_f_err, n_acf, sizeof(double), lm_dbl_cmp);
+	qsort(ex_f_err, n_ex, sizeof(double), lm_dbl_cmp);
+	qsort(lm_f_err, n_lm, sizeof(double), lm_dbl_cmp);
+
+	for(i=0;i<n_acf;i++)
+		mean_f_acf += acf_f_err[i];
+	mean_f_acf /= (double)n_acf;
+
+	for(i=0;i<n_ex;i++)
+		mean_f_ex += ex_f_err[i];
+	mean_f_ex /= (double)n_ex;
+
+	for(i=0;i<n_lm;i++)
+		mean_f_lm += lm_f_err[i];
+	mean_f_lm /= (double)n_lm;
+
+	fprintf(stderr,"           acf        ex        lm\n");
+	fprintf(stderr,"number:    %d      %d      %d\n",n_acf,n_ex,n_lm);
+	fprintf(stderr,"v median:  %lf   %lf   %lf\n",acf_v_err[(int)(n_acf/2)],ex_v_err[(int)(n_ex/2)],lm_v_err[(int)(n_lm/2)]);
+	fprintf(stderr,"v mean:    %lf   %lf   %lf\n",mean_v_acf,mean_v_ex,mean_v_lm);
+	fprintf(stderr,"t median:  %lf   %lf   %lf\n",acf_t_err[(int)(n_acf/2)],ex_t_err[(int)(n_ex/2)],lm_t_err[(int)(n_lm/2)]);
+	fprintf(stderr,"t mean:    %lf   %lf   %lf\n",mean_t_acf,mean_t_ex,mean_t_lm);
+	fprintf(stderr,"f median:  %lf   %lf   %lf\n",acf_f_err[(int)(n_acf/2)],ex_f_err[(int)(n_ex/2)],lm_f_err[(int)(n_lm/2)]);
+	fprintf(stderr,"f mean:    %lf   %lf   %lf\n",mean_f_acf,mean_f_ex,mean_f_lm);
+
 	for(i=0;i<20;i++)
 		for(j=0;j<10;j++)
 			for(k=0;k<5;k++)
@@ -425,7 +512,7 @@ int main(int argc,char *argv[])
 	/*for(i=0;i<20;i++)
 		fprintf(stderr,"%d  %d  %d  %d\n",i,very_bad[i][0],very_bad[i][1],very_bad[i][2]);
 
-	fprintf(stderr,"%d  %d\n",n,n2);*/
+	fprintf(stderr,"%d  %d\n",n,n2);*/ 
 
 	for(i=0;i<20;i++)
 	{

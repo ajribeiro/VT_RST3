@@ -328,7 +328,6 @@ int main(int argc,char *argv[])
 							if(((d < 51. && !comb[p][k].matched) || d < comb[p][k].diff) &&
 								(!nogs || (scan1->bm[p].rng[k].gsct == 0 && scan2->bm[m].rng[l].gsct == 0)))
 							{
-								fprintf(stderr,"in\n");
 								double Det_A  =  cos(azm1)*sin(azm2) - cos(azm2)*sin(azm1);
 								v_n    = (1./Det_A) * (v1*sin(azm2)  - v2*sin(azm1));
 								v_e    = (1./Det_A) * (-v1*cos(azm2) + v2*cos(azm1));

@@ -102,6 +102,7 @@ pro plot_lmfit,time
 	;read the rest of the file
 	for i=0,nrang-1 do begin
 		readf,unit,r,thresh
+		print,r
 		;read the acfs
 		for j=0,mplgs-1 do begin
 			readf,unit,lag,re,im,good

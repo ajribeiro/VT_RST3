@@ -198,8 +198,9 @@ int main(int argc,char *argv[]) {
 	     prm->time.dy,prm->time.hr,prm->time.mt,prm->time.sc,prm->bmnum);
 
   fblk=FitACFMake(site,prm->time.yr); 
-
-  FitACF(prm,raw,fblk,fit);
+	prm->lagfr += 1200;
+	prm->frang += 180;
+  FitACF(prm,raw,fblk,fit,0);
   
   if (old) {
     char vstr[256];
@@ -245,8 +246,9 @@ int main(int argc,char *argv[]) {
       fprintf(stderr,"%d-%d-%d %d:%d:%d beam=%d\n",prm->time.yr,prm->time.mo,
 	     prm->time.dy,prm->time.hr,prm->time.mt,prm->time.sc,prm->bmnum);
 
-
-    if (status==0) FitACF(prm,raw,fblk,fit);
+		prm->lagfr += 1200;
+		prm->frang += 180;
+    if (status==0) FitACF(prm,raw,fblk,fit,0);
 
   
   } while (status==0);

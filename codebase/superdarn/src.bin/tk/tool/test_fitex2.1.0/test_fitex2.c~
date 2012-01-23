@@ -218,9 +218,19 @@ int main(int argc,char *argv[])
 
 
   fblk=FitACFMake(site,prm->time.yr);
-
-	if(prm->time.hr == 2 && prm->time.mt== 57 && prm->time.sc > 52 && prm->bmnum == tgtbeam && prm->channel != 2)
+	int i,L;
+	if(prm->time.hr >= tgthr && prm->time.mt >= tgtmin && prm->bmnum == tgtbeam && prm->channel != 2)
 	{
+						for(i=0;i<prm->nrang;i++)
+	{
+		for (L=prm->mplgs-1;L>10;L--)
+		{
+			raw->acfd[0][i*prm->mplgs+L] = raw->acfd[0][i*prm->mplgs+L-1];
+			raw->acfd[1][i*prm->mplgs+L] = raw->acfd[1][i*prm->mplgs+L-1];
+		}
+		raw->acfd[0][i*prm->mplgs+10] = 0.;
+		raw->acfd[1][i*prm->mplgs+10] = 0.;
+	}
 		fitacfex2(prm,raw,fit,fblk,1);
 		done=1;
 	}
@@ -246,9 +256,19 @@ int main(int argc,char *argv[])
 	     prm->time.dy,prm->time.hr,prm->time.mt,prm->time.sc,prm->bmnum);
 
 
-		if(prm->time.hr == 10 && prm->time.mt== 34 && prm->time.sc > 24 && prm->bmnum == tgtbeam
+		if(prm->time.hr >= tgthr && prm->time.mt >= tgtmin && prm->bmnum == tgtbeam
 				&& status == 0 && !done && prm->channel != 2)
 		{
+				for(i=0;i<prm->nrang;i++)
+	{
+		for (L=prm->mplgs-1;L>10;L--)
+		{
+			raw->acfd[0][i*prm->mplgs+L] = raw->acfd[0][i*prm->mplgs+L-1];
+			raw->acfd[1][i*prm->mplgs+L] = raw->acfd[1][i*prm->mplgs+L-1];
+		}
+		raw->acfd[0][i*prm->mplgs+10] = 0.;
+		raw->acfd[1][i*prm->mplgs+10] = 0.;
+	}
 			fitacfex2(prm,raw,fit,fblk,1);
 			done = 1;
 		}

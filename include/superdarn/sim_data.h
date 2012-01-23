@@ -22,7 +22,7 @@ void sim_data(double *t_d, double *t_g, double *t_c, double *v_dop, int * qflg,
               int noise_flg, int nave, int nrang, int lagfr, int n_good,
               double smsep, int cpid, int life_dist, long n_samples,
               int n_pul, int cri_flg, int n_lags, int * pulse_t, int * tau,
-              double dt, complex double * out_samples, complex double ** out_acfs);
+              double dt, complex double * out_samples, complex double ** out_acfs, int decayflg);
 float ran1(long *idum);
 float gasdev(long *idum);
 

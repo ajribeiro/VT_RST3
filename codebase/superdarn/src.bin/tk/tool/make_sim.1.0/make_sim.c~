@@ -195,6 +195,7 @@ int main(int argc,char *argv[])
   double velo = 0.;                         /*standard devation of gaussian velocity spread*/
   int cri_flg = 1;                          /*cross-range interference flag*/
   int smp_flg = 0;                          /*output raw samples flag*/
+  int decayflg = 0;
 
   /*other variables*/
   long i,j,r;
@@ -289,6 +290,9 @@ int main(int argc,char *argv[])
     /*command line number of range gates*/
     else if (strcmp(argv[i], "-nrang") == 0)
       nrang = atoi(argv[i+1]);
+		/*command line power decay with range*/
+    else if (strcmp(argv[i], "-decay") == 0)
+      decayflg = atoi(argv[i+1]);
     /*command line nave*/
     else if (strcmp(argv[i], "-nave") == 0)
     {
@@ -487,7 +491,7 @@ int main(int argc,char *argv[])
   /*call the simulation function*/
   sim_data(t_d_arr, t_g_arr, t_c_arr, v_dop_arr, qflg, velo_arr, amp0_arr, freq, noise_lev,
             noise_flg, nave, nrang, lagfr, n_good, smsep, cpid, life_dist,
-            n_samples, n_pul, cri_flg, n_lags, pulse_t, tau, dt, raw_samples, acfs);
+            n_samples, n_pul, cri_flg, n_lags, pulse_t, tau, dt, raw_samples, acfs,decayflg);
 
   /*pill the parameter structure*/
   struct RadarParm * prm;
@@ -514,8 +518,8 @@ int main(int argc,char *argv[])
       pwr0[i] = creal(acfs[i][0]);
       for(j=0;j<n_lags;j++)
       {
-        acfd[i*n_lags*2+j*2] = (1./pow(i+1,3))*creal(acfs[i][j]);
-        acfd[i*n_lags*2+j*2+1] = (1./pow(i+1,3))*cimag(acfs[i][j]);
+        acfd[i*n_lags*2+j*2] = creal(acfs[i][j]);
+        acfd[i*n_lags*2+j*2+1] = cimag(acfs[i][j]);
         xcfd[i*n_lags*2+j*2] = 0.;
         xcfd[i*n_lags*2+j*2+1] = 0.;
       }

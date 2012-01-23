@@ -5,8 +5,8 @@
 #
 include $(MAKECFG).$(SYSTEM)
 INCLUDE=-I$(IPATH)/base -I$(IPATH)/general -I$(IPATH)/superdarn
-SRC=mergewrite.c mergeread.c
-OBJS = mergewrite.o mergeread.o
+SRC=merge_read.c merge_write.c
+OBJS = merge_read.o merge_write.o
 INC=$(IPATH)/superdarn
 DSTPATH=$(LIBPATH)
 OUTPUT = merge

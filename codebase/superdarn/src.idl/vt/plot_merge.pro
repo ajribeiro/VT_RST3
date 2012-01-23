@@ -63,7 +63,9 @@ pro plot_merge,orig=orig
   ;the file we are reading data from
   file_in = '/rst/output_files/mergevec.out.txt'
   set_plot,'PS',/copy
-  device,/landscape,/COLOR,BITS_PER_PIXEL=8,filename='/rst/output_plots/merge.ps'
+  if(keyword_set(orig)) then fname = '/rst/output_plots/merge.orig.ps' $
+  else fname = '/rst/output_plots/merge.ps'
+  device,/landscape,/COLOR,BITS_PER_PIXEL=8,filename=fname
   S = findgen(17)*(!PI*2./16.)
   usersym,cos(S),sin(S),/FILL
   !p.multi = [0,1,1]
@@ -71,7 +73,7 @@ pro plot_merge,orig=orig
 	else device,/landscape,/COLOR,BITS_PER_PIXEL=8,filename='/rst/output_plots/merge.ps'
 	old_time = double(-999999)
 	time=0d
-	vel_max = 200
+	vel_max = 500
 	;open the file
   openr,unit,file_in,/get_lun
 
@@ -89,9 +91,12 @@ pro plot_merge,orig=orig
 		pos4 = rbpos(60,height=300,beam=16,lagfr=1200,smsep=300, $
 						rxrise=100,station=stid2,year=2010,yrsec=1000000,/CENTER)
 		radar_info,stid,glat,glon,mlat,mlon,oneletter,threeletter,name,stid1
-		lat1=mlat
+		pos = cnvcoord([glat,glon,300.])
+		lat1 = pos(0)
 		radar_info,stid,glat,glon,mlat,mlon,oneletter,threeletter,name,stid2
-		lat2=mlat
+		pos = cnvcoord([glat,glon,300.])
+		lat2 = pos(0)
+
 	endif else begin
 		pos1 = rbpos(60,height=300,beam=0,lagfr=1200,smsep=300, $
 						rxrise=100,station=stid1,year=2010,yrsec=1000000,/GEO,/CENTER)
@@ -112,6 +117,7 @@ pro plot_merge,orig=orig
 
 	bound = [min([lat1,lat2]),min(lons),max(lats),max(lons)]
 	pos = [0.15,0.15,0.85,0.85]
+
 
 	;read the file
 	while(~ EOF(unit)) do begin
@@ -159,16 +165,15 @@ pro plot_merge,orig=orig
 		endif else begin
 			;get end of vector
 			getendpoints,vel,3,vel_max,.03,lat,lon,azm,n_xy_e
-			getendpoints,vel,1,vel_max,.03,lat,lon,azm,n_xy_e
 			;get beginning of vector
 			n_xy_s = convert_coord(lon,lat,/data,/to_normal)
-						print,lon,lat
 			color = (abs(vel)/vel_max)*255
 			if(color gt 255) then color = 255
 			if(color lt 0) then color = 0
 			plots,n_xy_s(0),n_xy_s(1),psym=8,col=color,/normal,symsize=.5
 			plots,[n_xy_s(0),n_xy_e(0)],[n_xy_s(1),n_xy_e(1)],col=color,/normal
 		endelse
+
 
 	endwhile
 

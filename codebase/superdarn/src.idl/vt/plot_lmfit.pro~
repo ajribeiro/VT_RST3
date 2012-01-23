@@ -60,9 +60,9 @@
 
 pro plot_lmfit,time
   ;the file we are reading data from
-  file_in = '/rst_new/rst/output_files/'+time+'.lmfit.test'
+  file_in = '/rst/output_files/'+time+'.lmfit.test'
   set_plot,'PS',/copy
-  device,/landscape,/COLOR,BITS_PER_PIXEL=8,filename='/rst_new/rst/output_plots/'+time+'.lmfit.ps'
+  device,/landscape,/COLOR,BITS_PER_PIXEL=8,filename='/rst/output_plots/'+time+'.lmfit.ps'
   S = findgen(17)*(!PI*2./16.)
   !p.multi = [0,1,1]
 
@@ -102,6 +102,7 @@ pro plot_lmfit,time
 	;read the rest of the file
 	for i=0,nrang-1 do begin
 		readf,unit,r,thresh
+		print,r
 		;read the acfs
 		for j=0,mplgs-1 do begin
 			readf,unit,lag,re,im,good
@@ -187,15 +188,13 @@ pro plot_lmfit,time
 		loadct,0
 		ymax = max(abs(acfs(i,*,*)))*1.5
 		ptitle = 'Fitted ACF		'+$
-							'Velocity Guess = '+strtrim(round(lambda*init_guess(i,1)/(4.*!pi)),2)+' m/s	'+$
-							'Width Guess = '+strtrim(round(lambda/(init_guess(i,0)*2.*!pi)),2)+' m/s '+$
-							'Power Guess = '+strtrim(round(init_guess(i,2)),2)+' '+$
-							'ACF Error = '+strtrim(round(acferrs(i)),2)+'	'+$
-							'LM Status = '+strtrim(round(stat_arr(i)),2)
+							'Vel = '+strtrim(round(lambda*fit_params(i,1)/(4.*!pi)),2)+' m/s	'+$
+							'Width = '+strtrim(round(lambda/(fit_params(i,0)*2.*!pi)),2)+' m/s '+$
+							'Power = '+strtrim(round(10.*alog10((fit_params(i,2)+skynoise)/skynoise)),2)+' dB'
 
 		plot,findgen(1),findgen(1),/nodata,xrange=[0,max(lagnums(i,*))],yrange=[-1.0*ymax,ymax],$
-					xstyle=1,ystyle=1,xthick=4,ythick=4,pos=[.05,.46,.85,.66],/noerase,thick=2.,$
-					yticklen=-.01,title=ptitle,charthick=3,charsize=.75
+					xstyle=1,ystyle=1,xthick=4,ythick=4,pos=[.05,.46,.4,.61],/noerase,thick=3,$
+					yticklen=-.01,title=ptitle,charthick=3,charsize=1,ytitle='level',xtitle='lag'
 
 
 		loadct,34
@@ -241,7 +240,7 @@ pro plot_lmfit,time
 
 		plot,findgen(1),findgen(1),/nodata,xrange=[0,max(lagnums(i,*))],yrange=[-!pi,!pi],$
 					xstyle=1,ystyle=1,xthick=4,ythick=4,pos=[.05,.2,.4,.40],/noerase,thick=2.,$
-					yticklen=-.01,title=ptitle,charthick=3,charsize=.75
+					yticklen=-.01,charthick=3,charsize=.75
 
 
 		loadct,34

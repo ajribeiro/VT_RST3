@@ -172,7 +172,7 @@ int main(int argc,char *argv[])
     exit(0);
   }
 
-
+ 
   /*read the first radar's file*/
   fitfp1=fopen(argv[arg],"r");
   fprintf(stderr,"%s\n",argv[arg]);
