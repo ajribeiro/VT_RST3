@@ -71,7 +71,7 @@ pro plot_fitacf,time
 
 	;read the first line
 	readf,unit,stid,yr,mo,dy,hr,mt,sc,bmnum
-  readf,unit,nrang,mplgs,skynoise,tfreq,mpinc
+  readf,unit,nrang,mplgs,skynoise,tfreq,mpinc,lagfr,smsep,nave,cpid
 	lambda = 3.e8/(tfreq*1.e3)
 	;get rad info
   radar_info,stid,glat,glon,mlat,mlon,oneletter,threeletter,name,fix(stid)
@@ -97,6 +97,7 @@ pro plot_fitacf,time
 	fit_params = dblarr(nrang,4)
 	first_stat = intarr(nrang)
 	second_stat = intarr(nrang)
+	n_lags = intarr(nrang)
 	;read the rest of the file
 	for i=0,nrang-1 do begin
 		readf,unit,r,thresh
@@ -120,6 +121,7 @@ pro plot_fitacf,time
 			acfs(i,j,0) = re
 			acfs(i,j,1) = im
 			more_lags(i,j) = good
+			if(good) then n_lags(i) = n_lags(i) + 1
 		endfor
 		;read the params that determine if fitting is performed
 		readf,unit,flg
@@ -143,6 +145,12 @@ pro plot_fitacf,time
 	;close the input file
   close,unit
   free_lun,unit
+
+  plot_front_page,yr,mo,dy,hr,mt,sc,name,bmnum,tfreq,nave,cpid,nrang,$
+								skynoise,0,sct_flgs,fit_params(*,2),fit_params(*,0),$
+								fit_params(*,3),n_lags,glat,lagfr,smsep
+
+
   for i=0,nrang-1 do begin
 		loadct,0
 		;annotate the page

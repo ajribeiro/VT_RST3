@@ -1,0 +1,23 @@
+#!/bin/bash -x
+/rstscr/make_comb_1day.sh '20100103' 6 11 15 40
+/rstscr/make_comb_1day.sh '20100112' 5 8 7 40
+/rstscr/make_comb_1day.sh '20100114' 6 13 20 40
+/rstscr/make_comb_1day.sh '20100115' 0 3 15 40
+/rstscr/make_comb_1day.sh '20100121' 6 12 10 35
+/rstscr/make_comb_1day.sh '20100212' 0 3 10 30
+/rstscr/make_comb_1day.sh '20100213' 1 5 15 40
+/rstscr/make_comb_1day.sh '20100219' 1 5 10 30
+# /rstscr/make_comb_1day.sh '20100103' 6 11 15 40
+# /rstscr/make_comb_1day.sh '20100103' 6 11 15 40
+# /rstscr/make_comb_1day.sh '20100103' 6 11 15 40
+# /rstscr/make_comb_1day.sh '20100103' 6 11 15 40
+# /rstscr/make_comb_1day.sh '20100103' 6 11 15 40
+# /rstscr/make_comb_1day.sh '20100103' 6 11 15 40
+# /rstscr/make_comb_1day.sh '20100103' 6 11 15 40
+# /rstscr/make_comb_1day.sh '20100103' 6 11 15 40
+# /rstscr/make_comb_1day.sh '20100103' 6 11 15 40
+# /rstscr/make_comb_1day.sh '20100103' 6 11 15 40
+# /rstscr/make_comb_1day.sh '20100103' 6 11 15 40
+# /rstscr/make_comb_1day.sh '20100103' 6 11 15 40
+# /rstscr/make_comb_1day.sh '20100103' 6 11 15 40
+

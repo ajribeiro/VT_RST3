@@ -32,6 +32,40 @@ pro draw_colorbar,vel_max,vel_min,title,units,loc,ct=ct
   plots,[loc(0),loc(2)],[loc(1)+3*ysize/4.,loc(1)+3*ysize/4.],/normal
 end
 
+pro draw_colorbar_round,vel_max,vel_min,title,units,loc,ct=ct
+  ;loc=[x0,y0,x1,y1]
+;   loc = [0.1, 0.35, 0.13, 0.65]
+  if(keyword_set(ct)) then $
+    loadct,ct,ncolors=256 $
+  else loadct,34,ncolors=256
+  ncolors = 256
+  bar = replicate(1B, 10) # bindgen(256)
+  xsize = loc(2) - loc(0)
+  ysize = loc(3) - loc(1)
+  xstart = loc(0)
+  ystart = loc(1)
+  bar = BYTSCL(bar, TOP=ncolors-1)
+  TV, bar,xstart,ystart,XSIZE=xsize,YSIZE=ysize,/normal
+  loadct,0
+  plots, [loc(0), loc(0), loc(2), loc(2), loc(0)],[loc(1), loc(3), loc(3), loc(1), loc(1)], /NORMAL
+  xyouts,xsize/2.+loc(0),loc(3)+.025,title,alignment=0.5,/normal,charthick=3
+  xyouts,xsize/2.+loc(0),loc(1)-.02,units,alignment=0.5,/normal,charsize=0.7,charthick=3
+  xyouts,loc(2)+.01,loc(1)-.005,strmid(strtrim(round(vel_min),2),0,7),alignment=0.,/normal,charthick=3
+  xyouts,loc(2)+.01,loc(3)-.005,strmid(strtrim(round(vel_max),2),0,7),alignment=0.,/normal,charthick=3
+  xyouts,loc(2)+.01,loc(1)+ysize/4.-.005,$
+        strmid(strtrim(round(vel_min + (vel_max-vel_min)*.25),2),0,7),$
+        alignment=0.,/normal,charthick=3
+  plots,[loc(0),loc(2)],[loc(1)+ysize/4.,loc(1)+ysize/4.],/normal
+  xyouts,loc(2)+.01,loc(1)+ysize/2.-.005,$
+        strmid(strtrim(round(vel_min + (vel_max-vel_min)*.5),2),0,7),$
+        alignment=0.,/normal,charthick=3
+  plots,[loc(0),loc(2)],[loc(1)+ysize/2.,loc(1)+ysize/2.],/normal
+  xyouts,loc(2)+.01,loc(1)+3*ysize/4.-.005,$
+        strmid(strtrim(round(vel_min + (vel_max-vel_min)*.75),2),0,7),$
+        alignment=0.,/normal,charthick=3
+  plots,[loc(0),loc(2)],[loc(1)+3*ysize/4.,loc(1)+3*ysize/4.],/normal
+end
+
 pro draw_colorbar_noround,vel_max,vel_min,title,units,loc,ct=ct
   ;loc=[x0,y0,x1,y1]
 ;   loc = [0.1, 0.35, 0.13, 0.65]

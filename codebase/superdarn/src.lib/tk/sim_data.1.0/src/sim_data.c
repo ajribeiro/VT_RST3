@@ -248,7 +248,6 @@ void acf_27(complex double * aa, complex double * rr, int cpid)
   nave                        number of pulse sequences in an integration period
   nrang                       number of range gates
   lagfr                       lag to first range
-  n_good                      number of range gates containing scatter
   life_dist                   lifetime distribution
   smsep                       sample spearation
   cpid                        control program ID number
@@ -265,8 +264,8 @@ void acf_27(complex double * aa, complex double * rr, int cpid)
 */
 void sim_data(double *t_d, double *t_g, double *t_c, double *v_dop, int * qflg,
               double *velo, double *amp0, double freq, double noise_lev,
-              int noise_flg, int nave, int nrang, int lagfr, int n_good,
-              double smsep, int cpid, int life_dist, long n_samples,
+              int noise_flg, int nave, int nrang, int lagfr,
+              double smsep, int cpid, int life_dist,
               int n_pul, int cri_flg, int n_lags, int * pulse_t, int * tau,
               double dt, complex double * out_samples, complex double ** out_acfs,int decayflg)
 {
@@ -275,7 +274,7 @@ void sim_data(double *t_d, double *t_g, double *t_c, double *v_dop, int * qflg,
   ** definitions of variables needed for data generation **
   ********************************************************/
   int n = 2000;                             /*Number of scatterers (per range gate per integration period)*/
-  double t_n = dt*1.e-2;                    /*Irregualrity decay time for white noise*/
+  double t_n = dt*1.e-2;                    /*Irregularity decay time for white noise*/
   double c = 3.e8;                          /*Speed of light (m/s)*/
   double pwrtot = 0.;                       /*total power, used to normalize ACFs*/
   long numtot = 0;                          /*number of good ACFs*/
@@ -285,6 +284,7 @@ void sim_data(double *t_d, double *t_g, double *t_c, double *v_dop, int * qflg,
                                             /*generation/decay to reach steady state*/
   double rngsep = smsep*c/2.;               /*range gate spearation*/
   double smptime;                           /*time a raw sample is recorded*/
+  long n_samples = (long)(pulse_t[n_pul-1]*dt/smsep+nrang+lagfr);      /*number of samples in 1 pulse sequence*/
 
   /*other variables*/
   long i,j,kk,p,r,smpnum,temp;

@@ -1,0 +1,43 @@
+
+
+pro acf_plot_rawacf,re,im,mplgs,lagnums,bad_lags,position
+
+	S = findgen(17)*(!PI*2./16.)
+	usersym,cos(S),sin(S),/fill
+
+	ymax = max(abs([re(*),im(*)]))*1.1
+
+	;create the axes
+	plot,findgen(1),findgen(1),/nodata,xrange=[0,max(lagnums)],yrange=[-1.0*ymax,ymax],$
+			xstyle=1,ystyle=1,xthick=3,ythick=3,pos=position,/noerase,thick=3.,$
+			yticklen=-.01,title='Original Raw ACF',charthick=3,charsize=.6,xtitle='lag',$
+			ytitle='level'
+
+	;annotate the plot
+	xyouts,.87,.85,'Real',/normal,charsize=.7,charthick=3.
+	xyouts,.87,.82,'Imag',/normal,charsize=.7,charthick=3.
+	xyouts,.89,.79,'badlags',/normal,charsize=.7,charthick=3.
+	xyouts,.89,.76,'more_badlags',/normal,charsize=.7,charthick=3.
+	loadct,34
+	plots,.85,.855,psym=8,col=250,/normal
+	plots,.85,.825,psym=8,col=50,/normal
+	plots,.85,.795,psym=6,col=250,/normal
+	plots,.875,.795,psym=6,col=50,/normal
+	plots,.85,.765,psym=5,col=250,/normal
+	plots,.875,.765,psym=5,col=50,/normal
+
+	;plot the ACF
+	for i=0,mplgs-1 do begin
+		if(bad_lags(i) eq 0) then p = 6
+		if(bad_lags(i) eq 1) then p = 5
+		if(bad_lags(i) eq 2) then p = 8
+		plots,lagnums(i),re(i),psym=p,col=250
+		plots,lagnums(i),im(i),psym=p,col=50
+	endfor
+	plots,lagnums(*),re(*),linestyle=0,col=250,thick=3
+	plots,lagnums(*),im(*),linestyle=0,col=50,thick=3
+
+	;go back to davit ct
+	init_colors
+
+end

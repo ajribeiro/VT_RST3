@@ -102,7 +102,7 @@ void getendpoints(double lat1,double lon1,double * lat2, double * lon2, double a
 int main(int argc,char *argv[])
 {
   /*declarations*/
-  int arg = 0;
+  int arg = 0,toprng=-1,botrng=-1,toprng1,botrng1,toprng2,botrng2,allrng=0;
   double grho, lat1, lat2, lon1, lon2;
   double azm1, azm2, del_lat, del_lon, h, d, v_e, v_n, v1, v2, theta1, theta2, sc;
   int j, k, l, m, p, yr, mo, dy, hr, mn,sflg=0,temp;
@@ -162,6 +162,9 @@ int main(int argc,char *argv[])
   OptionAdd(&opt,"vb",'x',&vb);
   OptionAdd(&opt,"sthr",'i',&sthr);
   OptionAdd(&opt,"edhr",'i',&edhr);
+	OptionAdd(&opt,"toprng",'i',&toprng);
+  OptionAdd(&opt,"botrng",'i',&botrng);
+	OptionAdd(&opt,"allrng",'x',&allrng);
 	OptionAdd(&opt,"nogs",'x',&nogs);
 
   /*process the options*/
@@ -171,6 +174,12 @@ int main(int argc,char *argv[])
     OptionDump(stdout,&opt);
     exit(0);
   }
+
+  if(!allrng && (toprng==-1 || botrng == -1))
+	{
+		fprintf(stderr,"error: must either set toprng and botrng or use option -allrng\n");
+		exit(-1);
+	}
 
  
   /*read the first radar's file*/
@@ -280,13 +289,24 @@ int main(int argc,char *argv[])
     {
       if(vb)
         fprintf(stderr,"IN %d  %d  %d  %d  %d  %lf  %lf  %lf\n",yr, mo, dy, hr, mn, sc,scan1->st_time,scan2->st_time);
+
       /*
       fprintf(stderr,"out %lf  %lf\n",scan1->stime,scan2->stime);*/
       for(p=0;p<scan1->num;p++)
       {
 				if(scan1->bm[p].channel == 2)
 					continue;
-        for(k=0;k<scan1->bm[p].nrang;k++)
+				if(allrng)
+				{
+					botrng1 = 0;
+					toprng1 = scan1->bm[p].nrang;
+				}
+				else
+				{
+					botrng1 = botrng;
+					toprng1 = toprng;
+				}
+        for(k=botrng1;k<toprng1;k++)
         {
           if(scan1->bm[p].sct[k] == 0 || comb[p][k].matched)
             continue;
@@ -294,7 +314,17 @@ int main(int argc,char *argv[])
           {
 						if(scan2->bm[m].channel == 2)
 							continue;
-            for(l=0;l<scan2->bm[m].nrang;l++)
+						if(allrng)
+						{
+							botrng2 = 0;
+							toprng2 = scan2->bm[m].nrang;
+						}
+						else
+						{
+							botrng2 = botrng;
+							toprng2 = toprng;
+						}
+            for(l=botrng2;l<toprng2;l++)
             {
               if(scan2->bm[m].sct[l] == 0)
                 continue;

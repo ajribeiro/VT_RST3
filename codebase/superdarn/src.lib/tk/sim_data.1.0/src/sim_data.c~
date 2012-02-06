@@ -32,9 +32,7 @@ THE SOFTWARE.
 #include <unistd.h>
 #include <ctype.h>
 #include <math.h>
-#define complex a_complex
 #include <complex.h>
-#undef complex
 #include <time.h>
 #include "sim_data.h"
 
@@ -130,7 +128,7 @@ float gasdev(long *idum)
 }
 
 
-void acf_27(a_complex double * aa, a_complex double * rr, int cpid)
+void acf_27(complex double * aa, complex double * rr, int cpid)
 {
   if(cpid == 1)
   {
@@ -181,7 +179,7 @@ void acf_27(a_complex double * aa, a_complex double * rr, int cpid)
   }
   if(cpid == 503)
   {
-    a_complex double * temp = malloc(17*sizeof(a_complex double));
+    complex double * temp = malloc(17*sizeof(complex double));
     int i;
     rr[0]=aa[0]*conj(aa[0]);
     rr[1]=aa[1]*conj(aa[2]);
@@ -250,7 +248,6 @@ void acf_27(a_complex double * aa, a_complex double * rr, int cpid)
   nave                        number of pulse sequences in an integration period
   nrang                       number of range gates
   lagfr                       lag to first range
-  n_good                      number of range gates containing scatter
   life_dist                   lifetime distribution
   smsep                       sample spearation
   cpid                        control program ID number
@@ -267,10 +264,10 @@ void acf_27(a_complex double * aa, a_complex double * rr, int cpid)
 */
 void sim_data(double *t_d, double *t_g, double *t_c, double *v_dop, int * qflg,
               double *velo, double *amp0, double freq, double noise_lev,
-              int noise_flg, int nave, int nrang, int lagfr, int n_good,
-              double smsep, int cpid, int life_dist, long n_samples,
+              int noise_flg, int nave, int nrang, int lagfr,
+              double smsep, int cpid, int life_dist,
               int n_pul, int cri_flg, int n_lags, int * pulse_t, int * tau,
-              double dt, a_complex double * out_samples, a_complex double ** out_acfs,int decayflg)
+              double dt, complex double * out_samples, complex double ** out_acfs,int decayflg)
 {
 
   /********************************************************
@@ -287,6 +284,7 @@ void sim_data(double *t_d, double *t_g, double *t_c, double *v_dop, int * qflg,
                                             /*generation/decay to reach steady state*/
   double rngsep = smsep*c/2.;               /*range gate spearation*/
   double smptime;                           /*time a raw sample is recorded*/
+  long n_samples = (long)(pulse_t[n_pul-1]*dt/smsep+nrang+lagfr);      /*number of samples in 1 pulse sequence*/
 
   /*other variables*/
   long i,j,kk,p,r,smpnum,temp;
@@ -298,23 +296,23 @@ void sim_data(double *t_d, double *t_g, double *t_c, double *v_dop, int * qflg,
   /*control program dependent variables*/
   taus = dt/smsep;                                      /*lag time in samples*/
 
-  a_complex double * aa = malloc(n_pul*sizeof(a_complex double));
-  a_complex double * rr = malloc(n_lags*sizeof(a_complex double));
+  complex double * aa = malloc(n_pul*sizeof(complex double));
+  complex double * rr = malloc(n_lags*sizeof(complex double));
 
   /*Creating the output array for ACFs*/
-  a_complex double ** acfs = malloc(nrang*sizeof(a_complex double *));
+  complex double ** acfs = malloc(nrang*sizeof(complex double *));
   for(i=0;i<nrang;i++)
   {
-    acfs[i] = malloc(n_lags*sizeof(a_complex double));
+    acfs[i] = malloc(n_lags*sizeof(complex double));
     for(j=0;j<n_lags;j++)
       acfs[i][j] = 0.+I*0.;
   }
 
   /*Creating the output array for ACFs*/
-  a_complex double ** noise_acfs = malloc(nrang*sizeof(a_complex double *));
+  complex double ** noise_acfs = malloc(nrang*sizeof(complex double *));
   for(i=0;i<nrang;i++)
   {
-    noise_acfs[i] = malloc(n_lags*sizeof(a_complex double));
+    noise_acfs[i] = malloc(n_lags*sizeof(complex double));
     for(j=0;j<n_lags;j++)
       noise_acfs[i][j] = 0.+I*0.;
   }
@@ -329,9 +327,9 @@ void sim_data(double *t_d, double *t_g, double *t_c, double *v_dop, int * qflg,
 
 
   /*create a structure to store the raw samples from each pulse sequence*/
-  a_complex double * raw_samples = malloc(n_samples*sizeof(a_complex double));
+  complex double * raw_samples = malloc(n_samples*sizeof(complex double));
   /*create a structure to store the raw noise samples from each pulse sequence*/
-  a_complex double * noise_samples = malloc(n_samples*sizeof(a_complex double));
+  complex double * noise_samples = malloc(n_samples*sizeof(complex double));
 
 
   /*assign properties to the irregularities in each range gate*/

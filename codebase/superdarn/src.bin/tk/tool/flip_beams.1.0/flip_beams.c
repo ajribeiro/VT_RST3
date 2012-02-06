@@ -186,7 +186,7 @@ int main(int argc,char *argv[])
     tmstr[24]=0;
     RadarParmSetOriginTime(prm,tmstr);
 
-		prm->bmnum=23-prm->bmnum;
+		prm->bmnum=15-prm->bmnum;
 
     status=RawFwrite(stdout,prm,raw);
 

@@ -248,6 +248,8 @@ int main(int argc,char *argv[])
   "         at other range gates)\n"
   "-samples: output raw samples (to iqdat file) instead of ACFs\n"
   "         default is output ACFs (to rawacf file)\n"
+  "-decay: set ACFs to have a decaying amplitude by a\n"
+  "         factor of 1/r^2\n"
   "\nNOTE: all option inputs must be integers\n";
 
 
@@ -490,8 +492,8 @@ int main(int argc,char *argv[])
 
   /*call the simulation function*/
   sim_data(t_d_arr, t_g_arr, t_c_arr, v_dop_arr, qflg, velo_arr, amp0_arr, freq, noise_lev,
-            noise_flg, nave, nrang, lagfr, n_good, smsep, cpid, life_dist,
-            n_samples, n_pul, cri_flg, n_lags, pulse_t, tau, dt, raw_samples, acfs,decayflg);
+            noise_flg, nave, nrang, lagfr, smsep, cpid, life_dist,
+            n_pul, cri_flg, n_lags, pulse_t, tau, dt, raw_samples, acfs, decayflg);
 
   /*pill the parameter structure*/
   struct RadarParm * prm;

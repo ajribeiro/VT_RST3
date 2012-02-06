@@ -24,10 +24,15 @@ this code reads in a fit file and produces an ascii file
 #include "invmag.h" 
 #include "rpos.h"
 #include "mergedata.h"
+#include "aacgm.h"
+#include "mlt.h"
+#include "AstAlg.h"
 #include "mergeread.h"
+
 
 struct OptionData opt;
 struct RadarNetwork *network;
+
 
 
 
@@ -43,7 +48,7 @@ int main(int argc,char *argv[])
   unsigned char option = 0;
   int vb = 0;
 	char * outfile = "/rst/output_files/mergevec.out.txt";
-	double sc,jTime;
+	double sc,jTime,mlt;
 	int yr,mo,dy,hr,mt;
 
 	struct MergeData myData;
@@ -110,6 +115,7 @@ int main(int argc,char *argv[])
 		fprintf(stderr,"File %s is empty\n",argv[arg]);
     exit(-1);
 	}
+/* UNCOMMENT THIS TO OUTPUT FOR PLOTTING*/
 	out = fopen(outfile,"w");
 	fprintf(out,"%d  %d  %d\n",mag_flg,myData.radar1.stid,myData.radar2.stid);
 
@@ -119,7 +125,7 @@ int main(int argc,char *argv[])
 		TimeEpochToYMDHMS((double)myData.st_time,&yr,&mo,&dy,&hr,&mt,&sc);
 		jTime = TimeYMDHMSToJulian(yr,mo,dy,hr,mt,sc);
 
-
+/* UNCOMMENT THIS TO OUTPUT FOR PLOTTING*/
 		if(mag_flg)
 			fprintf(out,"%lf  %lf  %lf  %lf  %lf  %lf  %lf  %lf  %lf  %lf  %lf  %lf  %lf  %lf  %lf  %lf  %lf\n",
 							myData.radar1.vel,myData.radar1.pwr,myData.radar1.w_l,myData.radar1.mlat,myData.radar1.mlon,myData.radar1.mazm,
@@ -130,6 +136,11 @@ int main(int argc,char *argv[])
 							myData.radar1.vel,myData.radar1.pwr,myData.radar1.w_l,myData.radar1.glat,myData.radar1.glon,myData.radar1.gazm,
 							myData.radar2.vel,myData.radar2.pwr,myData.radar2.w_l,myData.radar2.glat,myData.radar2.glon,myData.radar2.gazm,
 							myData.velg,myData.glat,myData.glon,myData.gazm,jTime);
+/*
+
+		fprintf(stdout,"%lf  %lf  %lf  %lf  %lf  %lf  %lf  %lf  %lf\n",
+							(double)myData.st_time,myData.velm,myData.mlat,myData.mlon,myData.mazm,myData.velg,myData.glat,myData.glon,myData.gazm);*/
+
 
 		s = MergeFread(mergefp,&myData);
 
@@ -137,7 +148,9 @@ int main(int argc,char *argv[])
 
 
 	fclose(mergefp);
+/* UNCOMMENT THIS TO OUTPUT FOR PLOTTING*/
 	fclose(out);
+
 
   return 0;
 }

@@ -73,7 +73,7 @@ pro plot_merge,orig=orig
 	else device,/landscape,/COLOR,BITS_PER_PIXEL=8,filename='/rst/output_plots/merge.ps'
 	old_time = double(-999999)
 	time=0d
-	vel_max = 500
+	vel_max = 100
 	;open the file
   openr,unit,file_in,/get_lun
 

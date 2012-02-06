@@ -198,10 +198,9 @@ int main(int argc,char *argv[])
   int decayflg = 0;
 
   /*other variables*/
-  long i,j,r;
+  long i,j;
   int output = 0;
   double taus;
-  long seed = time(NULL)*time(NULL);        /*a seed for random number generation*/
 
   char helpstr[] =
   "\nmake_sim:  generates simulated single-component lorentzian ACFs\n\n"
@@ -492,8 +491,8 @@ int main(int argc,char *argv[])
 
   /*call the simulation function*/
   sim_data(t_d_arr, t_g_arr, t_c_arr, v_dop_arr, qflg, velo_arr, amp0_arr, freq, noise_lev,
-            noise_flg, nave, nrang, lagfr, n_good, smsep, cpid, life_dist,
-            n_samples, n_pul, cri_flg, n_lags, pulse_t, tau, dt, raw_samples, acfs,decayflg);
+            noise_flg, nave, nrang, lagfr, smsep, cpid, life_dist,
+            n_pul, cri_flg, n_lags, pulse_t, tau, dt, raw_samples, acfs, decayflg);
 
   /*pill the parameter structure*/
   struct RadarParm * prm;

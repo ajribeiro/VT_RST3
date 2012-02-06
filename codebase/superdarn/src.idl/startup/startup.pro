@@ -42,8 +42,12 @@ device, decomposed=0
 .run rbposlib.pro
 .run istplib.pro
 .run global.pro
-.run map_tools.pro
-.run radar_info.pro
+
+;VT routines
+.run /rstidl/map_tools.pro
+.run /rstidl/radar_info.pro
+.run /rstidl/geotools.pro
+.run /rstidl/acf_plotting_tools.pro
 
 
 

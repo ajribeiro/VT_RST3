@@ -97,6 +97,7 @@ pro plot_fitacf,time
 	fit_params = dblarr(nrang,4)
 	first_stat = intarr(nrang)
 	second_stat = intarr(nrang)
+	n_lags = intarr(nrang)
 	;read the rest of the file
 	for i=0,nrang-1 do begin
 		readf,unit,r,thresh
@@ -120,6 +121,7 @@ pro plot_fitacf,time
 			acfs(i,j,0) = re
 			acfs(i,j,1) = im
 			more_lags(i,j) = good
+			if(good) then n_lags(i) = n_lags(i) + 1
 		endfor
 		;read the params that determine if fitting is performed
 		readf,unit,flg
@@ -143,6 +145,12 @@ pro plot_fitacf,time
 	;close the input file
   close,unit
   free_lun,unit
+
+  plot_front_page,yr,mo,dy,hr,mt,sc,name,bmnum,tfreq,40,151,nrang,$
+								skynoise,0,sct_flgs,fit_params(*,2),fit_params(*,0),$
+								fit_params(*,3),n_lags,glat
+
+
   for i=0,nrang-1 do begin
 		loadct,0
 		;annotate the page
@@ -291,8 +299,8 @@ pro plot_fitacf,time
 		usersym,cos(S),sin(S)
 		plots,.42,.225,/normal,col=150,psym=8
 		loadct,0
-; 		xyouts,.44,.25,'ACF',charthick=3.,/normal
-; 		xyouts,.44,.22,'Fit',charthick=3.,/normal
+		xyouts,.44,.25,'ACF',charthick=3.,/normal
+		xyouts,.44,.22,'Fit',charthick=3.,/normal
 
 
 		;;;;;;;;;;;;;;;;;;;;;;;;
@@ -307,7 +315,7 @@ pro plot_fitacf,time
 
 		plot,findgen(1),findgen(1),/nodata,xrange=[0,max(lagnums(i,*))],yrange=[ymin,ymax],$
 					xstyle=1,ystyle=1,xthick=4,ythick=4,pos=[.5,.15,.85,.3],/noerase,thick=3.,$
-					yticklen=-.01,title=ptitle,charthick=3,charsize=1,xtitle='lag  log power'
+					yticklen=-.01,title=ptitle,charthick=3,charsize=1,xtitle='lag'
 
 
 		loadct,34

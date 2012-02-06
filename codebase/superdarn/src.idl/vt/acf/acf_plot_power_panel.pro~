@@ -1,0 +1,38 @@
+pro acf_plot_power_panel,powers,fpowers,mplgs,lagnums,badlags,snr,wid,position
+
+
+	ptitle= 'Power: '+strtrim(round(snr),2)+' dB  Width: '+strtrim(round(wid),2)+' m/s'
+
+	ymin = min([min(powers(where(badlags eq 2))),min(fpowers)])
+	ymax = max([max(powers(where(badlags eq 2))),max(fpowers)])
+
+	plot,findgen(1),findgen(1),/nodata,xrange=[0,max(lagnums)],yrange=[ymin*.9,ymax*1.1],$
+				xstyle=1,ystyle=1,xthick=4,ythick=4,pos=position,/noerase,thick=3.,$
+				yticklen=-.01,title=ptitle,charthick=3,charsize=.6,xtitle='lag',ytitle='power'
+
+	S = findgen(17)*(!PI*2./16.)
+	usersym,cos(S),sin(S)
+
+	xyouts,.87,.55,'ACF',/normal,charsize=.7
+	xyouts,.87,.52,'Fit',/normal,charsize=.7
+	loadct,34
+	for j=0,mplgs-1 do begin
+		;plot the actual ACF
+		if(badlags(j) eq 2) then begin
+			usersym,cos(S),sin(S),/FILL
+			plots,lagnums(j),powers(j),psym=8,col=250
+			usersym,cos(S),sin(S)
+		endif
+		plots,lagnums(j),fpowers(j),psym=8,col=150
+	endfor
+
+	plots,lagnums,fpowers,linestyle=1,col=150,thick=3
+	usersym,cos(S),sin(S),/FILL
+	plots,.85,.555,psym=8,col=250,/normal
+	usersym,cos(S),sin(S)
+	plots,.85,.525,psym=8,col=150,/normal
+
+	;go back to davit ct
+	init_colors
+
+end

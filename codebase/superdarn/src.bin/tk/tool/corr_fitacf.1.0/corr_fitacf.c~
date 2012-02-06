@@ -1,0 +1,166 @@
+/*
+$Log: combvec.c,v $
+
+Revision 1.0  2009/03/03 17:05:20  aj
+this code reads in a fit file and produces an ascii file
+
+*/
+#include <errno.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <ctype.h>
+#include <math.h>
+#include <zlib.h>
+#include "rtypes.h"
+#include "dmap.h"
+#include "option.h"
+#include "rtime.h"
+#include "radar.h"
+#include "rprm.h"
+#include "invmag.h"
+#include "rpos.h"
+#include "fitdata.h"
+#include "fitread.h"
+
+struct RadarNetwork *network;
+struct Radar *radar;
+struct RadarSite *site;
+struct OptionData opt;
+
+struct sounding
+{
+	int yr, mo, dy, hr, mt, sc;
+  double epoch;
+	int bmnum;
+	int nrang;
+	double * vel;
+};
+
+int main(int argc,char *argv[])
+{
+  /*declarations*/
+  int arg = 0;
+  int i, r;
+  FILE *fp;
+  FILE *fitfp = NULL;
+	FILE *corrfp = NULL;
+  char *envstr;
+  unsigned char help = 0;
+  unsigned char option = 0;
+  int s = 0, vb = 0;
+	double epoch;
+
+  struct FitData *fit = FitMake();
+  struct RadarParm *prm = RadarParmMake();
+
+
+  envstr=getenv("SD_RADAR");
+  if(envstr==NULL)
+  {
+    fprintf(stderr,"Environment variable 'SD_RADAR' must be defined.\n");
+    return -1;
+  }
+  fp=fopen(envstr,"r");
+
+  if(fp==NULL)
+  {
+    fprintf(stderr,"Could not locate radar information file.\n");
+    exit(-1);
+  }
+
+  network=RadarLoad(fp);
+  fclose(fp);
+  if(network==NULL)
+  {
+    fprintf(stderr,"Failed to read radar information.\n");
+    exit(-1);
+  }
+
+  envstr=getenv("SD_HDWPATH");
+  if(envstr==NULL)
+  {
+    fprintf(stderr,"Environment variable 'SD_HDWPATH' must be defined.\n");
+    exit(-1);
+  }
+
+  RadarLoadHardware(envstr,network);
+
+  /*add options to control performance*/
+  OptionAdd(&opt,"-help",'x',&help);
+  OptionAdd(&opt,"-option",'x',&option);
+  OptionAdd(&opt,"vb",'x',&vb);
+
+  /*process the options*/
+  arg=OptionProcess(1,argc,argv,&opt,NULL);
+  if(option == 1)
+  {
+    OptionDump(stdout,&opt);
+    exit(0);
+  }
+
+	struct sounding * dayfile = malloc(86400*sizeof(struct sounding));
+	long nsoundings = 0;
+	/*open corrections file*/
+	corrfp=fopen(argv[arg+1],"r");
+	while(!feof(corrfp))
+	{
+		fscanf(corrfp,"%d  %d  %d  %d  %d  %d  %d  %d\n",&dayfile[nsoundings].yr,&dayfile[nsoundings].mo,
+					 &dayfile[nsoundings].dy,&dayfile[nsoundings].hr,&dayfile[nsoundings].mt,&dayfile[nsoundings].sc,
+					 &dayfile[nsoundings].bmnum,&dayfile[nsoundings].nrang);
+
+		dayfile[nsoundings].epoch = TimeYMDHMSToEpoch(dayfile[nsoundings].yr,dayfile[nsoundings].mo,
+																									dayfile[nsoundings].dy,dayfile[nsoundings].hr,
+																									dayfile[nsoundings].mt,(double)dayfile[nsoundings].sc);
+		dayfile[nsoundings].vel = malloc(dayfile[nsoundings].nrang*sizeof(double));
+		for(i=0;i<dayfile[nsoundings].nrang;i++)
+		{
+			fscanf(corrfp,"%d  %lf\n",&r,&dayfile[nsoundings].vel[i]);
+		}
+		nsoundings++;
+	}
+
+
+  /*read the first radar's file*/
+  fitfp=fopen(argv[arg],"r");
+  fprintf(stderr,"%s\n",argv[arg]);
+  if(fitfp==NULL)
+  {
+    fprintf(stderr,"File %s not found.\n",argv[arg]);
+    exit(-1);
+  }
+
+	s=FitFread(fitfp,prm,fit);
+
+
+  radar=RadarGetRadar(network,prm->stid);
+  if (radar==NULL)
+  {
+    fprintf(stderr,"Failed to get radar information.\n");
+    exit(-1);
+  }
+  site=RadarYMDHMSGetSite(radar,prm->time.yr,prm->time.mo,prm->time.dy,prm->time.hr,prm->time.mt,prm->time.sc);
+
+	do
+	{
+		epoch = TimeYMDHMSToEpoch(prm->time.yr,prm->time.mo,prm->time.dy,prm->time.hr,prm->time.mt,(double)((int)prm->time.sc));
+
+		/*go though the day, find the matching fit record, and overwrite the velocities*/
+		for(i=0;i<nsoundings;i++)
+			if(fabs(epoch - dayfile[i].epoch) < 2. && prm->bmnum == dayfile[i].bmnum)
+				for(r=0;r<prm->nrang;r++)
+					if(fit->rng[r].qflg != 0)
+						fit->rng[r].v = dayfile[i].vel[r];
+
+		s=FitFread(fitfp,prm,fit);
+	} while(s != -1);
+
+
+	free(dayfile);
+	fclose(fitfp);
+	
+  return 0;
+}

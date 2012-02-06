@@ -17,7 +17,7 @@
 ;	yr 							-- year
 ; mo 							-- month
 ;	dy 							-- day
-;	sthr 						--start hour for the plot
+;	sthr 						-- start hour for the plot
 ;	stmin 					-- start minute for the plot
 ; edhr 						-- end hour for the plot
 ; edmin					 	-- end minute for the plot
@@ -33,6 +33,7 @@
 ; /graynum        -- threshold for grayscale plotting
 ; /gsflg          -- plot ground scatter in gray
 ;	/rtflg          -- plotting ray tracing, change filename
+;	/rtflg          -- use gs flag from AJ's search
 ;
 ; KEYWORD PARAMETERS:
 ;
@@ -71,7 +72,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 pro time_series_plot,yr,mo,dy,sthr,stmn,edhr,edmn,rad,filtflg,tgtbeam,ytype,ctype,$
-                      scale,grayflg=GRAYFLG,graynum=GRAYNUM,gsflg=GSFLG,rtflg=RTFLG
+                      scale,grayflg=GRAYFLG,graynum=GRAYNUM,gsflg=GSFLG,rtflg=RTFLG,pscat=PSCAT
 
   if(mo gt 9) then mostr = strtrim(fix(mo),2) $
   else mostr = '0'+strtrim(fix(mo),2)
@@ -81,7 +82,8 @@ pro time_series_plot,yr,mo,dy,sthr,stmn,edhr,edmn,rad,filtflg,tgtbeam,ytype,ctyp
   if(keyword_set(rtflg)) then begin
 		filename = '/data/fit/'+date+'.'+rad+'.rt.fitex'
   endif else begin
-		if(filtflg eq 1) then filename = '/data/fit/'+date+'.'+rad+'.fitexbfc' $
+		if(filtflg eq 1) then filename = '/data/fit/'+date+'.'+rad+'.fitexbfnc' $
+		else if(keyword_set(pscat)) then filename = '/data/pscat/'+date+'.'+rad+'.pscat' $
 		else filename = '/data/fit/'+date+'.'+rad+'.fitex'
 	endelse
 
@@ -91,10 +93,10 @@ pro time_series_plot,yr,mo,dy,sthr,stmn,edhr,edmn,rad,filtflg,tgtbeam,ytype,ctyp
 
   set_plot,'PS',/copy
   if(keyword_set(rtflg)) then begin
-		device,/landscape,filename='/data/fit/aj/idl/temp_files/'+date+'.'+rad+'.rt.ps',/COLOR,BITS_PER_PIXEL=8
+		device,/landscape,filename='/rst/output_plots/'+date+'.'+rad+'.rt.ps',/COLOR,BITS_PER_PIXEL=8
   endif else begin
-		if(filtflg eq 1) then device,/landscape,filename='/data/fit/aj/idl/temp_files/'+date+'.'+rad+'.f.ps',/COLOR,BITS_PER_PIXEL=8 $
-		else device,/landscape,filename='/data/fit/aj/idl/temp_files/'+date+'.'+rad+'.ps',/COLOR,BITS_PER_PIXEL=8
+		if(filtflg eq 1) then device,/landscape,filename='rst/output_plots/'+date+'.'+rad+'.f.ps',/COLOR,BITS_PER_PIXEL=8 $
+		else device,/landscape,filename='rst/output_plots/'+date+'.'+rad+'.ps',/COLOR,BITS_PER_PIXEL=8
 	endelse
 
 
