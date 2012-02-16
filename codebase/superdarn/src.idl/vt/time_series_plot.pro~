@@ -95,8 +95,8 @@ pro time_series_plot,yr,mo,dy,sthr,stmn,edhr,edmn,rad,filtflg,tgtbeam,ytype,ctyp
   if(keyword_set(rtflg)) then begin
 		device,/landscape,filename='/rst/output_plots/'+date+'.'+rad+'.rt.ps',/COLOR,BITS_PER_PIXEL=8
   endif else begin
-		if(filtflg eq 1) then device,/landscape,filename='rst/output_plots/'+date+'.'+rad+'.f.ps',/COLOR,BITS_PER_PIXEL=8 $
-		else device,/landscape,filename='rst/output_plots/'+date+'.'+rad+'.ps',/COLOR,BITS_PER_PIXEL=8
+		if(filtflg eq 1) then device,/landscape,filename='/rst/output_plots/'+date+'.'+rad+'.f.ps',/COLOR,BITS_PER_PIXEL=8 $
+		else device,/landscape,filename='/rst/output_plots/'+date+'.'+rad+'.ps',/COLOR,BITS_PER_PIXEL=8
 	endelse
 
 
@@ -222,7 +222,7 @@ pro time_series_plot,yr,mo,dy,sthr,stmn,edhr,edmn,rad,filtflg,tgtbeam,ytype,ctyp
       ymin = 0
       for i=0,dind-1 do $
         if(prm_arr(i).nrang gt ymax) then $
-          ymax = prm_arr(i).nrang
+          ymax = 30;prm_arr(i).nrang
       yname = 'Range Gate'
     endif
     ;plot in geo coords
@@ -233,15 +233,14 @@ pro time_series_plot,yr,mo,dy,sthr,stmn,edhr,edmn,rad,filtflg,tgtbeam,ytype,ctyp
 							rxrise=prm_arr(0).rxrise,station=prm_arr(0).stid, $
 							year=prm_arr(0).time.yr,yrsec=yrsc,/GEO)
       ymin = pos(0,0,0)
-      for i=0,dind-1 do begin
-        yrsc=TimeYMDHMSToYrSec(prm_arr(i).time.yr,prm_arr(i).time.mo,prm_arr(i).time.dy,$
+			i = where(prm_arr(*).nrang eq max(prm_arr(*).nrang))
+			i = reform(i(0:0))
+      yrsc=TimeYMDHMSToYrSec(prm_arr(i).time.yr,prm_arr(i).time.mo,prm_arr(i).time.dy,$
                                 prm_arr(i).time.hr,prm_arr(i).time.mt,prm_arr(i).time.sc)
-        pos = rbpos(prm_arr(i).nrang+1,height=300,beam=tgtbeam,lagfr=prm_arr(i).lagfr,smsep=prm_arr(i).smsep, $
+      pos = rbpos(max(prm_arr(*).nrang)+1,height=300,beam=tgtbeam,lagfr=prm_arr(i).lagfr,smsep=prm_arr(i).smsep, $
           rxrise=prm_arr(i).rxrise,station=prm_arr(i).stid, $
           year=prm_arr(i).time.yr,yrsec=yrsc,/GEO)
-        if(pos(0,0,1) gt ymax) then $
-          ymax = pos(0,0,1)
-      endfor
+      ymax = pos(0,0,1)
       yname = 'Geographic Latitude'
     endif
     ;plot in mag coords
@@ -259,7 +258,7 @@ pro time_series_plot,yr,mo,dy,sthr,stmn,edhr,edmn,rad,filtflg,tgtbeam,ytype,ctyp
           pos = rbpos(j+1,height=300,beam=tgtbeam,lagfr=prm_arr(i).lagfr,smsep=prm_arr(i).smsep, $
             rxrise=prm_arr(i).rxrise,station=prm_arr(i).stid, $
             year=prm_arr(i).time.yr,yrsec=yrsc)
-          if(pos(0,0,1) ge ymax) then $
+          if(abs(pos(0,0,1)) ge abs(ymax)) then $
             ymax = pos(0,0,1)
         endfor
       endfor
@@ -287,7 +286,7 @@ pro time_series_plot,yr,mo,dy,sthr,stmn,edhr,edmn,rad,filtflg,tgtbeam,ytype,ctyp
     for i=0,dind-1 do begin
       ;only plot channel A
       if(prm_arr(i).channel eq 2) then continue
-      for j=0,prm.nrang-1 do begin
+      for j=0,29 do begin
         ;check for backscatter in the RB cell
         if(fit_arr(i).qflg(j) eq 0) then continue
         ;get x coords

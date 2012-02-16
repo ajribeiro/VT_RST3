@@ -18,7 +18,7 @@
 ;		fphases: 		an array of size mplgs with the fitted phases of the ACF
 ;		mplgs:			number of lags in the acf
 ;		lagnums:		an array of size mplgs containing the lag numbers of the ACF
-;		badlags:		an array of size mplgs with flags indicating bad lags (2=good, 1=more_badlags,0=badlags)
+;		badlags:		an array of size mplgs with flags indicating bad lags (2=good, 1=more_badlags, 0=badlags)
 ;		vel:				the final fitted velocity of the ACF
 ;		omega_loc:	the omega_loc value from FITACF (set to -1 for non-FITACF)
 ;		err:  			fitted velocity error
@@ -61,6 +61,12 @@
 
 pro acf_plot_phase_panel,phases,fphases,mplgs,lagnums,badlags,vel,omega_loc,err,position
 
+
+	x1 = position(0)
+	y1 = position(1)
+	x2 = position(2)
+	y2 = position(3)
+
 	if(omega_loc ne -1) then $
 		ptitle= 'Vel: '+strtrim(round(vel),2)+' m/s  V_err: '+strtrim(round(err),2)+$
 						'  O_loc: '+strtrim(round(omega_loc),2) $
@@ -75,8 +81,8 @@ pro acf_plot_phase_panel,phases,fphases,mplgs,lagnums,badlags,vel,omega_loc,err,
 	S = findgen(17)*(!PI*2./16.)
 	usersym,cos(S),sin(S)
 
-	xyouts,.43,.55,'ACF',/normal,charsize=.7
-	xyouts,.43,.52,'Fit',/normal,charsize=.7
+	xyouts,x2+.04,y2-.03,'ACF',/normal,charsize=.7
+	xyouts,x2+.04,y2-.06,'Fit',/normal,charsize=.7
 	loadct,34
 	for j=0,mplgs-1 do begin
 		;plot the actual ACF
@@ -90,9 +96,9 @@ pro acf_plot_phase_panel,phases,fphases,mplgs,lagnums,badlags,vel,omega_loc,err,
 
 	plots,lagnums,fphases,linestyle=1,col=150,thick=3
 	usersym,cos(S),sin(S),/FILL
-	plots,.41,.555,psym=8,col=0,/normal
+	plots,x2+.02,y2-.025,psym=8,col=0,/normal
 	usersym,cos(S),sin(S)
-	plots,.41,.525,psym=8,col=150,/normal
+	plots,x2+.02,y2-.055,psym=8,col=150,/normal
 
 	;go back to davit ct
 	init_colors

@@ -18,7 +18,7 @@
 ;		fphases: 		an array of size mplgs with the fitted phases of the ACF
 ;		mplgs:			number of lags in the acf
 ;		lagnums:		an array of size mplgs containing the lag numbers of the ACF
-;		badlags:		an array of size mplgs with flags indicating bad lags (2=good, 1=more_badlags,0=badlags)
+;		badlags:		an array of size mplgs with flags indicating bad lags (2=good, 1=more_badlags, 0=badlags)
 ;		vel:				the final fitted velocity of the ACF
 ;		omega_loc:	the omega_loc value from FITACF (set to -1 for non-FITACF)
 ;		err:  			fitted velocity error
@@ -29,11 +29,8 @@
 ; KEYWORD PARAMETERS:
 ;
 ; EXAMPLE:
-; test_fitacf -new -hr 5 -min 3 -beam 7 myfile.rawacf > /rst/output_files/timestamp.lmfit.test
-; plot_fitacf
 ;
 ; OUTPUT:
-; /rst/output_plots/timestamp.fitacf.ps
 ;
 ;
 ; COPYRIGHT:
@@ -59,7 +56,7 @@
 ;
 ;
 ; MODIFICATION HISTORY:
-; Written by AJ Ribeiro 08/29/2011
+; Written by AJ Ribeiro 02/06/2012
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 pro acf_plot_phase_panel,phases,fphases,mplgs,lagnums,badlags,vel,omega_loc,err,position

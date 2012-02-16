@@ -80,7 +80,7 @@ pro print_rec2
 	;prompt for end time
 ; 	read,ehr,emt,esc,prompt='Enter end time (hour min sec)   '
 	ehr = 5
-	emt = 24
+	emt = 26
 	esc = 0
 
 	stime = JULDAY(mo, dy, yr, shr, smt, ssc)

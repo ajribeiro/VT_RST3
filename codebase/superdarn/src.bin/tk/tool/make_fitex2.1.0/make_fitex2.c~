@@ -212,22 +212,10 @@ int main(int argc,char *argv[])
       fprintf(stderr,"%d-%d-%d %d:%d:%d beam=%d\n",prm->time.yr,prm->time.mo,
 	     prm->time.dy,prm->time.hr,prm->time.mt,prm->time.sc,prm->bmnum);
 
- 
+	int fakeid = 97;
+	prm->stid = fakeid;
   fblk=FitACFMake(site,prm->time.yr);
-	double temp1,temp2;
-	int L,i;
-	for(i=0;i<prm->nrang;i++)
-	{
-		for (L=prm->mplgs-1;L>10;L--)
-		{
-			raw->acfd[0][i*prm->mplgs+L] = raw->acfd[0][i*prm->mplgs+L-1];
-			raw->acfd[1][i*prm->mplgs+L] = raw->acfd[1][i*prm->mplgs+L-1];
-		}
-		raw->acfd[0][i*prm->mplgs+10] = 0.;
-		raw->acfd[1][i*prm->mplgs+10] = 0.;
-	}
 
-	
   fitacfex2(prm,raw,fit,fblk,0);
 
   if (old)
@@ -269,17 +257,7 @@ int main(int argc,char *argv[])
       fprintf(stderr,"%d-%d-%d %d:%d:%d beam=%d\n",prm->time.yr,prm->time.mo,
 	     prm->time.dy,prm->time.hr,prm->time.mt,prm->time.sc,prm->bmnum);
 
-		for(i=0;i<prm->nrang;i++)
-		{
-			for (L=prm->mplgs-1;L>10;L--)
-			{
-				raw->acfd[0][i*prm->mplgs+L] = raw->acfd[0][i*prm->mplgs+L-1];
-				raw->acfd[1][i*prm->mplgs+L] = raw->acfd[1][i*prm->mplgs+L-1];
-			}
-			raw->acfd[0][i*prm->mplgs+10] = 0.;
-			raw->acfd[1][i*prm->mplgs+10] = 0.;
-		}
-
+	prm->stid = fakeid;
     if (status==0)
 			fitacfex2(prm,raw,fit,fblk,0);
 

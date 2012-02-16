@@ -59,6 +59,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 pro acf_plot_power_panel,powers,fpowers,mplgs,lagnums,badlags,snr,wid,position
 
+	x1 = position(0)
+	y1 = position(1)
+	x2 = position(2)
+	y2 = position(3)
 
 	ptitle= 'Power: '+strtrim(round(snr),2)+' dB  Width: '+strtrim(round(wid),2)+' m/s'
 
@@ -72,8 +76,8 @@ pro acf_plot_power_panel,powers,fpowers,mplgs,lagnums,badlags,snr,wid,position
 	S = findgen(17)*(!PI*2./16.)
 	usersym,cos(S),sin(S)
 
-	xyouts,.87,.55,'ACF',/normal,charsize=.7
-	xyouts,.87,.52,'Fit',/normal,charsize=.7
+	xyouts,x2+.04,y2-.03,'ACF',/normal,charsize=.7
+	xyouts,x2+.04,y2-.06,'Fit',/normal,charsize=.7
 	loadct,34
 	for j=0,mplgs-1 do begin
 		;plot the actual ACF
@@ -87,9 +91,9 @@ pro acf_plot_power_panel,powers,fpowers,mplgs,lagnums,badlags,snr,wid,position
 
 	plots,lagnums,fpowers,linestyle=1,col=150,thick=3
 	usersym,cos(S),sin(S),/FILL
-	plots,.85,.555,psym=8,col=250,/normal
+	plots,x2+.02,y2-.025,psym=8,col=250,/normal
 	usersym,cos(S),sin(S)
-	plots,.85,.525,psym=8,col=150,/normal
+	plots,x2+.02,y2-.055,psym=8,col=150,/normal
 
 	;go back to davit ct
 	init_colors

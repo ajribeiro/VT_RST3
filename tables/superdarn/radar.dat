@@ -27,6 +27,13 @@
 64 1 20080101 25000101 "Inuvik" "University of Saskatchewan" "hdw.dat.inv" "inv"  "i"
 65 1 20070601 25000101 "Rankin Inlet"    "University of Saskatchewan" "hdw.dat.rkn" "rkn" "i"
 
+92 1 20050610 25000101 "Wallops Island Fake" "JHU/APL" "hdw.dat.waf" "waf"  "i"
+93 1 20080202 25000101 "Blackstone Fake"  "JHU/APL" "hdw.dat.bkf" "bkf" "i"
+94 1 20100101 25000101 "FH West Fake"  "MSI Consortium" "hdw.dat.fwf" "fwf" "z"
+95 1 20100101 25000101 "FH East Fake"  "MSI Consortium" "hdw.dat.fef" "fef" "z"
+96 0 20101104 25000101 "CV West Fake"  "MSI Consortium"   "hdw.dat.cwf" "cwf" "z"
+97 0 20101104 25000101 "CV East Fake"  "MSI Consortium"  "hdw.dat.cef" "cef" "z"
+
 
 128 0 20080101 25000101 "Svalbard"     "University of Leicester" "hdw.dat.svb" "svb" "z"
 

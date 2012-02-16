@@ -76,10 +76,19 @@ pro acf_plot_fitacf,time
 	;get rad info
   radar_info,stid,glat,glon,mlat,mlon,oneletter,threeletter,name,fix(stid)
 
+  if(hr lt 10) then hrstr = '0'+strtrim(round(hr),2) $
+  else hrstr = strtrim(round(hr),2)
+
+  if(mt lt 10) then mtstr = '0'+strtrim(round(mt),2) $
+  else mtstr = strtrim(round(mt),2)
+
+  if(sc lt 10) then scstr = '0'+strtrim(round(sc),2) $
+  else scstr = strtrim(round(sc),2)
+
   date_str = name+'	 '+$
 							strtrim(fix(yr),2)+'/'+strtrim(fix(mo),2)+'/'+strtrim(fix(dy),2)
   date_str = date_str+'	 '
-  date_str = date_str+strtrim(fix(hr),2)+':'+strtrim(fix(mt),2)+':'+strtrim(fix(sc),2)+' UT'
+  date_str = date_str+hrstr+':'+mtstr+':'+scstr+' UT'
   date_str = date_str+'		'
   date_str = date_str+'Beam: '+strtrim(fix(bmnum),2)
     date_str = date_str+'		'
@@ -164,7 +173,7 @@ pro acf_plot_fitacf,time
 
   for i=0,nrang-1 do begin
 		loadct,0
-		
+
 		;annotate the page
 		xyouts,.5,.97,date_str+'Range: '+strtrim(i,2),align=.5,charsize=.8,charthick=3.,/normal
 		xyouts,.5,.93,mystr,align=.5,charsize=.8,charthick=3.,/normal

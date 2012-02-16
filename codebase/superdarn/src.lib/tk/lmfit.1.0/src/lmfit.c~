@@ -672,8 +672,9 @@ void lmfit(struct RadarParm *prm,struct RawData *raw,
 	if(print)
 	{
 		fprintf(stdout,"%d  %d  %lf  %d  %lf\n",prm->nrang,mplgs,skynoise,prm->tfreq,prm->mpinc*1.e-6);
-		fprintf(stdout,"%d  %d  %d  %d  %d  %d  %d  %d\n",prm->stid,prm->time.yr,prm->time.mo,
-									prm->time.dy,prm->time.hr,prm->time.mt,(int)prm->time.sc,prm->bmnum);
+		fprintf(stdout,"%d  %d  %d  %d  %d  %d  %d  %d  %d  %d  %d\n",prm->stid,prm->time.yr,prm->time.mo,
+									prm->time.dy,prm->time.hr,prm->time.mt,(int)prm->time.sc,prm->bmnum,
+									prm->nave,prm->cp,prm->lagfr,prm->smsep);
 	}
   /* Loop every range gate and calculate parameters */
   for (R=0;R<prm->nrang;R++)
@@ -818,7 +819,7 @@ void lmfit(struct RadarParm *prm,struct RawData *raw,
       /*get velocity guess from model comparisons*/
       double model_guess = getguessex(prm,raw,fit,fblk,R,skynoise);
       w_limit = model_guess;
-      if(w_limit == -88888888.) continue;
+      if(w_limit == -88888888.) w_limit=0;
       /*initial velocity guess in angular Doppler frequency*/
       pdouble[1] = w_limit*4.*PI/lambda;
 

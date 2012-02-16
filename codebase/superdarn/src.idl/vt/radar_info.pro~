@@ -6,7 +6,7 @@
 ; PURPOSE:
 ;		This fills the arrays passed to it with radar info for all of the radars,
 ; 		unless the rad_abbr keyword is set, in which case only the information for
-; 		the requested radar is outputted
+; 		the requested radar is outputted.  Note that magnetic coords will NOT be right.
 ;
 ; CATEGORY:
 ; 	Radar
@@ -70,7 +70,7 @@ PRO radar_info,stid,glat,glon,mlat,mlon,oneletter,threeletter,name,stid_flg,$
               RAD_ABBR=rad_abbr,CAP_FLG=cap_flg
 
   ;initialize the arrays
-  nrad        = 27
+  nrad        = 28
   stid        = intarr(nrad)
   glat        = fltarr(nrad)
   glon        = fltarr(nrad)
@@ -80,22 +80,22 @@ PRO radar_info,stid,glat,glon,mlat,mlon,oneletter,threeletter,name,stid_flg,$
   threeletter = strarr(nrad)
 
   ;populate the arrays
-  stid        = [33,1,4,10,40,64,3,15,16,7,6,9,65,11,5,2,8,13,12,14,18,32,205,204,206,207,0]
+  stid        = [33,1,4,10,40,64,3,15,16,7,6,9,65,11,5,2,8,13,12,14,18,32,205,204,206,207,0,92]
   glat        = [37.10,53.32,-75.52,62.32,43.33,68.42,49.39,-49.22,58.68,$
                 57.60,53.98,63.77,62.82,-71.68,52.16,54.80,63.86,-69.00,$
-                -69.00,-43.40,-46.51,37.93,38.86,38.86,43.271,43.271,37.10]
+                -69.00,-43.40,-46.51,37.93,38.86,38.86,43.271,43.271,37.10,-62.595]
   glon        = [-77.95,-60.46,-26.63,26.61,143.61,-133.50,-82.32,70.14,-156.65,$
                 -152.20,-122.59,-20.54,-93.11,-2.85,-106.53,-66.80,-22.02,39.58,$
-                39.58,147.20,168.38,-75.47,-99.39,-99.39,-120.358,-120.358,-77.95]
+                39.58,147.20,168.38,-75.47,-99.39,-99.39,-120.358,-120.358,-77.95,-77.058]
   oneletter   = ['i','g','h','f','i','i','k','p','c','a','b','e','i','d','t',$
-                's','w','n','j','r','u','i','z','z','z','z','z']
+                's','w','n','j','r','u','i','z','z','z','z','z','i']
   threeletter = ['bks','gbr','hal','han','hok','inv','kap','ker','ksr','kod',$
                 'pgr','pyk','rkn','san','sas','sch','sto','sye','sys','tig','unw','wal',$
-                'fhe','fhw','cvw','cve','tst']
+                'fhe','fhw','cvw','cve','tst','waf']
   name =        ['Blackstone','Goose Bay','Halley Bay','Hankalsalmi','Hokkaido','Inuvik','Kapuskasing','Kerguelen','King Salmon','Kodiak',$
                 'Prince George','Pykkvibaer','Rankin Inlet','Sanae','Saskatoon','Schefferville','Stokkseyri','Syowa East',$
                 'Syowa South','Tiger','Unwin','Wallops Island',$
-                'Fort Hays East','Fort Hays West','Christmas Valley West','Christmas Valley East','Test Radar']
+                'Fort Hays East','Fort Hays West','Christmas Valley West','Christmas Valley East','Test Radar','Wallops Island Fake']
 
   ;sort the arrays by station id #
   glat        = glat[SORT(stid)]

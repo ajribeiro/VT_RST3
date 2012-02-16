@@ -60,40 +60,78 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 pro acf_plot_rawacf,re,im,mplgs,lagnums,badlags,position,ref=ref,imf=imf,lmheader=lmheader
 
+	x1 = position(0)
+	y1 = position(1)
+	x2 = position(2)
+	y2 = position(3)
+	
 	S = findgen(17)*(!PI*2./16.)
 	usersym,cos(S),sin(S),/fill
 
 	ymax = max(abs([re(*),im(*)]))*1.1
 
+	if(keyword_set(ref) AND keyword_set(imf) AND keyword_set(lmheader)) then lmflg = 1 $
+	else lmflg = 0
+
+	if(lmflg) then ptitle=lmheader $
+	else ptitle = 'Original Raw ACF'
+
 	;create the axes
 	plot,findgen(1),findgen(1),/nodata,xrange=[0,max(lagnums)],yrange=[-1.0*ymax,ymax],$
 			xstyle=1,ystyle=1,xthick=3,ythick=3,pos=position,/noerase,thick=3.,$
-			yticklen=-.01,title='Original Raw ACF',charthick=3,charsize=.6,xtitle='lag',$
+			yticklen=-.01,title=ptitle,charthick=3,charsize=.6,xtitle='lag',$
 			ytitle='level'
 
 	;annotate the plot
-	xyouts,.87,.85,'Real',/normal,charsize=.7,charthick=3.
-	xyouts,.87,.82,'Imag',/normal,charsize=.7,charthick=3.
-	xyouts,.89,.79,'badlags',/normal,charsize=.7,charthick=3.
-	xyouts,.89,.76,'more_badlags',/normal,charsize=.7,charthick=3.
-	loadct,34
-	plots,.85,.855,psym=8,col=250,/normal
-	plots,.85,.825,psym=8,col=50,/normal
-	plots,.85,.795,psym=6,col=250,/normal
-	plots,.875,.795,psym=6,col=50,/normal
-	plots,.85,.765,psym=5,col=250,/normal
-	plots,.875,.765,psym=5,col=50,/normal
+	if(~lmflg) then begin
+		xyouts,x2+.04,y2-.03,'Real',/normal,charsize=.7,charthick=3.
+		xyouts,x2+.04,y2-.06,'Imag',/normal,charsize=.7,charthick=3.
+		xyouts,x2+.06,y2-.09,'badlags',/normal,charsize=.7,charthick=3.
+		xyouts,x2+.06,y2-.12,'more_badlags',/normal,charsize=.7,charthick=3.
+		loadct,34
+		plots,x2+.02,y2-.025,psym=8,col=250,/normal
+		plots,x2+.02,y2-.055,psym=8,col=50,/normal
+		plots,x2+.02,y2-.085,psym=6,col=250,/normal
+		plots,x2+.045,y2-.085,psym=6,col=50,/normal
+		plots,x2+.02,y2-.115,psym=5,col=250,/normal
+		plots,x2+.045,y2-.115,psym=5,col=50,/normal
+	endif else begin
+		xyouts,x2+.04,y2-.03,'Real',/normal,charsize=.7,charthick=3.
+		xyouts,x2+.04,y2-.06,'Imag',/normal,charsize=.7,charthick=3.
+		xyouts,x2+.05,y2-.09,'Fit Real',/normal,charsize=.7,charthick=3.
+		xyouts,x2+.05,y2-.12,'Fit Imag',/normal,charsize=.7,charthick=3.
+		loadct,34
+		plots,x2+.02,y2-.025,psym=8,col=250,/normal
+		plots,x2+.02,y2-.055,psym=8,col=50,/normal
+		plots,x2+.025,y2-.085,psym=6,col=225,/normal
+		plots,x2+.025,y2-.115,psym=6,col=75,/normal
+		plots,[x2+.01,x2+.04],[y2-.085,y2-.085],col=225,/normal,linestyle=1,thick=6.
+		plots,[x2+.01,x2+.04],[y2-.115,y2-.115],col=75,/normal,linestyle=1,thick=6.
+
+	endelse
 
 	;plot the ACF
 	for i=0,mplgs-1 do begin
 		if(badlags(i) eq 0) then p = 6
 		if(badlags(i) eq 1) then p = 5
 		if(badlags(i) eq 2) then p = 8
-		plots,lagnums(i),re(i),psym=p,col=250
-		plots,lagnums(i),im(i),psym=p,col=50
+		if(~lmflg OR badlags(i) eq 2) then begin
+			plots,lagnums(i),re(i),psym=p,col=250
+			plots,lagnums(i),im(i),psym=p,col=50
+		endif
 	endfor
-	plots,lagnums(*),re(*),linestyle=0,col=250,thick=3
-	plots,lagnums(*),im(*),linestyle=0,col=50,thick=3
+	if(~lmflg) then begin
+		plots,lagnums(*),re(*),linestyle=0,col=250,thick=3
+		plots,lagnums(*),im(*),linestyle=0,col=50,thick=3.
+	endif
+
+
+	if(lmflg) then begin
+		plots,lagnums(*),ref(*),psym=6,col=225
+		plots,lagnums(*),imf(*),psym=6,col=75
+		plots,lagnums(*),ref(*),linestyle=1,col=225,thick=5
+		plots,lagnums(*),imf(*),linestyle=1,col=75,thick=5.
+	endif
 
 	;go back to davit ct
 	init_colors

@@ -233,15 +233,14 @@ pro time_series_plot,yr,mo,dy,sthr,stmn,edhr,edmn,rad,filtflg,tgtbeam,ytype,ctyp
 							rxrise=prm_arr(0).rxrise,station=prm_arr(0).stid, $
 							year=prm_arr(0).time.yr,yrsec=yrsc,/GEO)
       ymin = pos(0,0,0)
-      for i=0,dind-1 do begin
-        yrsc=TimeYMDHMSToYrSec(prm_arr(i).time.yr,prm_arr(i).time.mo,prm_arr(i).time.dy,$
+			i = where(prm_arr(*).nrang eq max(prm_arr(*).nrang))
+			i = reform(i(0:0))
+      yrsc=TimeYMDHMSToYrSec(prm_arr(i).time.yr,prm_arr(i).time.mo,prm_arr(i).time.dy,$
                                 prm_arr(i).time.hr,prm_arr(i).time.mt,prm_arr(i).time.sc)
-        pos = rbpos(prm_arr(i).nrang+1,height=300,beam=tgtbeam,lagfr=prm_arr(i).lagfr,smsep=prm_arr(i).smsep, $
+      pos = rbpos(max(prm_arr(*).nrang)+1,height=300,beam=tgtbeam,lagfr=prm_arr(i).lagfr,smsep=prm_arr(i).smsep, $
           rxrise=prm_arr(i).rxrise,station=prm_arr(i).stid, $
           year=prm_arr(i).time.yr,yrsec=yrsc,/GEO)
-        if(pos(0,0,1) gt ymax) then $
-          ymax = pos(0,0,1)
-      endfor
+      ymax = pos(0,0,1)
       yname = 'Geographic Latitude'
     endif
     ;plot in mag coords
@@ -259,7 +258,7 @@ pro time_series_plot,yr,mo,dy,sthr,stmn,edhr,edmn,rad,filtflg,tgtbeam,ytype,ctyp
           pos = rbpos(j+1,height=300,beam=tgtbeam,lagfr=prm_arr(i).lagfr,smsep=prm_arr(i).smsep, $
             rxrise=prm_arr(i).rxrise,station=prm_arr(i).stid, $
             year=prm_arr(i).time.yr,yrsec=yrsc)
-          if(pos(0,0,1) ge ymax) then $
+          if(abs(pos(0,0,1)) ge abs(ymax)) then $
             ymax = pos(0,0,1)
         endfor
       endfor

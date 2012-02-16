@@ -217,7 +217,7 @@ int main(int argc,char *argv[]) {
 	{
 		fprintf(stdout,"%d  %d  %d  %d  %d  %d  %d  %d\n",prm->stid,prm->time.yr,prm->time.mo,
 									prm->time.dy,prm->time.hr,prm->time.mt,(int)prm->time.sc,prm->bmnum);
-		prm->lagfr = 2400;
+									prm->lagfr = 2400;
 		FitACF(prm,raw,fblk,fit,1);
 		done=1;
 	}
@@ -248,7 +248,7 @@ int main(int argc,char *argv[]) {
 		{
 			fprintf(stdout,"%d  %d  %d  %d  %d  %d  %d  %d\n",prm->stid,prm->time.yr,prm->time.mo,
 									prm->time.dy,prm->time.hr,prm->time.mt,(int)prm->time.sc,prm->bmnum);
-			prm->lagfr = 2400;
+																		prm->lagfr = 2400;
 			FitACF(prm,raw,fblk,fit,1);
 			done = 1;
 		}

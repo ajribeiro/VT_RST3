@@ -252,8 +252,8 @@ pro plot_fitex2,time
 							'Initial Velocity Guess = '+strtrim(round(model_vels(i)),2)
 
 		plot,findgen(1),findgen(1),/nodata,xrange=[-180,180],yrange=[0,ymax],$
-					xstyle=1,ystyle=1,xthick=4,ythick=4,pos=[.05,.35,.4,.5],/noerase,thick=2.,$
-					yticklen=-.01,title=ptitle,charthick=3,charsize=1,ytitle='error',xtitle='phase'
+					xstyle=1,ystyle=1,xthick=4,ythick=4,pos=[.05,.35,.85,.5],/noerase,thick=2.,$
+					yticklen=-.01,title=ptitle,charthick=3,charsize=.75
 		loadct,34
 		usersym,cos(S),sin(S),/FILL
 		plots,[-180,180],[threshs(i),threshs(i)],linestyle=2,col=250
