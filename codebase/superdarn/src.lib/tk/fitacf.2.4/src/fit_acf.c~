@@ -164,7 +164,7 @@ int fit_acf (struct complex *acf,int range,
 			else
 				availflg = 1;
 
-			fprintf(stdout,"%d  %lf  %lf  %d\n",lag,acf[j].x,acf[j].y,availflg);
+			fprintf(stdout,"%d  %lf  %lf  %d\n",lag,acf[j].x,acf[j].y,badlag[j]);
 		}
 	}
 

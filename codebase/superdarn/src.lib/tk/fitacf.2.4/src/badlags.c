@@ -70,20 +70,20 @@ return;
 	are bad for a specified range */
 
 void FitACFCkRng(int range,int *badlag,struct FitACFBadSample *bptr,
-	       struct FitPrm *ptr) {
+	       struct FitPrm *ptr)
+{
   int sam1, sam2, i, j;
-  for (i=0; i<ptr->mplgs; i++) {
-	badlag[i] = 0;
-	sam1 = ptr->lag[0][i]*(ptr->mpinc/ptr->smsep)
-			+ range - 1;
-	sam2 = ptr->lag[1][i]*(ptr->mpinc/ptr->smsep)
-			+ range - 1;
-
-	for (j=0; j<bptr->nbad; j++) {
-      if ((sam1 == bptr->badsmp[j]) || (sam2 == bptr->badsmp[j])) 
-        badlag[i] = 1;
-	  if (sam2 < bptr->badsmp[j]) break;
-    }
+  for (i=0; i<ptr->mplgs; i++)
+	{
+		badlag[i] = 0;
+		sam1 = ptr->lag[0][i]*(ptr->mpinc/ptr->smsep) + range - 1;
+		sam2 = ptr->lag[1][i]*(ptr->mpinc/ptr->smsep) + range - 1;
+		for (j=0; j<bptr->nbad; j++)
+		{
+			if ((sam1 == bptr->badsmp[j]) || (sam2 == bptr->badsmp[j]))
+					badlag[i] = 1;
+			if (sam2 < bptr->badsmp[j]) break;
+		}
   }
 	
   /* This section of code is only of use to fitacf for reprocessing old

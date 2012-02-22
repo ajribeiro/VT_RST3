@@ -68,7 +68,7 @@ int do_fit(struct FitBlock *iptr,int lag_lim,int goose,
   }
 
   if (iptr->prm.channel==0) FitACFBadlags(&iptr->prm,&badsmp);	
-  else FitACFBadlagsStereo(&iptr->prm,&badsmp);  
+  else FitACFBadlagsStereo(&iptr->prm,&badsmp);
 
 
   /* Determine the lag_0 noise level (0 dB reference) and the noise level at 

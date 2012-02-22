@@ -134,7 +134,7 @@ pro acf_plot_fitacf,time
 		second_stat(i) = flg
 		if(flg ne 0) then continue
 		for j=0,mplgs-1 do begin
-			readf,unit,lag,re,im,good
+			readf,unit,lag,re,im,bad
 			lagnums(i,j) = lag
 			acfs(i,j,0) = re
 			acfs(i,j,1) = im
