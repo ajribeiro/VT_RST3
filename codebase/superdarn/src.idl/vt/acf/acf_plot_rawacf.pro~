@@ -86,15 +86,18 @@ pro acf_plot_rawacf,re,im,mplgs,lagnums,badlags,position,ref=ref,imf=imf,lmheade
 	if(~lmflg) then begin
 		xyouts,x2+.04,y2-.03,'Real',/normal,charsize=.7,charthick=3.
 		xyouts,x2+.04,y2-.06,'Imag',/normal,charsize=.7,charthick=3.
-		xyouts,x2+.06,y2-.09,'badlags',/normal,charsize=.7,charthick=3.
-		xyouts,x2+.06,y2-.12,'more_badlags',/normal,charsize=.7,charthick=3.
+		xyouts,x2+.06,y2-.09,'badlags (RB)',/normal,charsize=.7,charthick=3.
+		xyouts,x2+.06,y2-.12,'badlags (CRI)',/normal,charsize=.7,charthick=3.
+		xyouts,x2+.06,y2-.15,'more_badlags',/normal,charsize=.7,charthick=3.
 		loadct,34
 		plots,x2+.02,y2-.025,psym=8,col=250,/normal
 		plots,x2+.02,y2-.055,psym=8,col=50,/normal
 		plots,x2+.02,y2-.085,psym=6,col=250,/normal
 		plots,x2+.045,y2-.085,psym=6,col=50,/normal
-		plots,x2+.02,y2-.115,psym=5,col=250,/normal
-		plots,x2+.045,y2-.115,psym=5,col=50,/normal
+		plots,x2+.02,y2-.115,psym=4,col=250,/normal
+		plots,x2+.045,y2-.115,psym=4,col=50,/normal
+		plots,x2+.02,y2-.145,psym=5,col=250,/normal
+		plots,x2+.045,y2-.145,psym=5,col=50,/normal
 	endif else begin
 		xyouts,x2+.04,y2-.03,'Real',/normal,charsize=.7,charthick=3.
 		xyouts,x2+.04,y2-.06,'Imag',/normal,charsize=.7,charthick=3.
@@ -103,8 +106,8 @@ pro acf_plot_rawacf,re,im,mplgs,lagnums,badlags,position,ref=ref,imf=imf,lmheade
 		loadct,34
 		plots,x2+.02,y2-.025,psym=8,col=250,/normal
 		plots,x2+.02,y2-.055,psym=8,col=50,/normal
-		plots,x2+.03,y2-.085,psym=6,col=225,/normal
-		plots,x2+.03,y2-.115,psym=6,col=75,/normal
+		plots,x2+.025,y2-.085,psym=6,col=225,/normal
+		plots,x2+.025,y2-.115,psym=6,col=75,/normal
 		plots,[x2+.01,x2+.04],[y2-.085,y2-.085],col=225,/normal,linestyle=1,thick=6.
 		plots,[x2+.01,x2+.04],[y2-.115,y2-.115],col=75,/normal,linestyle=1,thick=6.
 
@@ -112,17 +115,21 @@ pro acf_plot_rawacf,re,im,mplgs,lagnums,badlags,position,ref=ref,imf=imf,lmheade
 
 	;plot the ACF
 	for i=0,mplgs-1 do begin
-		if(badlags(i) eq 0) then p = 6
-		if(badlags(i) eq 1) then p = 5
-		if(badlags(i) eq 2) then p = 8
-		if(~lmflg OR badlags(i) eq 2) then begin
-			plots,lagnums(i),re(i),psym=p,col=250
-			plots,lagnums(i),im(i),psym=p,col=50
+		if(badlags(i) eq 1) then p = 6 $
+		else if(badlags(i) eq 11) then p = 4 $
+		else if(badlags(i) eq 0) then p = 8 $
+		else p = 5
+		if(~lmflg OR badlags(i) eq 0) then begin
+			plots,lagnums(i),re(i),psym=p,col=250,thick=3
+			plots,lagnums(i),im(i),psym=p,col=50,thick=3
 		endif
 	endfor
 	if(~lmflg) then begin
-		plots,lagnums(*),re(*),linestyle=0,col=250,thick=3
-		plots,lagnums(*),im(*),linestyle=0,col=50,thick=3.
+		x = where(badlags eq 0,count)
+		if(count gt 0) then begin
+			plots,lagnums(x),re(x),linestyle=0,col=250,thick=3
+			plots,lagnums(x),im(x),linestyle=0,col=50,thick=3.
+		endif
 	endif
 
 

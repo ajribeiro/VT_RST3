@@ -72,7 +72,7 @@ pro acf_plot_lmfit,time
 
 	;read the first line
   readf,unit,nrang,mplgs,skynoise,tfreq,mpinc
-  readf,unit,stid,yr,mo,dy,hr,mt,sc,bmnum,nave,cpid,lagfr,smsep
+  readf,unit,stid,yr,mo,dy,hr,mt,sc,bmnum,nave,cpid,lagfr,smsep,vdir
 	lambda = 3.e8/(tfreq*1.e3)
 	
 	;get rad info
@@ -107,7 +107,6 @@ pro acf_plot_lmfit,time
 	lagnums = intarr(nrang,mplgs)
 	acfs = dblarr(nrang,mplgs,2)
 	fitted_acfs = dblarr(mplgs,2)
-	good_lags = intarr(nrang,mplgs)
 	pwr_flgs = intarr(nrang)
 	lag_flgs = intarr(nrang)
 	init_guess = dblarr(nrang,3)
@@ -130,7 +129,6 @@ pro acf_plot_lmfit,time
 			lagnums(i,j) = lag
 			acfs(i,j,0) = re
 			acfs(i,j,1) = im
-			good_lags(i,j) = good
 			if(good) then n_lags(i) = n_lags(i) + 1
 			bad_lags(i,j) = good*2
 		endfor
@@ -208,7 +206,7 @@ pro acf_plot_lmfit,time
 
 		;plot the phase panel
 		acf_plot_phase_panel,atan(acfs(i,*,1),acfs(i,*,0)),atan(fitted_acfs(*,1),fitted_acfs(*,0)),$
-													mplgs,lagnums(i,*),bad_lags(i,*),(lambda*fit_params(i,1)/(4.*!pi)),-1,0,$
+													mplgs,lagnums(i,*),bad_lags(i,*),(lambda*fit_params(i,1)/vdir/(4.*!pi)),-1,0,$
 													[.1,.09,.39,.29]
 
 		;plot the power panel

@@ -74,7 +74,7 @@ pro acf_plot_fitex2,time
 
 	;read the first lines
   readf,unit,nrang,mplgs,skynoise,tfreq,mpinc,nslopes,diff
-  readf,unit,stid,yr,mo,dy,hr,mt,sc,bmnum,cpid,nave,lagfr,smsep
+  readf,unit,stid,yr,mo,dy,hr,mt,sc,bmnum,cpid,nave,lagfr,smsep,vdir
 
 
   lambda = 3.e8/(tfreq*1.e3)
@@ -109,7 +109,6 @@ pro acf_plot_fitex2,time
   ;declare the arrays
 	lagnums = intarr(nrang,mplgs)
 	acfs = dblarr(nrang,mplgs,2)
-	good_lags = intarr(nrang,mplgs)
 	pwr_flgs = intarr(nrang)
 	lag_flgs = intarr(nrang)
 	fluct_levs = intarr(nrang)
@@ -137,13 +136,12 @@ pro acf_plot_fitex2,time
 		fluct_levs(i) = fluct
 		;read the acfs
 		for j=0,mplgs-1 do begin
-			readf,unit,l,re,im,flg
+			readf,unit,l,re,im,bad
 			lagnums(i,j) = l
 			acfs(i,j,0) = re
 			acfs(i,j,1) = im
-			good_lags(i,j) = flg
-			if(flg) then n_lags(i) = n_lags(i) + 1
-			bad_lags(i,j) = flg*2
+			bad_lags(i,j) = bad
+			if(bad eq 0) then n_lags(i) = n_lags(i) + 1
 		endfor
 		;read the params that determine if fitting is performed
 		readf,unit,pflg,lflg
@@ -203,6 +201,7 @@ pro acf_plot_fitex2,time
 								
   ;start the plotting
   for i=0,nrang-1 do begin
+		print,'range',i
 		loadct,0
 
 		;annotate the page
@@ -236,7 +235,7 @@ pro acf_plot_fitex2,time
 
 		;calculate fitted ACF
 		mag = 10.^(snrs(i)/10)*skynoise
-		dopfreq = 2.*!pi*(final_params(i,1)*2./lambda)
+		dopfreq = 2.*!pi*(final_params(i,1)/vdir*2./lambda)
 		t_d = lambda/(2.*!pi*widths(i))
 
 		fitted_acfs = dblarr(mplgs,2)

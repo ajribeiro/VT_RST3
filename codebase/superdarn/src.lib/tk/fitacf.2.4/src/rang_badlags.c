@@ -95,7 +95,7 @@ void lag_overlap(int range,int *badlag,struct FitPrm *ptr) {
 			{
         for(lag = 0 ; lag < ptr->mplgs ; ++lag)
 				{
-          if(ptr->lag[i][lag] == ptr->pulse[pulse])
+          if((ptr->lag[i][lag] == ptr->pulse[pulse]) && badlag[lag] == 0)
             badlag[lag] = 11;  /* 1 for bad lag */
         }
       }

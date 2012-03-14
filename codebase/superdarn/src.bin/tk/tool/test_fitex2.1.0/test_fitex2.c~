@@ -75,7 +75,7 @@ int main(int argc,char *argv[])
   unsigned char option=0;
 
   unsigned char vb=0;
-	int tgthr = 0, tgtmin = 0, tgtbeam = 0, done = 0;
+	int tgthr = 0, tgtmin = 0, tgtbeam = 7, done = 0;
 
   FILE *fp=NULL;
   struct OldRawFp *rawfp=NULL;
@@ -211,26 +211,16 @@ int main(int argc,char *argv[])
   }
 
 
-
+		prm->lagfr = 2400;
   if (vb)
       fprintf(stderr,"%d-%d-%d %d:%d:%d beam=%d\n",prm->time.yr,prm->time.mo,
 	     prm->time.dy,prm->time.hr,prm->time.mt,prm->time.sc,prm->bmnum);
 
 
   fblk=FitACFMake(site,prm->time.yr);
-	int i,L;
+
 	if(prm->time.hr >= tgthr && prm->time.mt >= tgtmin && prm->bmnum == tgtbeam && prm->channel != 2)
 	{
-						for(i=0;i<prm->nrang;i++)
-	{
-		for (L=prm->mplgs-1;L>10;L--)
-		{
-			raw->acfd[0][i*prm->mplgs+L] = raw->acfd[0][i*prm->mplgs+L-1];
-			raw->acfd[1][i*prm->mplgs+L] = raw->acfd[1][i*prm->mplgs+L-1];
-		}
-		raw->acfd[0][i*prm->mplgs+10] = 0.;
-		raw->acfd[1][i*prm->mplgs+10] = 0.;
-	}
 		fitacfex2(prm,raw,fit,fblk,1);
 		done=1;
 	}
@@ -251,6 +241,7 @@ int main(int argc,char *argv[])
     else
       status=RawFread(fp,prm,raw);
 
+		prm->lagfr = 2400;
      if (vb)
       fprintf(stderr,"%d-%d-%d %d:%d:%d beam=%d\n",prm->time.yr,prm->time.mo,
 	     prm->time.dy,prm->time.hr,prm->time.mt,prm->time.sc,prm->bmnum);
@@ -259,16 +250,6 @@ int main(int argc,char *argv[])
 		if(prm->time.hr >= tgthr && prm->time.mt >= tgtmin && prm->bmnum == tgtbeam
 				&& status == 0 && !done && prm->channel != 2)
 		{
-				for(i=0;i<prm->nrang;i++)
-	{
-		for (L=prm->mplgs-1;L>10;L--)
-		{
-			raw->acfd[0][i*prm->mplgs+L] = raw->acfd[0][i*prm->mplgs+L-1];
-			raw->acfd[1][i*prm->mplgs+L] = raw->acfd[1][i*prm->mplgs+L-1];
-		}
-		raw->acfd[0][i*prm->mplgs+10] = 0.;
-		raw->acfd[1][i*prm->mplgs+10] = 0.;
-	}
 			fitacfex2(prm,raw,fit,fblk,1);
 			done = 1;
 		}

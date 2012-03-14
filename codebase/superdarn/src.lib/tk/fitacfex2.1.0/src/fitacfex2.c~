@@ -214,7 +214,7 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
 
   /* Find the highest lag, and allocate memory */
 
-  if(!((prm->cp == 3310 || prm->cp == 503 || prm->cp == -503) && prm->mplgs == 18))
+  if(!((prm->cp == -3310 || prm->cp == 3310 || prm->cp == 503 || prm->cp == -503) && prm->mplgs == 18))
   {
     lastlag = 0;
     for (j=0;j<prm->mplgs;j++)
@@ -266,7 +266,7 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
 
   /*calculate noise levels*/
   lm_noise_stat(prm,raw,&skynoise);
-  if(prm->cp != 3310 && prm->cp != 503 && prm->cp != -503)
+  if(prm->cp != -3310 && prm->cp != 3310 && prm->cp != 503 && prm->cp != -503)
   {
     if(fblk->prm.channel==0) FitACFBadlags(&fblk->prm,&badsmp);
     else FitACFBadlagsStereo(&fblk->prm,&badsmp);
@@ -277,15 +277,16 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
 	if(print)
 	{
 		fprintf(stdout,"%d  %d  %lf  %d  %lf  %d  %lf\n",prm->nrang,prm->mplgs,skynoise,prm->tfreq,prm->mpinc*1.e-6,nslopes,diff);
-		fprintf(stdout,"%d  %d  %d  %d  %d  %d  %d  %d  %d\n",prm->stid,prm->time.yr,prm->time.mo,
-										prm->time.dy,prm->time.hr,prm->time.mt,(int)prm->time.sc,prm->bmnum,prm->cp);
+		fprintf(stdout,"%d  %d  %d  %d  %d  %d  %d  %d  %d  %d  %d  %d  %lf\n",prm->stid,prm->time.yr,prm->time.mo,
+										prm->time.dy,prm->time.hr,prm->time.mt,(int)prm->time.sc,prm->bmnum,prm->cp,
+										prm->nave,prm->lagfr,prm->smsep,fblk->prm.vdir);
 	}
 	/* Loop every range gate and calculate parameters */
   for (R=0;R<prm->nrang;R++)
   {
 
 
-		if(!((prm->cp == 3310 || prm->cp == 503 || prm->cp == -503) && prm->mplgs == 18))
+		if(!((prm->cp == -3310 || prm->cp == 3310 || prm->cp == 503 || prm->cp == -503) && prm->mplgs == 18))
 			raw->acfd[0][R*prm->mplgs] -= skynoise;
 
 
@@ -308,8 +309,7 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
     fit->rng[R].nump     = 0;
     availcnt = 0;
 
-    lag0pwr  = 10.0*log10((raw->acfd[0][R*prm->mplgs] +
-                            skynoise)/skynoise);
+    lag0pwr  = 10.0*log10((raw->acfd[0][R*prm->mplgs])/skynoise);
 
 		if(print)
 			fprintf(stdout,"%d  %lf\n",R,raw->acfd[0][R*prm->mplgs]/sqrt(1.0*prm->nave));
@@ -320,7 +320,7 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
 
     prm->mplgexs = 0;
 
-    if((prm->cp == 3310 || prm->cp == 503 || prm->cp == -503) && prm->mplgs == 18)
+    if((prm->cp == -3310 || prm->cp == 3310 || prm->cp == 503 || prm->cp == -503) && prm->mplgs == 18)
     {
       for (L=0;L<prm->mplgs;L++)
       {
@@ -336,12 +336,12 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
         else lagpwr[lag] = 0.0;
         if(print)
 					fprintf(stdout,"%d  %lf  %lf  %d\n",lag,raw->acfd[0][R*prm->mplgs+L],raw->acfd[1][R*prm->mplgs+L],
-																						(lagpwr[lag]>raw->acfd[0][R*prm->mplgs]/sqrt(1.0*prm->nave)));
+																						!(lagpwr[lag]>raw->acfd[0][R*prm->mplgs]/sqrt(1.0*prm->nave)));
       }
       pwr_flg = (lag0pwr>=minpwr);
     }
     /*check for tauscan operation (lag power checking, no badlag checking, SNR checking)*/
-    else if(prm->cp == 3310 || prm->cp == 503 || prm->cp == -503)
+    else if(prm->cp == -3310 || prm->cp == 3310 || prm->cp == 503 || prm->cp == -503)
     {
       for (L=0;L<prm->mplgs;L++)
       {
@@ -357,7 +357,7 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
         else lagpwr[lag] = 0.0;
         if(print)
 					fprintf(stdout,"%d  %lf  %lf  %d\n",lag,raw->acfd[0][R*prm->mplgs+L],raw->acfd[1][R*prm->mplgs+L],
-																								(lagpwr[lag]>raw->acfd[0][R*prm->mplgs]/sqrt(1.0*prm->nave)));
+																								!(lagpwr[lag]>raw->acfd[0][R*prm->mplgs]/sqrt(1.0*prm->nave)));
       }
       pwr_flg = (lag0pwr>=minpwr);
     }
@@ -371,19 +371,21 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
         re  = raw->acfd[0][R*prm->mplgs+L];
         im  = raw->acfd[1][R*prm->mplgs+L];
         lagpwr[lag] = sqrt(re*re + im*im);
+				availflg = 0;
         if(badlag[L] == 1)
-          availflg = 0;
-        else
           availflg = 1;
-        if(availflg && lagpwr[lag]>raw->acfd[0][R*prm->mplgs]/sqrt(1.0*prm->nave))
+        else if(badlag[L] == 11)
+          availflg = 11;
+				else if(lagpwr[lag]<raw->acfd[0][R*prm->mplgs]/sqrt(1.0*prm->nave))
+					availflg = 3;
+        if(badlag[L] == 0 && lagpwr[lag]>raw->acfd[0][R*prm->mplgs]/sqrt(1.0*prm->nave))
         {
           lag_avail[availcnt] = lag;
           availcnt++;
         }
         else lagpwr[lag] = 0.0;
         if(print)
-					fprintf(stdout,"%d  %lf  %lf  %d\n",lag,raw->acfd[0][R*prm->mplgs+L],raw->acfd[1][R*prm->mplgs+L],
-																						(availflg/* && lagpwr[lag]>raw->acfd[0][R*prm->mplgs]/sqrt(1.0*prm->nave)*/));
+					fprintf(stdout,"%d  %lf  %lf  %d\n",lag,raw->acfd[0][R*prm->mplgs+L],raw->acfd[1][R*prm->mplgs+L],availflg);
       }
       pwr_flg = (sqrt(raw->acfd[0][R*prm->mplgs]*raw->acfd[0][R*prm->mplgs])>=skynoise);
       minlag = 4;
@@ -415,7 +417,7 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
       fitted_width = -2.9979e8*b/(prm->mpinc*1.e-6)/
                             (2*PI*1000.0*prm->tfreq);
       if(fitted_width<=0.00) fitted_width = 1.e-2;
-			fitted_power = log(exp(a) + skynoise);
+			fitted_power = log(exp(a));
 
 			if(print)
 				fprintf(stdout,"%lf  %lf  %lf  %lf\n",10.0*(fitted_power/2.3026 - log10(skynoise)),fitted_width,a,b);
@@ -425,7 +427,7 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
       for(i=0;i<goodcnt;i++)
       {
         lag = good_lags[i];
-        if((prm->cp == 3310 || prm->cp == 503 || prm->cp == -503) && prm->mplgs == 18)
+        if((prm->cp == -3310 || prm->cp == 3310 || prm->cp == 503 || prm->cp == -503) && prm->mplgs == 18)
         	L = lag;
         else
         	for(j=0;j<prm->mplgs;j++)
@@ -521,17 +523,17 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
       model_sd = sqrt(model_sd/(nslopes*2));
 
 			if(prm->stid == 204 || prm->stid == 205) 
-				minpwr = 5.;
+				minpwr = 5.; 
 
       /*tauscan operation, check for exceptional minimum error, more SNR checking*/
-      if(prm->cp == 3310 || prm->cp == 503 || prm->cp == -503)
+      if(prm->cp == -3310 || prm->cp == 3310 || prm->cp == 503 || prm->cp == -503)
         sct_flg = ((model_min<(model_mean - sderr*model_sd)) &&
-                  (10*log10((exp(a) + prm->noise.search)/
+                  (10*log10((exp(a))/
                   prm->noise.search)> minpwr));
       /*non-tauscan operation, check for exceptional minimum error, no badlag checking*/
       else
         sct_flg = (model_min<(model_mean - sderr*model_sd) &&
-                  (10*log10((exp(a) + skynoise)/
+                  (10*log10((exp(a))/
                   skynoise) > minpwr));
 
       fit->rng[R].p_0   = lag0pwr;
@@ -540,7 +542,7 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
 
 			if(print)
 				fprintf(stdout,"%lf  %d  %lf  %d  %d  %d\n",(model_mean - sderr*model_sd),mininx,model_vels[mininx],
-																		(10*log10((exp(a) + skynoise)/skynoise) > minpwr),(model_min<(model_mean - sderr*model_sd)),sct_flg);
+																		(10*log10((exp(a))/skynoise) > minpwr),(model_min<(model_mean - sderr*model_sd)),sct_flg);
 
       if(sct_flg)
       {
@@ -569,7 +571,7 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
 
         fit->rng[R].p_l   = 10.0*(fitted_power/2.3026 - log10(skynoise));
 
-        fitted_power = log(exp(siga) + prm->noise.search);
+        fitted_power = log(exp(siga));
         fit->rng[R].p_l_err   = fabs(fitted_power);
 
         fit->rng[R].w_l   = fitted_width;
@@ -592,26 +594,37 @@ void fitacfex2(struct RadarParm *prm,struct RawData *raw,
 					float m_p2,m_p;
 					for(i=1;i<goodcnt;i++)
 					{
+						/*find phase of current*/
 						m_p2 = w_guess * good_lags[i];
+						/*find phase of previous lag*/
 						m_p = w_guess * good_lags[i-1];
 
+						/*while current lag is less than -pi, increment by 2pi*/
 						while(m_p2 < -180.)
 							m_p2 += 360.;
+						/*while current lag is gt +pi, subtract 2pi*/
 						while(m_p2 > 180.)
 							m_p2 -= 360.;
 
+						/*while previous lag is lt -pi, subtract 2pi*/
 						while(m_p < -180.)
 							m_p += 360.;
+						/*while previous lag is gt +pi, subtract 2pi*/
 						while(m_p > 180.)
 							m_p -= 360.;
 
+						/*if slope is less than 0 AND current lag is gt 0 AND previous lag is less than 0 OR
+						slope is gt 0 AND previous lag is gt 0 AND current lag is lt 0
+						we have wrapped around (ie, sign change in fitted line from ACF phases)*/
 						if((w_guess < 0 && m_p2 > 0 && m_p < 0) || (w_guess > 0 && m_p2 < 0 && m_p > 0))
-						{
 							wrap_cnt++;
-						}
+						/*if we have wrapped at least once*/
 						if(wrap_cnt != 0)
 						{
+							/*adjust xcf phases for number of wraps*/
 							xcf_phases[i] += (wrap_cnt-1)*(360.);
+
+							
 							if(fabs(xcf_phases[i] - m_p2+(360.*(wrap_cnt-1))) > 180.)
 								xcf_phases[i] += (360.);
 						}

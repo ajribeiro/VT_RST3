@@ -273,8 +273,8 @@ void sim_data(double *t_d, double *t_g, double *t_c, double *v_dop, int * qflg,
   /********************************************************
   ** definitions of variables needed for data generation **
   ********************************************************/
-  int n = 2000;                             /*Number of scatterers (per range gate per integration period)*/
-  double t_n = dt*1.e-2;                    /*Irregualrity decay time for white noise*/
+  int n = 4000;                             /*Number of scatterers (per range gate per integration period)*/
+  double t_n = dt*1.e-2;                    /*Irregularity decay time for white noise*/
   double c = 3.e8;                          /*Speed of light (m/s)*/
   double pwrtot = 0.;                       /*total power, used to normalize ACFs*/
   long numtot = 0;                          /*number of good ACFs*/
@@ -360,10 +360,13 @@ void sim_data(double *t_d, double *t_g, double *t_c, double *v_dop, int * qflg,
   ***Perform the actual simulation****
   ***********************************/
   /*if cross-range interference is to be included in the simulation*/
+
   if(cri_flg)
   {
     for(kk=0;kk<nave;kk++)
     {
+				int one=0;
+	int zero=0;
       /*initialize the samples*/
       for(i=0;i<n_samples;i++)
         raw_samples[i] = 0.+I*0.;
@@ -392,11 +395,21 @@ void sim_data(double *t_d, double *t_g, double *t_c, double *v_dop, int * qflg,
             else
               amplitude=0.;
             /*calculate phase of scattered signal depending on its location*/
-            phase = -4.*PI*(smptime*(v_dop[r]+range_gates[r][i].velo)+range_gates[r][i].space)/lambda;
+						if((int)(((double)rand()/(double)RAND_MAX)*2.))
+						{
+							one++;
+							phase = -4.*PI*(smptime*(v_dop[r]+range_gates[r][i].velo)+range_gates[r][i].space)/lambda;
+						}
+						else
+						{
+							zero++;
+							phase = -4.*PI*(smptime*(-1.*v_dop[r]+range_gates[r][i].velo)+range_gates[r][i].space)/lambda;
+						}
             /*record scattered signal as a raw sample*/
             raw_samples[smpnum] += amplitude*(cos(phase) + I*sin(phase));
           }
         }
+       fprintf(stderr,"%d  %d\n",one,zero);
 
       /*calculate an ACF from the raw samples*/
       for(r=0;r<nrang;r++)
@@ -411,7 +424,7 @@ void sim_data(double *t_d, double *t_g, double *t_c, double *v_dop, int * qflg,
         /*add this ACF to the total ACF*/
         for(i=0;i<n_lags;i++)
           acfs[r][i] += rr[i];
-        if(r < pulse_t[1]*taus+lagfr && qflg[r])
+        if(/*r < pulse_t[1]*taus+lagfr &&*/ qflg[r])
         {
           pwrtot += creal(rr[0]);
           numtot++;

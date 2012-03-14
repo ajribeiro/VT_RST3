@@ -72,16 +72,25 @@ pro acf_plot_lmfit,time
 
 	;read the first line
   readf,unit,nrang,mplgs,skynoise,tfreq,mpinc
-  readf,unit,stid,yr,mo,dy,hr,mt,sc,bmnum,nave,cpid,lagfr,smsep
+  readf,unit,stid,yr,mo,dy,hr,mt,sc,bmnum,nave,cpid,lagfr,smsep,vdir
 	lambda = 3.e8/(tfreq*1.e3)
 	
 	;get rad info
   radar_info,stid,glat,glon,mlat,mlon,oneletter,threeletter,name,fix(stid)
-  
+
+  if(hr lt 10) then hrstr = '0'+strtrim(round(hr),2) $
+  else hrstr = strtrim(round(hr),2)
+
+  if(mt lt 10) then mtstr = '0'+strtrim(round(mt),2) $
+  else mtstr = strtrim(round(mt),2)
+
+  if(sc lt 10) then scstr = '0'+strtrim(round(sc),2) $
+  else scstr = strtrim(round(sc),2)
+
   date_str = name+'	 '+$
 							strtrim(fix(yr),2)+'/'+strtrim(fix(mo),2)+'/'+strtrim(fix(dy),2)
   date_str = date_str+'	 '
-  date_str = date_str+strtrim(fix(hr),2)+':'+strtrim(fix(mt),2)+':'+strtrim(fix(sc),2)+' UT'
+  date_str = date_str+hrstr+':'+mtstr+':'+scstr+' UT'
   date_str = date_str+'		'
   date_str = date_str+'Beam: '+strtrim(fix(bmnum),2)
     date_str = date_str+'		'
@@ -174,7 +183,7 @@ pro acf_plot_lmfit,time
 			if(pwr_flgs(i) eq 0) then $
 				xyouts,.5,.45,'Lag 0 Power too low for a fit',/normal,align=.5,charsize=1.5,charthick=3.
 			if(lag_flgs(i) eq 0) then $
-				xyouts,.5,.4,'Not enough food lags for a fit',/normal,align=.5,charsize=1.5,charthick=3.
+				xyouts,.5,.4,'Not enough good lags for a fit',/normal,align=.5,charsize=1.5,charthick=3.
 			erase
 			continue
 		endif
@@ -199,7 +208,7 @@ pro acf_plot_lmfit,time
 
 		;plot the phase panel
 		acf_plot_phase_panel,atan(acfs(i,*,1),acfs(i,*,0)),atan(fitted_acfs(*,1),fitted_acfs(*,0)),$
-													mplgs,lagnums(i,*),bad_lags(i,*),(lambda*fit_params(i,1)/(4.*!pi)),-1,0,$
+													mplgs,lagnums(i,*),bad_lags(i,*),(lambda*fit_params(i,1)/vdir/(4.*!pi)),-1,0,$
 													[.1,.09,.39,.29]
 
 		;plot the power panel

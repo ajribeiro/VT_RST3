@@ -205,7 +205,7 @@ int main(int argc,char *argv[]) {
     strcat(command,argv[c]);
   }
 
-
+	
 
   if (vb) 
       fprintf(stderr,"%d-%d-%d %d:%d:%d beam=%d\n",prm->time.yr,prm->time.mo,

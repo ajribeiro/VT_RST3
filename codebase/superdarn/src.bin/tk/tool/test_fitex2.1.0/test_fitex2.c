@@ -75,7 +75,7 @@ int main(int argc,char *argv[])
   unsigned char option=0;
 
   unsigned char vb=0;
-	int tgthr = 0, tgtmin = 0, tgtbeam = 0, done = 0;
+	int tgthr = 0, tgtmin = 0, tgtbeam = 7, done = 0;
 
   FILE *fp=NULL;
   struct OldRawFp *rawfp=NULL;

@@ -37,7 +37,8 @@ int calc_phi_res(struct complex *acf,int *badlag,
 		phi_res[i] = ((badlag[i]) ? 0.0 : atan2(acf[i].y, acf[i].x));
 		if (phi_res[i] != 0.0)
 			nzc++;
-
+		if(11)
+			fprintf(stderr,"lalala\n");
   }
   if (nzc > 0) return 0;
   else return -1;

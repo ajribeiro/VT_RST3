@@ -80,10 +80,20 @@ pro acf_plot_fitex2,time
   lambda = 3.e8/(tfreq*1.e3)
 	;get rad info
   radar_info,stid,glat,glon,mlat,mlon,oneletter,threeletter,name,fix(stid)
+
+    if(hr lt 10) then hrstr = '0'+strtrim(round(hr),2) $
+  else hrstr = strtrim(round(hr),2)
+
+  if(mt lt 10) then mtstr = '0'+strtrim(round(mt),2) $
+  else mtstr = strtrim(round(mt),2)
+
+  if(sc lt 10) then scstr = '0'+strtrim(round(sc),2) $
+  else scstr = strtrim(round(sc),2)
+
   date_str = name+'	 '+$
 							strtrim(fix(yr),2)+'/'+strtrim(fix(mo),2)+'/'+strtrim(fix(dy),2)
   date_str = date_str+'	 '
-  date_str = date_str+strtrim(fix(hr),2)+':'+strtrim(fix(mt),2)+':'+strtrim(fix(sc),2)+' UT'
+  date_str = date_str+hrstr+':'+mtstr+':'+scstr+' UT'
   date_str = date_str+'		'
   date_str = date_str+'Beam: '+strtrim(fix(bmnum),2)
     date_str = date_str+'		'
@@ -99,7 +109,6 @@ pro acf_plot_fitex2,time
   ;declare the arrays
 	lagnums = intarr(nrang,mplgs)
 	acfs = dblarr(nrang,mplgs,2)
-	good_lags = intarr(nrang,mplgs)
 	pwr_flgs = intarr(nrang)
 	lag_flgs = intarr(nrang)
 	fluct_levs = intarr(nrang)
@@ -127,13 +136,12 @@ pro acf_plot_fitex2,time
 		fluct_levs(i) = fluct
 		;read the acfs
 		for j=0,mplgs-1 do begin
-			readf,unit,l,re,im,flg
+			readf,unit,l,re,im,bad
 			lagnums(i,j) = l
 			acfs(i,j,0) = re
 			acfs(i,j,1) = im
-			good_lags(i,j) = flg
-			if(flg) then n_lags(i) = n_lags(i) + 1
-			bad_lags(i,j) = flg*2
+			bad_lags(i,j) = bad
+			if(bad eq 0) then n_lags(i) = n_lags(i) + 1
 		endfor
 		;read the params that determine if fitting is performed
 		readf,unit,pflg,lflg
@@ -193,6 +201,7 @@ pro acf_plot_fitex2,time
 								
   ;start the plotting
   for i=0,nrang-1 do begin
+		print,'range',i
 		loadct,0
 
 		;annotate the page

@@ -71,7 +71,7 @@ pro acf_plot_fitacf,time
 
 	;read the first line
 	readf,unit,stid,yr,mo,dy,hr,mt,sc,bmnum
-  readf,unit,nrang,mplgs,skynoise,tfreq,mpinc,lagfr,smsep,nave,cpid
+  readf,unit,nrang,mplgs,skynoise,tfreq,mpinc,lagfr,smsep,nave,cpid,vdir
 	lambda = 3.e8/(tfreq*1.e3)
 	;get rad info
   radar_info,stid,glat,glon,mlat,mlon,oneletter,threeletter,name,fix(stid)
@@ -105,8 +105,6 @@ pro acf_plot_fitacf,time
 	lagnums = intarr(nrang,mplgs)
 	acfs = dblarr(nrang,mplgs,2)
 	fitted_acfs = dblarr(mplgs,2)
-	good_lags = intarr(nrang,mplgs)
-	more_lags = intarr(nrang,mplgs)
 	fit_flgs = intarr(nrang)
 	omega_loc = dblarr(nrang)
 	sct_flgs = intarr(nrang)
@@ -123,12 +121,11 @@ pro acf_plot_fitacf,time
 		if(flg ne 0) then continue
 		;read the acfs
 		for j=0,mplgs-1 do begin
-			readf,unit,lag,re,im,good
+			readf,unit,lag,re,im,bad
 			lagnums(i,j) = lag
 			acfs(i,j,0) = re
 			acfs(i,j,1) = im
-			good_lags(i,j) = good
-			bad_lags(i,j) = good
+			bad_lags(i,j) = bad
 		endfor
 		readf,unit,flg
 		second_stat(i) = flg
@@ -138,9 +135,8 @@ pro acf_plot_fitacf,time
 			lagnums(i,j) = lag
 			acfs(i,j,0) = re
 			acfs(i,j,1) = im
-			more_lags(i,j) = good
-			bad_lags(i,j) = bad_lags(i,j) + good
-			if(good) then n_lags(i) = n_lags(i) + 1
+			bad_lags(i,j) = bad
+			if(bad eq 0) then n_lags(i) = n_lags(i) + 1
 		endfor
 		;read the params that determine if fitting is performed
 		readf,unit,flg
@@ -180,7 +176,7 @@ pro acf_plot_fitacf,time
 
 		;check fitting status
 		if(first_stat(i) ne 0) then begin
-			xyouts,.5,.85,'Fitting exited with status: -1 ',/normal,align=.5,charsize=1.,charthick=3.
+			xyouts,.5,.71,'Fitting exited with status: -1 ',/normal,align=.5,charsize=1.,charthick=3.
 			erase
 			continue
 		endif
@@ -210,7 +206,7 @@ pro acf_plot_fitacf,time
 
 		;calculate fitted ACF
 		mag = 10.^(fit_params(i,2)/10)*skynoise
-		dopfreq = 2.*!pi*(fit_params(i,0)*2./lambda)
+		dopfreq = 2.*!pi*(fit_params(i,0)/vdir*2./lambda)
 		t_d = lambda/(2.*!pi*fit_params(i,3))
 		print,mag,i,lambda,skynoise,fit_params(i,2)
 		for j=0,mplgs-1 do begin

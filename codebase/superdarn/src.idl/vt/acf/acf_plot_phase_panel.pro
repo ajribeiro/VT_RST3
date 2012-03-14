@@ -86,7 +86,7 @@ pro acf_plot_phase_panel,phases,fphases,mplgs,lagnums,badlags,vel,omega_loc,err,
 	loadct,34
 	for j=0,mplgs-1 do begin
 		;plot the actual ACF
-		if(badlags(j) eq 2) then begin
+		if(badlags(j) eq 0) then begin
 			usersym,cos(S),sin(S),/FILL
 			plots,lagnums(j),phases(j),psym=8,col=0
 			usersym,cos(S),sin(S)
@@ -98,7 +98,7 @@ pro acf_plot_phase_panel,phases,fphases,mplgs,lagnums,badlags,vel,omega_loc,err,
 	usersym,cos(S),sin(S),/FILL
 	plots,x2+.02,y2-.025,psym=8,col=0,/normal
 	usersym,cos(S),sin(S)
-	plots,x2+.02,y2-.055,psym=8,col=150,/normal
+	plots,x2+.02,y2-.055,psym=8,col=150,/normal,thick=3
 
 	;go back to davit ct
 	init_colors

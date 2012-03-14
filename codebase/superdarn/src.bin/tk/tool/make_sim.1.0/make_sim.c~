@@ -198,10 +198,9 @@ int main(int argc,char *argv[])
   int decayflg = 0;
 
   /*other variables*/
-  long i,j,r;
+  long i,j;
   int output = 0;
   double taus;
-  long seed = time(NULL)*time(NULL);        /*a seed for random number generation*/
 
   char helpstr[] =
   "\nmake_sim:  generates simulated single-component lorentzian ACFs\n\n"
@@ -445,7 +444,7 @@ int main(int argc,char *argv[])
   /*flags to tell which range gates contain scatter*/
   int * qflg = malloc(nrang*sizeof(int));
   for(i=0;i<nrang;i++)
-    if(i < n_good)
+    if(i >= 80)
       qflg[i] = 1;
     else
       qflg[i] = 0;

@@ -61,7 +61,7 @@
 
 pro plot_merge,orig=orig
   ;the file we are reading data from
-  file_in = '/rst/output_files/mergevec.out.txt'
+  file_in = '/rst/output_files/mergevec.out.txt.mult'
   set_plot,'PS',/copy
   if(keyword_set(orig)) then fname = '/rst/output_plots/merge.orig.ps' $
   else fname = '/rst/output_plots/merge.ps'
@@ -98,26 +98,31 @@ pro plot_merge,orig=orig
 		lat2 = pos(0)
 
 	endif else begin
-		pos1 = rbpos(60,height=300,beam=0,lagfr=1200,smsep=300, $
-						rxrise=100,station=stid1,year=2010,yrsec=1000000,/GEO,/CENTER)
-		pos2 = rbpos(60,height=300,beam=15,lagfr=1200,smsep=300, $
-						rxrise=100,station=stid1,year=2010,yrsec=1000000,/GEO,/CENTER)
-		pos3 = rbpos(60,height=300,beam=15,lagfr=1200,smsep=300, $
-						rxrise=100,station=stid2,year=2010,yrsec=1000000,/GEO,/CENTER)
-		pos4 = rbpos(60,height=300,beam=15,lagfr=1200,smsep=300, $
-						rxrise=100,station=stid2,year=2010,yrsec=1000000,/GEO,/CENTER)
+; 	print,'okay'
+; 		pos1 = rbpos(0,height=300,beam=0,lagfr=1200,smsep=300, $
+; 						rxrise=100,station=stid1,year=2010,yrsec=1000000,/GEO,/CENTER)
+; 						print,'okay'
+; 		pos2 = rbpos(60,height=300,beam=15,lagfr=1200,smsep=300, $
+; 						rxrise=100,station=stid1,year=2010,yrsec=1000000,/GEO,/CENTER)
+; 		pos3 = rbpos(60,height=300,beam=15,lagfr=1200,smsep=300, $
+; 						rxrise=100,station=stid2,year=2010,yrsec=1000000,/GEO,/CENTER)
+; 		pos4 = rbpos(60,height=300,beam=15,lagfr=1200,smsep=300, $
+; 						rxrise=100,station=stid2,year=2010,yrsec=1000000,/GEO,/CENTER)
 		radar_info,stid,glat,glon,mlat,mlon,oneletter,threeletter,name,stid1
-		lat1=glat
+		rlat1=glat
+		rlon1=glon
 		radar_info,stid,glat,glon,mlat,mlon,oneletter,threeletter,name,stid2
-		lat2=glat
+		rlat2=glat
+		rlon2=glon
 	endelse
 
-	lats=[pos1(0),pos2(0),pos3(0),pos4(0)]
-	lons=[pos1(1),pos2(1),pos3(1),pos4(1)]
-
-	bound = [min([lat1,lat2]),min(lons),max(lats),max(lons)]
+; 	lats=[pos1(0),pos2(0),pos3(0),pos4(0)]
+; 	lons=[pos1(1),pos2(1),pos3(1),pos4(1)]
+; 
+; 	bound = [min([lat1,lat2]),min(lons),max(lats),max(lons)]
 	pos = [0.15,0.15,0.85,0.85]
 
+	bound = [40,-120,60,-80]
 
 	;read the file
 	while(~ EOF(unit)) do begin
@@ -130,9 +135,11 @@ pro plot_merge,orig=orig
 			title_str = strtrim(mo,2)+'/'+strtrim(dy,2)+'/'+strtrim(yr,2)+'     '+strtrim(hr,2)+':'+strtrim(mn,2)+':'+strtrim(fix(sc),2)
 			loadct,0
 			if(mag_flg) then $
-				map_set,(bound(0)+bound(2))/2,(bound(1)+bound(3))/2,limit=bound,/orthographic,/isotropic,/label,/noerase,position=pos,title=title_str $
+				map_set,(rlat1+rlat2)/2,(rlon1+rlon2)/2,limit=bound,/orthographic,/isotropic,/label,/noerase,position=pos,title=title_str $
 			else $
-				map_set,(bound(0)+bound(2))/2,(bound(1)+bound(3))/2,limit=bound,/orthographic,/isotropic,/label,/noerase,position=pos,/continents,title=title_str
+				map_set,50,-100,limit=bound,/orthographic,/isotropic,/label,/noerase,position=pos,/continents,title=title_str
+				draw_colorbar_round,vel_max,0,'Velocity','m/s',[.88,.4,.92,.8],ct=34
+; 			plot_colorbar,1,1,0,0,pos=[.88,.4,.92,.8],param='Velocity',scale=[0,150],charsize=.6
 			loadct,34
 			old_time = time
 		endif

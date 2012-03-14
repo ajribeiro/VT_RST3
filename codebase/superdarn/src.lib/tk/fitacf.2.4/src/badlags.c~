@@ -81,7 +81,7 @@ void FitACFCkRng(int range,int *badlag,struct FitACFBadSample *bptr,
 		for (j=0; j<bptr->nbad; j++)
 		{
 			if ((sam1 == bptr->badsmp[j]) || (sam2 == bptr->badsmp[j]))
-					badlag[i] = 1;
+					badlag[i] = 11;
 			if (sam2 < bptr->badsmp[j]) break;
 		}
   }
