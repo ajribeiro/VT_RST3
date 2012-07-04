@@ -74,7 +74,7 @@ pro acf_plot_fitex2,time
 
 	;read the first lines
   readf,unit,nrang,mplgs,skynoise,tfreq,mpinc,nslopes,diff
-  readf,unit,stid,yr,mo,dy,hr,mt,sc,bmnum,cpid,nave,lagfr,smsep
+  readf,unit,stid,yr,mo,dy,hr,mt,sc,bmnum,cpid,nave,lagfr,smsep,vdir
 
 
   lambda = 3.e8/(tfreq*1.e3)
@@ -188,6 +188,7 @@ pro acf_plot_fitex2,time
 				final_params(i,2) = ve
 			endif
 		endif
+		acfs(i,0,0) = acfs(i,0,0)+skynoise
 	endfor
 	;close the input file
   close,unit
@@ -209,7 +210,7 @@ pro acf_plot_fitex2,time
 		xyouts,.5,.93,mystr,align=.5,charsize=.8,charthick=3.,/normal
 
 		;plot the rawacf
-		acf_plot_rawacf,acfs(i,*,0),acfs(i,*,1),mplgs,lagnums(i,*),bad_lags(i,*),[.1,.67,.83,.87]
+		acf_plot_rawacf,acfs(i,*,0),acfs(i,*,1),mplgs,lagnums(i,*),bad_lags(i,*),[.1,.67,.5,.87]
 
 		;check fitting status
 		if(pwr_flgs(i) eq 0 OR lag_flgs(i) eq 0) then begin
@@ -235,7 +236,7 @@ pro acf_plot_fitex2,time
 
 		;calculate fitted ACF
 		mag = 10.^(snrs(i)/10)*skynoise
-		dopfreq = 2.*!pi*(final_params(i,1)*2./lambda)
+		dopfreq = 2.*!pi*(final_params(i,1)/vdir*2./lambda)
 		t_d = lambda/(2.*!pi*widths(i))
 
 		fitted_acfs = dblarr(mplgs,2)

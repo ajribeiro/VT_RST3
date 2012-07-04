@@ -74,7 +74,7 @@ pro acf_plot_model_panel,phases,errs,thresh,position
 
 	plot,findgen(1),findgen(1),/nodata,xrange=[-180,180],yrange=[0,ymax],$
 				xstyle=1,ystyle=1,xthick=4,ythick=4,pos=position,/noerase,thick=2.,$
-				yticklen=-.01,title='Model Phase COmparison',charthick=3,charsize=.6
+				yticklen=-.01,title='Model Phase Comparison',charthick=3,charsize=.6
 
 	loadct,34
 	usersym,cos(S),sin(S),/FILL
@@ -82,7 +82,7 @@ pro acf_plot_model_panel,phases,errs,thresh,position
 	plots,phases,errs,linestyle=0,col=50,thick=3
 	plots,phases,errs,psym=8,col=50,symsize=.6
 
-	plots,phases(where(errs eq min(errs))),errs(where(errs eq min(errs))),psym=8,col=225,symsize=.65
+; 	plots,phases(where(errs eq min(errs))),errs(where(errs eq min(errs))),psym=8,col=225,symsize=.65
 
 ; 	plots,lagnums,fpowers,linestyle=1,col=150,thick=3
 	usersym,cos(S),sin(S),/FILL

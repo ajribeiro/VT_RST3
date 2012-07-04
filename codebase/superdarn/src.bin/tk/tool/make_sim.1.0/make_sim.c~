@@ -293,7 +293,7 @@ int main(int argc,char *argv[])
       nrang = atoi(argv[i+1]);
 		/*command line power decay with range*/
     else if (strcmp(argv[i], "-decay") == 0)
-      decayflg = atoi(argv[i+1]);
+      decayflg = 1;
     /*command line nave*/
     else if (strcmp(argv[i], "-nave") == 0)
     {
@@ -444,7 +444,7 @@ int main(int argc,char *argv[])
   /*flags to tell which range gates contain scatter*/
   int * qflg = malloc(nrang*sizeof(int));
   for(i=0;i<nrang;i++)
-    if(i >= 80)
+    if(i < n_good)
       qflg[i] = 1;
     else
       qflg[i] = 0;

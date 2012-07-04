@@ -62,7 +62,7 @@ pro acf_plot_fitacf,time
   ;the file we are reading data from
   file_in = '/rst/output_files/'+time+'.fitacf.test'
   set_plot,'PS',/copy
-  device,/landscape,/COLOR,BITS_PER_PIXEL=8,filename='/rst/output_plots/'+time+'.fitacf.ps'
+  device,/landscape,/COLOR,BITS_PER_PIXEL=8,filename='/rst/output_plots/'+time+'.ps'
   S = findgen(17)*(!PI*2./16.)
   !p.multi = [0,1,1]
 
@@ -76,6 +76,13 @@ pro acf_plot_fitacf,time
 	;get rad info
   radar_info,stid,glat,glon,mlat,mlon,oneletter,threeletter,name,fix(stid)
 
+  
+  if(mo lt 10) then mostr = '0'+strtrim(round(mo),2) $
+  else mostr = strtrim(round(mo),2)
+
+  if(dy lt 10) then dystr = '0'+strtrim(round(dy),2) $
+  else dystr = strtrim(round(dy),2)
+  
   if(hr lt 10) then hrstr = '0'+strtrim(round(hr),2) $
   else hrstr = strtrim(round(hr),2)
 
@@ -86,7 +93,7 @@ pro acf_plot_fitacf,time
   else scstr = strtrim(round(sc),2)
 
   date_str = name+'	 '+$
-							strtrim(fix(yr),2)+'/'+strtrim(fix(mo),2)+'/'+strtrim(fix(dy),2)
+							strtrim(fix(yr),2)+'/'+mostr+'/'+dystr
   date_str = date_str+'	 '
   date_str = date_str+hrstr+':'+mtstr+':'+scstr+' UT'
   date_str = date_str+'		'
@@ -171,12 +178,12 @@ pro acf_plot_fitacf,time
 		loadct,0
 
 		;annotate the page
-		xyouts,.5,.97,date_str+'Range: '+strtrim(i,2),align=.5,charsize=.8,charthick=3.,/normal
-		xyouts,.5,.93,mystr,align=.5,charsize=.8,charthick=3.,/normal
+		xyouts,.5,.97,date_str+'Range: '+strtrim(i,2),align=.5,charsize=1.5*.8,charthick=3.,/normal
+		xyouts,.5,.93,mystr,align=.5,charsize=1.5*.8,charthick=3.,/normal
 
 		;check fitting status
 		if(first_stat(i) ne 0) then begin
-			xyouts,.5,.71,'Fitting exited with status: -1 ',/normal,align=.5,charsize=1.,charthick=3.
+			xyouts,.5,.71,'Fitting exited with status: -1 ',/normal,align=.5,charsize=1.5*1.,charthick=3.
 			erase
 			continue
 		endif
@@ -186,20 +193,20 @@ pro acf_plot_fitacf,time
 
 		;check the fitting status
 		if(second_stat(i) ne 0) then begin
-			xyouts,.5,.71,'Fitting exited with status: 1 ',/normal,align=.5,charsize=1.5,charthick=3.
+			xyouts,.5,.71,'Fitting exited with status: 1 ',/normal,align=.5,charsize=1.5*1.5,charthick=3.
 			erase
 			continue
 		endif
 
 		;check fitting status
 		if(fit_flgs(i) ne 0) then begin
-			xyouts,.5,.30,'Fitting exited with status: '+strtrim(fix(fit_flgs(i)),2),/normal,align=.5,charsize=1.5,charthick=3.
+			xyouts,.5,.30,'Fitting exited with status: '+strtrim(fix(fit_flgs(i)),2),/normal,align=.5,charsize=1.5*1.5,charthick=3.
 			if(fit_flgs(i) eq 4) then $
-				xyouts,.5,.25,'(not enough good lags)',/normal,align=.5,charsize=1.5,charthick=3.
+				xyouts,.5,.25,'(not enough good lags)',/normal,align=.5,charsize=1.5*1.5,charthick=3.
 			if(fit_flgs(i) eq 2) then $
-				xyouts,.5,.25,'(calc_phi_res returned bad status)',/normal,align=.5,charsize=1.5,charthick=3.
+				xyouts,.5,.25,'(calc_phi_res returned bad status)',/normal,align=.5,charsize=1.5*1.5,charthick=3.
 			if(fit_flgs(i) eq 3) then $
-				xyouts,.5,.25,'(c_log < 0)',/normal,align=.5,charsize=1.5,charthick=3.
+				xyouts,.5,.25,'(c_log < 0)',/normal,align=.5,charsize=1.5*1.5,charthick=3.
 			erase
 			continue
 		endif

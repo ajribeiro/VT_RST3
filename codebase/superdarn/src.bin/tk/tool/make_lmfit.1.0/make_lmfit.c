@@ -238,13 +238,13 @@ int main(int argc,char *argv[])
     strcpy(tmstr,asctime(gmtime(&ctime)));
     tmstr[24]=0;
     RadarParmSetOriginTime(prm,tmstr);
-
+/*
 
 		for(i=10;i<prm->nrang;i++)
 			if(fit->rng[i].qflg)
 				fprintf(stderr,"%d-%d-%d %d:%d:%d beam=%d\n",prm->time.yr,prm->time.mo,
 					prm->time.dy,prm->time.hr,prm->time.mt,prm->time.sc,prm->bmnum);
-
+*/
     if (old)
     {
        dnum=OldFitFwrite(fitfp,prm,fit,NULL);

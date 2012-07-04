@@ -209,7 +209,7 @@ pro acf_plot_fitex2,time
 		xyouts,.5,.93,mystr,align=.5,charsize=.8,charthick=3.,/normal
 
 		;plot the rawacf
-		acf_plot_rawacf,acfs(i,*,0),acfs(i,*,1),mplgs,lagnums(i,*),bad_lags(i,*),[.1,.67,.83,.87]
+		acf_plot_rawacf,acfs(i,*,0),acfs(i,*,1),mplgs,lagnums(i,*),bad_lags(i,*),[.1,.67,.5,.87]
 
 		;check fitting status
 		if(pwr_flgs(i) eq 0 OR lag_flgs(i) eq 0) then begin

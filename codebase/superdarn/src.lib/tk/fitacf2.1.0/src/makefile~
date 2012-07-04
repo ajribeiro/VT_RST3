@@ -1,0 +1,18 @@
+# makefile for fit_lib
+#
+#
+include $(MAKECFG).$(SYSTEM)
+
+
+
+INCLUDE= -I$(IPATH)/base -I$(IPATH)/general  -I$(IPATH)/superdarn/fit -I$(IPATH)/superdarn
+SRC = fit_acf2.c fit_acf2.h do_fit2.c fitacf2.c
+OBJS = fit_acf2.o do_fit2.o fitacf2.o
+INC=$(IPATH)/superdarn
+DSTPATH=$(LIBPATH)
+OUTPUT=fitacf2
+LINK="1"
+
+
+
+include $(MAKELIB).$(SYSTEM)

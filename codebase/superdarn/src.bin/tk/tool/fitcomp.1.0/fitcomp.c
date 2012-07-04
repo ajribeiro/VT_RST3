@@ -199,9 +199,9 @@ int main(int argc,char *argv[])
   RadarLoadHardware(envstr,network);
 
 
-	fpa=fopen("/data/raw/100000.amp10000.rawacfa","r");
-	fpb=fopen("/data/raw/100000.amp10000.rawacfb","r");
-	fpc=fopen("/data/raw/100000.amp10000.rawacfc","r");
+	fpa=fopen("/data/raw/100000.amp10000.rawacfa4","r");
+	fpb=fopen("/data/raw/100000.amp10000.rawacfb4","r");
+	fpc=fopen("/data/raw/100000.amp10000.rawacfc4","r");
 
 	if (fpa==NULL || fpb==NULL || fpc==NULL)
 	{
@@ -497,7 +497,7 @@ int main(int argc,char *argv[])
 	fprintf(stderr,"t median:  %lf   %lf   %lf\n",acf_t_err[(int)(n_acf/2)],ex_t_err[(int)(n_ex/2)],lm_t_err[(int)(n_lm/2)]);
 	fprintf(stderr,"t mean:    %lf   %lf   %lf\n",mean_t_acf,mean_t_ex,mean_t_lm);
 	fprintf(stderr,"f median:  %lf   %lf   %lf\n",acf_f_err[(int)(n_acf/2)],ex_f_err[(int)(n_ex/2)],lm_f_err[(int)(n_lm/2)]);
-	fprintf(stderr,"f mean:    %lf   %lf   %lf\n",mean_f_acf,mean_f_ex,mean_f_lm);
+	fprintf(stderr,"f mean:    %lf   %lf   %lf\n",mean_f_acf,mean_f_ex,mean_f_lm);/*
 
 	for(i=0;i<20;i++)
 		for(j=0;j<10;j++)
@@ -507,7 +507,7 @@ int main(int argc,char *argv[])
 									sqrt(errors[i][j][0][k]/num[i][j][0]),sqrt(errors[i][j][1][k]/num[i][j][1]),sqrt(errors[i][j][2][k]/num[i][j][2]),num[i][j][2]);
 				else
 					fprintf(stdout,"%f  %f  %d  %lf  %lf  %lf  %lf\n",i*100.+50.,(j+1)*1.e-2,k,
-									errors[i][j][0][k]/num[i][j][0],errors[i][j][1][k]/num[i][j][1],errors[i][j][2][k]/num[i][j][2],num[i][j][2]);
+									errors[i][j][0][k]/num[i][j][0],errors[i][j][1][k]/num[i][j][1],errors[i][j][2][k]/num[i][j][2],num[i][j][2]);*/
 
 	/*for(i=0;i<20;i++)
 		fprintf(stderr,"%d  %d  %d  %d\n",i,very_bad[i][0],very_bad[i][1],very_bad[i][2]);

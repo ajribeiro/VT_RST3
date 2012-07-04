@@ -34,7 +34,7 @@ THE SOFTWARE.
 
 #include "rtypes.h"
 #include "option.h"
-
+ 
 #include "dmap.h"
 #include "rprm.h"
 #include "rawdata.h"
@@ -199,9 +199,9 @@ int main(int argc,char *argv[])
   RadarLoadHardware(envstr,network);
 
 
-	fpa=fopen("/data/raw/100000.amp10000.rawacfa","r");
-	fpb=fopen("/data/raw/100000.amp10000.rawacfb","r");
-	fpc=fopen("/data/raw/100000.amp10000.rawacfc","r");
+	fpa=fopen("/data/raw/100000.amp10000.rawacfa4","r");
+	fpb=fopen("/data/raw/100000.amp10000.rawacfb4","r");
+	fpc=fopen("/data/raw/100000.amp10000.rawacfc4","r");
 
 	if (fpa==NULL || fpb==NULL || fpc==NULL)
 	{

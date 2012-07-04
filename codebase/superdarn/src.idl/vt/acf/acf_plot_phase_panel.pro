@@ -61,7 +61,7 @@
 
 pro acf_plot_phase_panel,phases,fphases,mplgs,lagnums,badlags,vel,omega_loc,err,position
 
-
+	line = 3
 	x1 = position(0)
 	y1 = position(1)
 	x2 = position(2)
@@ -76,29 +76,36 @@ pro acf_plot_phase_panel,phases,fphases,mplgs,lagnums,badlags,vel,omega_loc,err,
 
 	plot,findgen(1),findgen(1),/nodata,xrange=[0,max(lagnums)],yrange=[-!pi,!pi],$
 				xstyle=1,ystyle=1,xthick=4,ythick=4,pos=position,/noerase,thick=3.,$
-				yticklen=-.01,title=ptitle,charthick=3,charsize=.6,xtitle='lag',ytitle='phase'
+				yticklen=-.01,title=ptitle,charthick=3,charsize=.9,xtitle='lag',ytitle='phase'
 
 	S = findgen(17)*(!PI*2./16.)
-	usersym,cos(S),sin(S)
+	usersym,cos(S),sin(S),/FILL
 
-	xyouts,x2+.04,y2-.03,'ACF',/normal,charsize=.7
-	xyouts,x2+.04,y2-.06,'Fit',/normal,charsize=.7
+	xyouts,x2+.04,y2-.03,'ACF',/normal,charsize=1.125
+	xyouts,x2+.04,y2-.06,'Fit',/normal,charsize=1.125
 	loadct,34
-	for j=0,mplgs-1 do begin
+	if(lagnums(mplgs-1) eq 0) then nlags = mplgs-1 $
+	else nlags = mplgs
+	
+	for j=0,nlags-1 do begin
 		;plot the actual ACF
-		if(badlags(j) eq 0) then begin
-			usersym,cos(S),sin(S),/FILL
-			plots,lagnums(j),phases(j),psym=8,col=0
-			usersym,cos(S),sin(S)
-		endif
-		plots,lagnums(j),fphases(j),psym=8,col=150
+; 		if(badlags(j) eq 0) then begin
+; 			usersym,cos(S),sin(S),/FILL
+		if(badlags(j) eq 1) then p = 6 $
+		else if(badlags(j) eq 11) then p = 4 $
+		else if(badlags(j) eq 0) then p = 8 $
+		else p = 5
+		plots,lagnums(j),phases(j),psym=p,col=0,symsize=1.13,thick=3.
+; 			usersym,cos(S),sin(S)
+; 		endif
+; 		plots,lagnums(j),fphases(j),psym=8,col=150
 	endfor
 
-	plots,lagnums,fphases,linestyle=1,col=150,thick=3
+	plots,lagnums(0:nlags-1),fphases(0:nlags-1),linestyle=line,col=150,thick=5.
 	usersym,cos(S),sin(S),/FILL
 	plots,x2+.02,y2-.025,psym=8,col=0,/normal
 	usersym,cos(S),sin(S)
-	plots,x2+.02,y2-.055,psym=8,col=150,/normal,thick=3
+	plots,[x2+.01,x2+.03],[y2-.055,y2-.055],/normal,linestyle=line,col=150,thick=5.
 
 	;go back to davit ct
 	init_colors

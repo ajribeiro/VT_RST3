@@ -129,6 +129,7 @@ void setup_fblk(struct RadarParm *prm, struct RawData *raw,struct FitBlock *inpu
   return;
 }
 
+/*calculate the residuals between fitted and actual data*/
 double calc_err(double w_guess, struct RawData *raw, float *good_lags, int goodcnt,
               int R, float *lagpwr,double pwr, struct RadarParm *prm)
 {
@@ -166,6 +167,7 @@ double calc_err(double w_guess, struct RawData *raw, float *good_lags, int goodc
   return sqrt(error_guess);
 }
 
+/*;inear leas-squares fit*/
 void ls_fit(float *x,float *y, int n, float *a, float *b)
 {
   double sum_x = 0, sum_y = 0, sum_x2 = 0, sum_xy = 0;
@@ -215,6 +217,7 @@ double calc_phi0(float *x,float *y, float m, int n)
   return b;
 }
 
+/*function to calculate residuals for MPFIT*/
 int singlefit(int m, int n, double *p, double *deviates,
                         double **derivs, void *private)
 {
@@ -246,12 +249,13 @@ int singlefit(int m, int n, double *p, double *deviates,
   return 0;
 }
 
+/*function to calculate noise level*/
 void lm_noise_stat(struct RadarParm *prm, struct RawData * raw,
                 double * skynoise)
 {
   int j=0, R, i=0;
   double * pwrd = malloc(prm->nrang*sizeof(double));
-  if(prm->cp == -3310 && prm->cp != 3310 && prm->cp != 503 && prm->cp != -503)
+  if(prm->cp != -3310 && prm->cp != 3310 && prm->cp != 503 && prm->cp != -503)
   {
     j=0;
     for(R=0;R<prm->nrang;R++)
@@ -281,6 +285,8 @@ void lm_noise_stat(struct RadarParm *prm, struct RawData * raw,
   return;
 }
 
+/*function to use FITEX logic in order to get initial velocity
+guess for MPFIT*/
 double getguessex(struct RadarParm *prm,struct RawData *raw,
               struct FitData *fit, struct FitBlock *fblk,
 									int rang, double skynoise)
@@ -356,7 +362,7 @@ double getguessex(struct RadarParm *prm,struct RawData *raw,
 
 
   /*calculate noise levels*/
-  if(prm->cp == -3310 && prm->cp != 3310 && prm->cp != 503 && prm->cp != -503)
+  if(prm->cp != -3310 && prm->cp != 3310 && prm->cp != 503 && prm->cp != -503)
   {
     if(fblk->prm.channel==0) FitACFBadlags(&fblk->prm,&badsmp);
     else FitACFBadlagsStereo(&fblk->prm,&badsmp);
@@ -571,23 +577,23 @@ double getguessex(struct RadarParm *prm,struct RawData *raw,
 
 
 
-	free(model_phi);
-  free(model_vels);
-  free(model_errors);
-  free(lagpwr);
-  free(logpwr);
-  free(data_phi_pos);
-  free(data_phi_neg);
-  free(lag_avail);
-	free(sigma);
-  free(good_lags);
+			free(model_phi);
+			free(model_vels);
+			free(model_errors);
+			free(lagpwr);
+			free(logpwr);
+			free(data_phi_pos);
+			free(data_phi_neg);
+			free(lag_avail);
+			free(sigma);
+			free(good_lags);
 
-	w_guess = (mininx-nslopes)*diff;
-	if(sct_flg)
-		return 2.9979E8/2.0*(1-1000.0*prm->tfreq/
-                            (1000.0*prm->tfreq+w_guess/360.0/(prm->mpinc*1.0e-6)));
-	else
-		return -88888888.;
+			w_guess = (mininx-nslopes)*diff;
+			if(sct_flg)
+				return 2.9979E8/2.0*(1-1000.0*prm->tfreq/
+																(1000.0*prm->tfreq+w_guess/360.0/(prm->mpinc*1.0e-6)));
+			else
+				return -88888888.;
 
 
 		}
@@ -830,7 +836,12 @@ void lmfit(struct RadarParm *prm,struct RawData *raw,
       /*get velocity guess from model comparisons*/
       double model_guess = getguessex(prm,raw,fit,fblk,R,skynoise);
       w_limit = model_guess;
-      if(w_limit == -88888888.) w_limit=0;
+			int mflg = 1;
+      if(w_limit == -88888888.)
+			{
+				w_limit=0;
+				mflg=0;
+			}
       /*initial velocity guess in angular Doppler frequency*/
       pdouble[1] = w_limit*4.*PI/lambda;
 
@@ -838,7 +849,7 @@ void lmfit(struct RadarParm *prm,struct RawData *raw,
       /* Determine lambda power and decay time initial guesses from lsfit*/
       nrfit(good_lags,logpwr,goodcnt,sigma,1,&a,&b,&siga,&sigb,&chi2,&q);
       fitted_width = -2.9979e8*b/(prm->mpinc*1.e-6)/(2*PI*1000.0*prm->tfreq);
-      if(fitted_width < 0.00) fitted_width = 1.e-3;
+      if(fitted_width < 0.00) fitted_width = 1.e-1;
       if(isnan(fitted_width)) fitted_width = 1.e3;
       fitted_power = log(exp(a));
 
@@ -931,8 +942,8 @@ void lmfit(struct RadarParm *prm,struct RawData *raw,
 				minpwr = 5.;
 
 
-			sct_flg = (result.status > 0 && fitted_power > minpwr && lag0pwrf > 1.5*acferr && result.npegged == 0);
-
+			sct_flg = (result.status > 0 && fitted_power > minpwr && lag0pwrf > 1.5*acferr && mflg/* && result.npegged == 0*/);
+			fprintf(stdout,"%d  %d  %d  %d  %d  %d\n",R,sct_flg,result.status > 0, fitted_power > minpwr, lag0pwrf > 1.5*acferr, mflg);
 			if(print)
 				fprintf(stdout,"%d  %d  %d  %lf  %lf  %lf  %lf  %d\n",
 									sct_flg,result.status,result.npegged,t_if,f_if,lag0pwrf,acferr,result.niter);

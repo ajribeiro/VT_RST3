@@ -38,8 +38,6 @@
 
 #include "errstr.h"
 #include "hlpstr.h"
-#include "fitacfex2.h"
-#include "lmfit2.h"
 
 
 
@@ -217,7 +215,7 @@ int main(int argc,char *argv[])
 
   fblk=FitACFMake(site,prm->time.yr);
 
-	lmfit2(prm,raw,fit,fblk,0);
+	lmfit(prm,raw,fit,fblk,0);
 
   if (old)
   {
@@ -266,7 +264,7 @@ int main(int argc,char *argv[])
 
 
     if (status==0)
-			lmfit2(prm,raw,fit,fblk,0);
+			lmfit(prm,raw,fit,fblk,0);
 
   } while (status==0);
 

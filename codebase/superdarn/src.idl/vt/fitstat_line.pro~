@@ -31,7 +31,7 @@ pro fitstat_line
 	;first, plot V RMS error while keeping t_d constant
   for i=0,9 do begin
 		loadct,0
-		plot,findgen(2),findgen(2),xrange=[0,2000],yrange=[1,10000],pos=[.05,.6,.8,.9],/nodata,/noerase,xticks=20,$
+		plot,findgen(2),findgen(2),xrange=[0,2000],yrange=[1,10000],pos=[.05,.6,.5,.8],/nodata,/noerase,xticks=10,$
 										yticks=4,xstyle=1,ystyle=1,charthick=3.,charsize=.9,xtitle="simulated velocity",$
 										ytitle="error",title="RMS Velocity error, t_d = "+strtrim((i+1)*.01,2),/ylog,xthick=4,ythick=4
 
@@ -63,7 +63,7 @@ pro fitstat_line
   ;first, plot V "true" error while keeping t_d constant
   for i=0,9 do begin
 		loadct,0
-		plot,findgen(2),findgen(2),xrange=[0,2000],yrange=[-600,600],pos=[.05,.6,.8,.9],/nodata,/noerase,xticks=20,$
+		plot,findgen(2),findgen(2),xrange=[0,2000],yrange=[-600,600],pos=[.05,.6,.5,.8],/nodata,/noerase,xticks=10,$
 										yticks=6,xstyle=1,ystyle=1,charthick=3.,charsize=.9,xtitle="simulated velocity",$
 										ytitle="error",title="True Velocity error, t_d = "+strtrim((i+1)*.01,2),xthick=4,ythick=4
 
@@ -94,7 +94,7 @@ pro fitstat_line
   ;first, plot t_d RMS error while keeping V constant
   for i=0,19 do begin
 		loadct,0
-		plot,findgen(2),findgen(2),xrange=[.01,.1],yrange=[0,1],pos=[.05,.6,.8,.9],/nodata,/noerase,$
+		plot,findgen(2),findgen(2),xrange=[.01,.1],yrange=[0,1],pos=[.05,.6,.5,.8],/nodata,/noerase,$
 										yticks=3,xstyle=1,ystyle=1,charthick=3.,charsize=.9,xtitle="simulated t_d",xticks=9,$
 										ytitle="fitting method",title="RMS decay time error (normalized), V = "+strtrim(fix(i*100.+50.),2),xthick=4,ythick=4
 
@@ -128,10 +128,9 @@ pro fitstat_line
 	;first, plot t_d true error while keeping V constant
 	for i=0,19 do begin
 		loadct,0
-		plot,findgen(2),findgen(2),xrange=[.01,.1],yrange=[0,3],pos=[.05,.6,.8,.9],/nodata,/noerase,$
+		plot,findgen(2),findgen(2),xrange=[.01,.1],yrange=[0,3],pos=[.05,.6,.5,.8],/nodata,/noerase,$
 										yticks=3,xstyle=1,ystyle=1,charthick=3.,charsize=.9,xtitle="simulated t_d",xticks=9,$
 										ytitle="fitting method",title="True decay time error, V = "+strtrim(fix(i*100.+50.),2),ytickname=xlab,xthick=4,ythick=4
-		draw_colorbar,e_max,-1*e_max,"t_d error","s",[.83,.4,.86,.75],ct=33
 		loadct,33
 		for j=0,9 do begin
 			for k=0,2 do begin
@@ -152,10 +151,10 @@ pro fitstat_line
 	endfor
 
 	e_max = .15
-	;first, plot ACFERR while keeping V constant
+	;first, plot ACFERR while keepfing V constant
 	for i=0,19 do begin
 		loadct,0
-		plot,findgen(2),findgen(2),xrange=[.01,.1],yrange=[.25,.5],pos=[.05,.6,.8,.9],/nodata,/noerase,$
+		plot,findgen(2),findgen(2),xrange=[.01,.1],yrange=[.25,.5],pos=[.05,.6,.5,.8],/nodata,/noerase,$
 										yticks=5,xstyle=1,ystyle=1,charthick=3.,charsize=.9,xtitle="simulated t_d",$
 										ytitle="error",title="ACF error, V = "+strtrim(fix(i*100.+50.),2),xticks=9,xthick=4,ythick=4
 
@@ -187,10 +186,9 @@ pro fitstat_line
 	;first, plot ACFERR while keeping V constant
 	for i=0,9 do begin
 		loadct,0
-		plot,findgen(2),findgen(2),xrange=[0,2000],yrange=[.25,.5],pos=[.05,.6,.8,.9],/nodata,/noerase,xticks=20,$
+		plot,findgen(2),findgen(2),xrange=[0,2000],yrange=[.25,.5],pos=[.05,.6,.5,.8],/nodata,/noerase,xticks=20,$
 										yticks=5,xstyle=1,ystyle=1,charthick=3.,charsize=.9,xtitle="simulated velocity",$
 										ytitle="error",title="ACF error, t_d = "+strtrim((i+1)*.01,2),xthick=4,ythick=4
-		draw_colorbar,.4,.25,"ACF error"," ",[.83,.4,.86,.75],ct=34
 
 		loadct,34
 		plots,findgen(20)*100.+50.,errors(*,i,0,4),col=250,thick=15

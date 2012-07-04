@@ -115,17 +115,17 @@ pro acf_plot_rawacf,re,im,mplgs,lagnums,badlags,position,ref=ref,imf=imf,lmheade
 
 	;plot the ACF
 	for i=0,mplgs-1 do begin
-		if(badlags(i) eq 1) then p = 6 $
-		else if(badlags(i) eq 11) then p = 4 $
+		if(badlags(i) eq 1) then p = 8 $
+		else if(badlags(i) eq 11) then p = 8 $
 		else if(badlags(i) eq 0) then p = 8 $
-		else p = 5
+		else p = 8
 		if(~lmflg OR badlags(i) eq 0) then begin
 			plots,lagnums(i),re(i),psym=p,col=250,thick=3
 			plots,lagnums(i),im(i),psym=p,col=50,thick=3
 		endif
 	endfor
 	if(~lmflg) then begin
-		x = where(badlags eq 0,count)
+		x = where(badlags ne -9999,count)
 		if(count gt 0) then begin
 			plots,lagnums(x),re(x),linestyle=0,col=250,thick=3
 			plots,lagnums(x),im(x),linestyle=0,col=50,thick=3.
@@ -134,8 +134,8 @@ pro acf_plot_rawacf,re,im,mplgs,lagnums,badlags,position,ref=ref,imf=imf,lmheade
 
 
 	if(lmflg) then begin
-		plots,lagnums(*),ref(*),psym=6,col=225
-		plots,lagnums(*),imf(*),psym=6,col=75
+		plots,lagnums(*),ref(*),psym=6,col=225,thick=3
+		plots,lagnums(*),imf(*),psym=6,col=75,thick=3
 		plots,lagnums(*),ref(*),linestyle=1,col=225,thick=5
 		plots,lagnums(*),imf(*),linestyle=1,col=75,thick=5.
 	endif

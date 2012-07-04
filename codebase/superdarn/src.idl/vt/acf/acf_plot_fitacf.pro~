@@ -62,7 +62,7 @@ pro acf_plot_fitacf,time
   ;the file we are reading data from
   file_in = '/rst/output_files/'+time+'.fitacf.test'
   set_plot,'PS',/copy
-  device,/landscape,/COLOR,BITS_PER_PIXEL=8,filename='/rst/output_plots/'+time+'.fitacf.ps'
+  device,/landscape,/COLOR,BITS_PER_PIXEL=8,filename='/rst/output_plots/'+time+'.ps'
   S = findgen(17)*(!PI*2./16.)
   !p.multi = [0,1,1]
 
@@ -76,6 +76,13 @@ pro acf_plot_fitacf,time
 	;get rad info
   radar_info,stid,glat,glon,mlat,mlon,oneletter,threeletter,name,fix(stid)
 
+  
+  if(mo lt 10) then mostr = '0'+strtrim(round(mo),2) $
+  else mostr = strtrim(round(mo),2)
+
+  if(dy lt 10) then dystr = '0'+strtrim(round(dy),2) $
+  else dystr = strtrim(round(dy),2)
+  
   if(hr lt 10) then hrstr = '0'+strtrim(round(hr),2) $
   else hrstr = strtrim(round(hr),2)
 
@@ -86,7 +93,7 @@ pro acf_plot_fitacf,time
   else scstr = strtrim(round(sc),2)
 
   date_str = name+'	 '+$
-							strtrim(fix(yr),2)+'/'+strtrim(fix(mo),2)+'/'+strtrim(fix(dy),2)
+							strtrim(fix(yr),2)+'/'+mostr+'/'+dystr
   date_str = date_str+'	 '
   date_str = date_str+hrstr+':'+mtstr+':'+scstr+' UT'
   date_str = date_str+'		'
@@ -206,7 +213,7 @@ pro acf_plot_fitacf,time
 
 		;calculate fitted ACF
 		mag = 10.^(fit_params(i,2)/10)*skynoise
-		dopfreq = 2.*!pi*(fit_params(i,0)*2./lambda)
+		dopfreq = 2.*!pi*(fit_params(i,0)/vdir*2./lambda)
 		t_d = lambda/(2.*!pi*fit_params(i,3))
 		print,mag,i,lambda,skynoise,fit_params(i,2)
 		for j=0,mplgs-1 do begin
